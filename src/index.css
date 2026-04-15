@@ -64,10 +64,9 @@
   flex-direction: column;
   box-sizing: border-box;
 } */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Rubik:wght@600&display=swap');
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
   background: #DCD1FF;
   font-family: 'Inter', sans-serif;
   /* height: 100vw; */

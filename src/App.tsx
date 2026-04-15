@@ -1,21 +1,19 @@
 import { Login } from "./LoginScreen";
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { Registration } from "./RegistrationScreen";
 import { MainPage } from "./MainPage";
 
 function App() {
   return (
     <>
-    <BrowserRouter>
+    <HashRouter basename="/urfu_things">
       <Routes>
-        {/* <Route path="/" element={<OutletWrapper />}> */}
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/main" element={<MainPage />} />
-        {/* </Route> */}
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Registration />} />
+        <Route path="/main" element={<MainPage />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
     </>
   )
 }
