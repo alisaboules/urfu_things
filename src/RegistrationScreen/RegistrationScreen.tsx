@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import "./RegistrationScreen";
+import "./RegistrationScreen.css";
 import { PiEyeFill, PiEyeSlashFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 
@@ -95,91 +95,91 @@ function Registration() {
   };
 
   return (
-    <div className="container">
-      <div className="card" ref={formRef}>
-        <h1 className="title">UniFind</h1>
+    <div className="container-registration">
+      <div className="card-registration" ref={formRef}>
+        <h1 className="title-registration">UniFind</h1>
 
 
-        <div className="field">
+        <div className="field-registration">
           <input
             name="name"
             type="text"
             placeholder="Имя"
-            className={`input ${errors.name ? "input-error" : ""}`}
+            className={`input-registration ${errors.name ? "input-registration-error" : ""}`}
             value={form.name}
             onChange={handleChange}
           />
 
 
           {errors.name && (
-            <div className="tooltip">{errors.name}</div>
+            <div className="tooltip-registration">{errors.name}</div>
           )}
         </div>
 
-        <div className="field">
+        <div className="field-registration">
           <input
             name="login"
             type="text"
             placeholder="Почта/Логин"
-            className={`input ${errors.login ? "input-error" : ""}`}
+            className={`input-registration ${errors.login ? "input-registration-error" : ""}`}
             value={form.login}
             onChange={handleChange}
           />
 
 
           {errors.login && (
-            <div className="tooltip">{errors.login}</div>
+            <div className="tooltip-registration">{errors.login}</div>
           )}
         </div>
 
 
-        <div className="field">
+        <div className="field-registration">
           <input
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder="Пароль"
-            className={`input ${errors.password ? "input-error" : ""}`}
+            className={`input-registration ${errors.password ? "input-registration-error" : ""}`}
             value={form.password}
             onChange={handleChange}
           />
 
            <span
-            className="eye"
+            className="eye-registration"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <PiEyeFill />: <PiEyeSlashFill />}
           </span>
 
           {errors.password && (
-            <div className="tooltip">{errors.password}</div>
+            <div className="tooltip-registration">{errors.password}</div>
           )}
         </div>
 
-        <div className="field">
+        <div className="field-registration">
           <input
             name="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Подтверждение пароля"
-            className={`input ${errors.confirmPassword ? "input-error" : ""}`}
+            className={`input-registration ${errors.confirmPassword ? "input-registration-error" : ""}`}
             value={form.confirmPassword}
             onChange={handleChange}
           />
 
            <span
-            className="eye"
+            className="eye-registration"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
             {showConfirmPassword ? <PiEyeFill />: <PiEyeSlashFill />}
           </span>
 
           {errors.confirmPassword && (
-            <div className="tooltip">{errors.confirmPassword}</div>
+            <div className="tooltip-registration">{errors.confirmPassword}</div>
           )}
         </div>
 
-        <button className="btn primary" onClick={handleSubmit}>Зарегестрироваться</button>
+        <button className="btn-registration primary-registration" onClick={handleSubmit}>Зарегестрироваться</button>
 
-        <button className="btn secondary" onClick={() => navigate(-1)}>
+        <button className="btn-registration secondary-registration" onClick={() => navigate(-1)}>
           Вход
         </button>
       </div>

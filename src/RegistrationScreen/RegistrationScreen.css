@@ -7,7 +7,7 @@ body {
   /* height: 100vw; */
 }
 
-.container {
+.container-registration {
   /* width: 100vw; */
   min-height: 100vh;
   display: flex;
@@ -16,7 +16,7 @@ body {
   width: 100%;
 }
 
-.card {
+.card-registration {
   border-radius: 8px;
   display: flex;
   gap: 22px;
@@ -27,7 +27,7 @@ body {
   padding: 0 22px;
 }
 
-.title {
+.title-registration {
   color: #4811FF;
   font-size: 64px;
   font-weight: 700;
@@ -37,7 +37,7 @@ body {
   margin: 0;
 }
 
-.input {
+.input-registration {
   width: 100%;
   padding: 0 24px;
   border: none;
@@ -49,7 +49,7 @@ body {
   height: 67px;
 }
 
-.btn {
+.btn-registration {
   border: none;
   border-radius: 35px;
   font-size: 24px;
@@ -63,22 +63,22 @@ body {
   color: #fff;
 }
 
-.primary {
+.primary-registration {
   
 }
 
-.primary:hover {
+.primary-registration:hover {
   opacity: 0.9;
   background: #3a0ec9;
   transform: scale(1.005);
 }
 
-.secondary {
+.secondary-registration {
   background: #fff;
   color: #4811FF;
 }
 
-.secondary:hover {
+.secondary-registration:hover {
   background: #ebe9e9;
   transform: scale(1.005);
 }
@@ -96,7 +96,7 @@ body {
   }
 }
 
-.field {
+.field-registration {
   position: relative;
   display: inline-block;
   padding: 0;
@@ -104,7 +104,7 @@ body {
   width: 100%;
 }
 
-.tooltip {
+.tooltip-registration {
   position: absolute;
   top: 97%;
   left: 10px;
@@ -124,7 +124,7 @@ body {
   z-index: 10;
 }
 
-.tooltip::before {
+.tooltip-registration::before {
   content: "";
   position: absolute;
   top: -12px;
@@ -135,7 +135,7 @@ body {
   border-color: transparent transparent #d4d3d3 transparent;
 }
 
-.tooltip::after {
+.tooltip-registration::after {
   content: "";
   position: absolute;
   top: -11px;
@@ -146,11 +146,11 @@ body {
   border-color: transparent transparent #fff transparent;
 }
 
-.input-error {
+.input-registration-error {
   border: 2px solid #ff4d4f;
 }
 
-.eye {
+.eye-registration {
   position: absolute;
   right: 15px;
   top: 50%;

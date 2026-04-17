@@ -1,0 +1,38 @@
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.segmented-control {
+    display: flex;
+    background: #e9e9ef;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.segment {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.segment.active {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+}

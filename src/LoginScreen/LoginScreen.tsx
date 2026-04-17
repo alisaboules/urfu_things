@@ -79,7 +79,7 @@ function Login() {
 
   return (
     <div className="container">
-      <div className="card" ref={formRef}>
+      <div className="card-menu" ref={formRef}>
         <h1 className="title">UniFind</h1>
 
         <div className="field">
