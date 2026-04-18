@@ -1,9 +1,7 @@
 import { FaUser } from "react-icons/fa6";
 import "./Sidebar.css";
-import { useNavigate } from "react-router-dom";
 
 function Sidebar( { onClose }: { onClose: () => void }) {
-  const navigate = useNavigate();
   return (
      <aside className="sidebar-container">
       <div className="userProfile">

@@ -25,17 +25,7 @@ function MainPage() {
   // const [isVisible, setIsVisible] = useState(false);
   return (
     <>
-      <div
-  className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
-  onClick={() => setSidebarOpen(false)}
->
-  <div
-    className={`sidebar ${sidebarOpen ? "open" : ""}`}
-    onClick={(e) => e.stopPropagation()}
-  >
-    <Sidebar onClose={() => setSidebarOpen(false)} />
-  </div>
-</div>
+      
 
 
       <div className="container_header_homepage">
@@ -78,8 +68,18 @@ function MainPage() {
           </div>
         </div>
       </div>
-     
-      <button className="fab" onClick={() => navigate("/ad")}>
+            <div
+  className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+  onClick={() => setSidebarOpen(false)}
+>
+  <div
+    className={`sidebar ${sidebarOpen ? "open" : ""}`}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <Sidebar onClose={() => setSidebarOpen(false)} />
+  </div>
+</div>
+      <button className={`fab ${sidebarOpen ? "fab-open" : ""}`} onClick={() => navigate("/ad")}>
         <FaPlus />
       </button>
     </>
