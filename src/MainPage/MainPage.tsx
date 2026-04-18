@@ -3,6 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const items = [
   { id: 1, title: "Кошелёк", img: `${import.meta.env.BASE_URL}images/wallet.jpg` },
@@ -15,6 +16,7 @@ const items = [
 
 function MainPage() {
   const navigate = useNavigate();
+  const [type, setType] = useState("lost");
   return (
     <>
       <div className="container_header_homepage">
@@ -31,8 +33,15 @@ function MainPage() {
       <div className="container_main_homepage">
         <div className="phon">
           <div className="tabs">
-            <button className="active">Потерянные</button>
-            <button className="no-active">Найденные</button>
+            <div className={`tabs ${type}`}>
+              <button onClick={() => setType("lost")}>
+                Потерянные
+              </button>
+
+              <button onClick={() => setType("found")}>
+                Найденные
+              </button>
+            </div>
           </div>
           <button className="filter">Фильтры</button>
 

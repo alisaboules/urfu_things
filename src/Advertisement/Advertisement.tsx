@@ -3,9 +3,11 @@ import './Advertisement.css';
 import { useState } from 'react';
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { LuCircleFadingPlus } from "react-icons/lu";
+import { useNavigate } from 'react-router-dom';
 
 function Advertisement() {
-   const [type, setType] = useState("lost");
+  const [type, setType] = useState("lost");
+  const navigate = useNavigate();
   return (
     <>
       <div className="container-advertisement">
@@ -50,10 +52,10 @@ function Advertisement() {
             <label>Место</label>
             <textarea />
           </div>
-          
+
           <div className="actions-advertisement">
-            <button className="submit-advertisement">Готово</button>
-            <button className="cancel-advertisement">Отмена</button>
+            <button className="submit-advertisement" onClick={() => navigate(-1)}>Готово</button>
+            <button className="cancel-advertisement" onClick={() => navigate(-1)}>Отмена</button>
           </div>
         </div>
     </div>
