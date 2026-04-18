@@ -20,6 +20,7 @@
   font-weight: 700;
   font-size: 32px;
   color: #4811FF;
+  font-family: "Inter", sans-serif;
 }
 
 
@@ -28,6 +29,43 @@
   height: 25px;
   color: #4811FF;
   margin-right: 5px;
+}
+
+.sidebar-overlay-2 {
+  background: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  inset: 0;
+  justify-content: flex-end;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  display: flex;
+}
+
+.sidebar-overlay-2.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-2 {
+  position: fixed;        
+  z-index: 10003;
+  width: 90vw;
+  height: 100vh;         
+  right: 0;
+  top: 0;
+  background: white;
+
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+/* открытое состояние */
+.sidebar-2.open {
+  transform: translateX(0);
 }
 
 .card-advertisement {
@@ -50,7 +88,6 @@
   background: #DCD1FF;
   border-radius: 35px;
   border: none;
-  border-radius: 30px;
   width: 100%;
 }
 
@@ -64,6 +101,7 @@
   padding: 16px 43px;
   font-size: 20px;
   font-weight: 500;
+  font-family: 'Inter', sans-serif;
 }
 
 .tabs-advertisement .active {
@@ -161,6 +199,7 @@
   cursor: pointer;
   font-size: 20px;
   font-weight: 500;
+  font-family: "Inter", sans-serif;
 }
 
 .cancel-advertisement {
@@ -172,6 +211,7 @@
   cursor: pointer;
   font-size: 20px;
   font-weight: 500;
+  font-family: "Inter", sans-serif;
 }
 
 .cancel-advertisement:hover {
@@ -185,4 +225,13 @@
 
 .cancel-advertisement:focus-visible {
   border-color: #929196;
+}
+
+@media (max-width: 412px) {
+  .submit-advertisement, .cancel-advertisement {
+    padding: 16px 40px;
+  }
+  .tab-advertisement {
+    padding: 16px 30px;
+  }
 }

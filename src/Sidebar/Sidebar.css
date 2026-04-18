@@ -1,0 +1,70 @@
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  background: #DCD1FF;
+}
+
+.userProfile {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #4811FF;
+  color: #DCD1FF;
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 0 40px 20px;
+}
+
+.profile-sidebar-icon {
+  width: 50px;
+  height: 50px;
+  color: #DCD1FF;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+}
+
+.userName {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.user-data {
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  background: #DCD1FF;
+  color: #4811FF;
+  font-size: 32px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;;
+  border: none;
+  padding: 20px;
+  font-style: "Inter", sans-serif;
+}
+
+.user-data:hover, .user-data:focus, .user-data:active, .user-data:focus-visible {
+  cursor: pointer;
+  border-top: 2px solid #4811FF;
+  border-bottom: 2px solid #4811FF;
+}

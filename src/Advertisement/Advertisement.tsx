@@ -4,16 +4,31 @@ import { useState } from 'react';
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { LuCircleFadingPlus } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
+import { Sidebar } from '../Sidebar';
 
 function Advertisement() {
-  const [type, setType] = useState("lost");
+  const [type, setType] = useState("found");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   return (
     <>
+      <div
+        className={`sidebar-overlay-2 ${sidebarOpen ? "open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      >
+        <div
+          className={`sidebar-2 ${sidebarOpen ? "open" : ""}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Sidebar onClose={() => setSidebarOpen(false)} />
+        </div>
+      </div>
+
+
       <div className="container-advertisement">
         <div className="header-advertisement">
           <h1>UniFind</h1>
-          <FaUser className="profile-advertisement-icon" />
+          <FaUser className="profile-advertisement-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div className="card-advertisement">
           <div className="tabs-advertisement">

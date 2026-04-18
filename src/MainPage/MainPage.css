@@ -17,6 +17,7 @@
   font-weight: 700;
   font-size: 32px;
   color: #4811FF;
+  font-family: "Inter", sans-serif;
 }
 
 .profile-icon {
@@ -24,6 +25,12 @@
   height: 25px;
   color: #4811FF;
   margin-right: 5px;
+  cursor: pointer;
+  transition: transform 0.5s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.05);
 }
 
 .search {
@@ -71,6 +78,7 @@
   cursor: pointer;
   font-size: 24px;
   font-weight: 700;
+  font-family: "Inter", sans-serif;
 }
 
 /* .tabs .no-active {
@@ -236,3 +244,71 @@
     font-size: 20px;
   }
 }
+
+/* .sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1002;
+}
+
+.sidebar {
+  width: 90vw;
+  height: 100%;
+  background: white;
+  animation: slideIn 0.2s ease;
+  /* z-index: 1001; */
+/* } */
+
+/* @keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+} */ 
+
+.sidebar-overlay {
+  background: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  inset: 0;
+  justify-content: flex-end;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  display: flex;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar {
+  position: fixed;        
+  z-index: 10003;
+  width: 90vw;
+  height: 100vh;         
+  right: 0;
+  top: 0;
+  background: white;
+
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+/* открытое состояние */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* #root {
+  position: relative;
+  z-index: 0;
+} */

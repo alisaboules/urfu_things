@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Sidebar } from "../Sidebar";
 
 const items = [
   { id: 1, title: "Кошелёк", img: `${import.meta.env.BASE_URL}images/wallet.jpg` },
@@ -17,13 +18,32 @@ const items = [
 function MainPage() {
   const navigate = useNavigate();
   const [type, setType] = useState("lost");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+
+
+  // const [isVisible, setIsVisible] = useState(false);
   return (
     <>
+      <div
+  className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+  onClick={() => setSidebarOpen(false)}
+>
+  <div
+    className={`sidebar ${sidebarOpen ? "open" : ""}`}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <Sidebar onClose={() => setSidebarOpen(false)} />
+  </div>
+</div>
+
+
       <div className="container_header_homepage">
         <div className="header">
           <h1>UniFind</h1>
-          <FaUser className="profile-icon" />
+          <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
+        
 
         <div className="search">
           <IoIosSearch className="icon-search" />
@@ -54,13 +74,11 @@ function MainPage() {
                 </div>
                 <div className="card-title">{item.title}</div>
               </div>
-             
-
             ))}
           </div>
         </div>
       </div>
-
+     
       <button className="fab" onClick={() => navigate("/ad")}>
         <FaPlus />
       </button>
