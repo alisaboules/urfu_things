@@ -55,7 +55,7 @@
 .tabs {
   display: flex;
   overflow: hidden;
-  background: linear-gradient(to bottom,#DCD1FF 60%, #4811FF 50%);
+  background: linear-gradient(to bottom, #DCD1FF 60%, #4811FF 60%);
   z-index: 100;
   border-color: none;
   width: 100%;
@@ -190,7 +190,7 @@
   left: 0;
 }
 
-/* Floating button */
+
 .fab {
   position: fixed;
   bottom: 20px;
@@ -233,6 +233,6 @@
 @media (max-width: 412px) {
   .tabs button {
     padding: 25px 10px;
-    font-size: 16px;
+    font-size: 20px;
   }
 }
