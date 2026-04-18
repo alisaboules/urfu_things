@@ -38,7 +38,9 @@ function MainPage() {
             {items.map((item) => (
           
               <div key={item.id} className="card">
-                <img src={item.img} alt={item.title} />
+                <div className="card-image-main">
+                  <img src={item.img} alt={item.title} />
+                </div>
                 <div className="card-title">{item.title}</div>
               </div>
              
