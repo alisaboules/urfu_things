@@ -2,6 +2,7 @@ import './MainPage.css';
 import { IoIosSearch } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const items = [
   { id: 1, title: "Кошелёк", img: `${import.meta.env.BASE_URL}images/wallet.jpg` },
@@ -13,6 +14,7 @@ const items = [
 ];
 
 function MainPage() {
+  const navigate = useNavigate();
   return (
     <>
       <div className="container_header_homepage">
@@ -50,7 +52,9 @@ function MainPage() {
         </div>
       </div>
 
-      <button className="fab"><FaPlus /></button>
+      <button className="fab" onClick={() => navigate("/ad")}>
+        <FaPlus />
+      </button>
     </>
   );
 }

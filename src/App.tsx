@@ -3,7 +3,7 @@ import './App.css';
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { Registration } from "./RegistrationScreen";
 import { MainPage } from "./MainPage";
-import { Advertisement } from "./Advertisement/Advertisement";
+import { Advertisement } from "./Advertisement";
 
 function App() {
   return (
