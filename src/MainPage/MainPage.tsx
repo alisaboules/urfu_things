@@ -22,7 +22,7 @@ const items: Item[] = [
   {
     id: 1,
     title: 'Кошелёк',
-    img: `${import.meta.env.BASE_URL}images/wallet.jpg`,
+    img: `${import.meta.env.BASE_URL}images/кошелёк.jpg`,
     description: 'Черный кожаный кошелёк.',
     location: 'Аудитория 301, возле окна',
     status: 'Не найден',
@@ -30,7 +30,7 @@ const items: Item[] = [
   {
     id: 2,
     title: 'Ключи',
-    img: `${import.meta.env.BASE_URL}images/keys.jpeg`,
+    img: `${import.meta.env.BASE_URL}images/ключи.jpg`,
     description: 'Связка ключей с металлическим брелком.',
     location: 'Вход в корпус',
     status: 'Найден',
@@ -38,7 +38,7 @@ const items: Item[] = [
   {
     id: 3,
     title: 'Наушники AirPods',
-    img: `${import.meta.env.BASE_URL}images/headphones.jpg`,
+    img: `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
     description: 'Белые AirPods в кейсе.',
     location: 'Библиотека, на столе',
     status: 'Не найден',
@@ -46,7 +46,7 @@ const items: Item[] = [
   {
     id: 4,
     title: 'Зарядка от ноутбука',
-    img: `${import.meta.env.BASE_URL}images/charger.jpg`,
+    img: `${import.meta.env.BASE_URL}images/подзарядка.jpg`,
     description: 'Зарядное устройство для ноутбука HP.',
     location: 'УрФУ, ГУК',
     status: 'Найден',
@@ -54,7 +54,7 @@ const items: Item[] = [
   {
     id: 5,
     title: 'Канцелярия',
-    img: `${import.meta.env.BASE_URL}images/canc.jpeg`,
+    img: `${import.meta.env.BASE_URL}images/канцелярия.jpg`,
     description: 'Набор канцелярии в пенале.',
     location: 'Учебный корпус, коридор',
     status: 'Не найден',
@@ -62,7 +62,7 @@ const items: Item[] = [
   {
     id: 6,
     title: 'Одежда',
-    img: `${import.meta.env.BASE_URL}images/hat.jpeg`,
+    img: `${import.meta.env.BASE_URL}images/чёрная шапка.jpg`,
     description: 'Чёрная шапка.',
     location: 'Гардероб',
     status: 'Найден',
