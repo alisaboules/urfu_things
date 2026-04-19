@@ -1,39 +1,105 @@
 import './MainPage.css';
-import { IoIosSearch } from "react-icons/io";
-import { FaUser } from "react-icons/fa6";
-import { FaPlus } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Sidebar } from "../Sidebar";
+import { IoIosSearch } from 'react-icons/io';
+import { FaUser } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Sidebar } from '../Sidebar';
+import { MdOutlinePlace } from 'react-icons/md';
+import { RxCross1 } from 'react-icons/rx';
+import { BsArrowsFullscreen } from 'react-icons/bs';
 
-const items = [
-  { id: 1, title: "Кошелёк", img: `${import.meta.env.BASE_URL}images/wallet.jpg` },
-  { id: 2, title: "Ключи", img: `${import.meta.env.BASE_URL}images/keys.jpeg` },
-  { id: 3, title: "Наушники AirPods", img: `${import.meta.env.BASE_URL}images/headphones.jpg` },
-  { id: 4, title: "Зарядка от ноутбука", img: `${import.meta.env.BASE_URL}images/charger.jpg` },
-  { id: 5, title: "Канцелярия", img: `${import.meta.env.BASE_URL}images/canc.jpeg` },
-  { id: 6, title: "Одежда", img: `${import.meta.env.BASE_URL}images/hat.jpeg` },
+type Item = {
+  id: number;
+  title: string;
+  img: string;
+  description: string;
+  location: string;
+  status: string;
+};
+
+const items: Item[] = [
+  {
+    id: 1,
+    title: 'Кошелёк',
+    img: `${import.meta.env.BASE_URL}images/wallet.jpg`,
+    description: 'Черный кожаный кошелёк.',
+    location: 'Аудитория 301, возле окна',
+    status: 'Не найден',
+  },
+  {
+    id: 2,
+    title: 'Ключи',
+    img: `${import.meta.env.BASE_URL}images/keys.jpeg`,
+    description: 'Связка ключей с металлическим брелком.',
+    location: 'Вход в корпус',
+    status: 'Найден',
+  },
+  {
+    id: 3,
+    title: 'Наушники AirPods',
+    img: `${import.meta.env.BASE_URL}images/headphones.jpg`,
+    description: 'Белые AirPods в кейсе.',
+    location: 'Библиотека, на столе',
+    status: 'Не найден',
+  },
+  {
+    id: 4,
+    title: 'Зарядка от ноутбука',
+    img: `${import.meta.env.BASE_URL}images/charger.jpg`,
+    description: 'Зарядное устройство для ноутбука HP.',
+    location: 'УрФУ, ГУК',
+    status: 'Найден',
+  },
+  {
+    id: 5,
+    title: 'Канцелярия',
+    img: `${import.meta.env.BASE_URL}images/canc.jpeg`,
+    description: 'Набор канцелярии в пенале.',
+    location: 'Учебный корпус, коридор',
+    status: 'Не найден',
+  },
+  {
+    id: 6,
+    title: 'Одежда',
+    img: `${import.meta.env.BASE_URL}images/hat.jpeg`,
+    description: 'Чёрная шапка.',
+    location: 'Гардероб',
+    status: 'Найден',
+  },
 ];
 
 function MainPage() {
   const navigate = useNavigate();
-  const [type, setType] = useState("lost");
+  const [type, setType] = useState('lost');
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  const closeAllPopups = () => {
+  setIsImageOpen(false);
+  setSelectedItem(null);
+};
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  useEffect(() => {
+  const handleEsc = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      closeAllPopups();
+    }
+  };
+
+  window.addEventListener('keydown', handleEsc);
+  return () => window.removeEventListener('keydown', handleEsc);
+}, []);
+
+  
 
 
-
-  // const [isVisible, setIsVisible] = useState(false);
   return (
     <>
-      
-
-
       <div className="container_header_homepage">
         <div className="header">
           <h1>UniFind</h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
-        
 
         <div className="search">
           <IoIosSearch className="icon-search" />
@@ -44,21 +110,16 @@ function MainPage() {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType("lost")}>
-                Потерянные
-              </button>
+              <button onClick={() => setType('lost')}>Потерянные</button>
 
-              <button onClick={() => setType("found")}>
-                Найденные
-              </button>
+              <button onClick={() => setType('found')}>Найденные</button>
             </div>
           </div>
           <button className="filter">Фильтры</button>
 
           <div className="grid">
             {items.map((item) => (
-          
-              <div key={item.id} className="card">
+              <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
                 </div>
@@ -68,20 +129,64 @@ function MainPage() {
           </div>
         </div>
       </div>
-            <div
-  className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
-  onClick={() => setSidebarOpen(false)}
->
-  <div
-    className={`sidebar ${sidebarOpen ? "open" : ""}`}
-    onClick={(e) => e.stopPropagation()}
-  >
-    <Sidebar onClose={() => setSidebarOpen(false)} />
-  </div>
-</div>
-      <button className={`fab ${sidebarOpen ? "fab-open" : ""}`} onClick={() => navigate("/ad")}>
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+        onClick={() => setSidebarOpen(false)}>
+        <div
+          className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+          onClick={(e) => e.stopPropagation()}>
+          <Sidebar onClose={() => setSidebarOpen(false)} />
+        </div>
+      </div>
+      {selectedItem && !isImageOpen && (
+        <div className="popup-overlay" onClick={() => setSelectedItem(null)}>
+          <div className="popup" onClick={(e) => e.stopPropagation()}>
+            <div className="popup-image-wrapper">
+              <img src={selectedItem.img} alt={selectedItem.title} />
+
+              <button className="popup-close">
+                <RxCross1 className="cross-icon" onClick={() => setSelectedItem(null)} />
+              </button>
+
+              <button
+                className="popup-fullscreen"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsImageOpen(true);
+                }}>
+                <BsArrowsFullscreen className="fullscreen-icon" />
+              </button>
+            </div>
+
+            <div className="discription-for-card">
+              <h2>{selectedItem.title}</h2>
+              <div className="location">
+                <MdOutlinePlace className="location-icon" />
+                <p>{selectedItem.location}</p>
+              </div>
+              <p>{selectedItem.status}</p>
+              <p>{selectedItem.description}</p>
+            </div>
+            <div className="popup-footer">
+              <button className="responce-btn">Откликнуться</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button className={`fab ${sidebarOpen ? 'fab-open' : ''}`} onClick={() => navigate('/ad')}>
         <FaPlus />
       </button>
+      {isImageOpen && selectedItem && (
+        <div className="image-viewer" onClick={() => closeAllPopups()}>
+          <img
+            src={selectedItem.img}
+            alt={selectedItem.title}
+            className="image-viewer-img"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </>
   );
 }

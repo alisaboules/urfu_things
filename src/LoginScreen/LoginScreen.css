@@ -54,10 +54,6 @@
   color: #fff;
 }
 
-.primary {
-  
-}
-
 .primary:hover {
   opacity: 0.9;
   background: #3a0ec9;
@@ -154,8 +150,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.eye:hover {
-  
 }

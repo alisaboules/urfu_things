@@ -116,3 +116,11 @@ code {
   background: var(--code-bg);
 }
 
+input, textarea {
+  color: #000;        /* текст */
+  background-color: #fff;  /* фон */
+}
+
+input::placeholder {
+  color: #666;
+}
