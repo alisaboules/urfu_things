@@ -168,7 +168,9 @@ function MainPage() {
               <p>{selectedItem.description}</p>
             </div>
             <div className="popup-footer">
-              <button className="responce-btn">Откликнуться</button>
+              <button className="responce-btn" onClick={() => setSelectedItem(null)}>
+                Откликнуться
+              </button>
             </div>
           </div>
         </div>
