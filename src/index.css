@@ -76,7 +76,7 @@ h1,
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  color: var(--text-h);
+  color: #000;
 }
 
 /* h1 {
@@ -120,8 +120,4 @@ code {
 input, textarea {
   color: #000;        /* текст */
   background-color: #fff;  /* фон */
-}
-
-input::placeholder {
-  color: #666;
 }

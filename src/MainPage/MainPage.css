@@ -344,10 +344,14 @@
   margin-bottom: 100px;
 }
 
+.discription-for-card p {
+  color: grey;
+}
 .popup h2 {
   font-size: 24px;
   font-weight: 500;
   font-family: "Inter", sans-serif;
+  color: #000;
 }
 
 .popup img {
