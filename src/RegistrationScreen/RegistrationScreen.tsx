@@ -2,12 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import "./RegistrationScreen.css";
 import { PiEyeFill, PiEyeSlashFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../Api/Api";
 
 type Errors = {
-  login?: string;
+  email?: string;
   password?: string;
   name?: string;
   confirmPassword?: string;
+};
+
+type DjangoError = {
+  email?: string[];
+  password?: string[];
+  first_name?: string[];
+  password2?: string[];
 };
 
 
@@ -16,7 +24,7 @@ function Registration() {
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState({
     name: '',
-    login: '',
+    email: '',
     password: '',
     confirmPassword: ''
   });
@@ -42,16 +50,16 @@ function Registration() {
   const validate = () => {
   const newErrors: Errors = {};
 
-  if (!form.login.trim()) {
-    newErrors.login = 'Введите логин или email';
-  } else if (form.login.length < 3) {
-    newErrors.login = 'Минимум 3 символа';
+  if (!form.email.trim()) {
+    newErrors.email = 'Введите email';
+  } else if (form.email.length < 8) {
+    newErrors.email = 'Минимум 8 символов';
   }
 
   if (!form.password) {
     newErrors.password = 'Введите пароль';
-  } else if (form.password.length < 6) {
-    newErrors.password = 'Минимум 6 символов';
+  } else if (form.password.length < 8) {
+    newErrors.password = 'Минимум 8 символов';
   }
 
   if (!form.name) {
@@ -86,13 +94,35 @@ function Registration() {
   }));
 };
 
+const handleSubmit = async () => {
+  if (!validate()) return;
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Всё ок, отправка:', form);
-      navigate(-1);
-    }
-  };
+  try {
+    const data = await registerUser(
+      form.name,
+      form.email,
+      form.password,
+      form.confirmPassword
+    );
+
+    console.log("REGISTER OK:", data);
+
+    navigate(-1);
+  } catch (err: unknown) {
+    const error = err as DjangoError;
+
+    console.error("REGISTER ERROR:", error);
+
+    setErrors({
+      email: error.email?.[0],
+      password: error.password?.[0],
+      name: error.first_name?.[0],
+      confirmPassword: error.password2?.[0],
+    });
+  }
+};
+
+
 
   return (
     <div className="container-registration">
@@ -118,17 +148,17 @@ function Registration() {
 
         <div className="field-registration">
           <input
-            name="login"
-            type="text"
-            placeholder="Почта/Логин"
-            className={`input-registration ${errors.login ? "input-registration-error" : ""}`}
-            value={form.login}
+            name="email"
+            type="email"
+            placeholder="Почта"
+            className={`input-registration ${errors.email ? "input-registration-error" : ""}`}
+            value={form.email}
             onChange={handleChange}
           />
 
 
-          {errors.login && (
-            <div className="tooltip-registration">{errors.login}</div>
+          {errors.email && (
+            <div className="tooltip-registration">{errors.email}</div>
           )}
         </div>
 

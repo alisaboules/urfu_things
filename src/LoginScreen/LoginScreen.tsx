@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import "./LoginScreen.css";
 import { PiEyeFill, PiEyeSlashFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../Api/Api.ts";
+
 
 type Errors = {
   login?: string;
@@ -39,15 +41,15 @@ function Login() {
   const newErrors: Errors = {};
 
   if (!form.login.trim()) {
-    newErrors.login = 'Введите логин или email';
-  } else if (form.login.length < 3) {
-    newErrors.login = 'Минимум 3 символа';
+    newErrors.login = 'Введите почту';
+  } else if (form.login.length < 8) {
+    newErrors.login = 'Минимум 8 символов';
   }
 
   if (!form.password) {
     newErrors.password = 'Введите пароль';
-  } else if (form.password.length < 6) {
-    newErrors.password = 'Минимум 6 символов';
+  } else if (form.password.length < 8) {
+    newErrors.password = 'Минимум 8 символов';
   }
 
   setErrors(newErrors);
@@ -70,12 +72,28 @@ function Login() {
   }));
 };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      console.log('Всё ок, отправка:', form);
-      navigate("/main");
-    }
-  };
+  const handleSubmit = async () => {
+  if (!validate()) return;
+
+  try {
+    const data = await loginUser(form.login, form.password);
+
+    console.log("Токен:", data);
+
+    // сохраняем токен
+    localStorage.setItem("token", data.access);
+
+    // переход
+    navigate("/main");
+
+  } catch (err) {
+    console.error(err);
+    setErrors({
+      login: "Такого пользователя не существует или неверный пароль"
+    });
+  }
+};
+
 
   return (
     <div className="container">
@@ -86,7 +104,7 @@ function Login() {
           <input
             name="login"
             type="text"
-            placeholder="Почта/Логин"
+            placeholder="Почта"
             className={`input ${errors.login ? "input-error" : ""}`}
             value={form.login}
             onChange={handleChange}
