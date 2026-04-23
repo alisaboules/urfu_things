@@ -26,7 +26,7 @@ export const registerUser = async (
   password: string,
   confirmPassword: string
 ) => {
-  const res = await fetch("http://localhost:8000/api/register/", {
+  const res = await fetch(`${BASE_URL}/register/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
