@@ -41,9 +41,10 @@ export const registerUser = async (
   });
 
   const data = await res.json();
-
+  localStorage.setItem("access_token", data.access);
+  localStorage.setItem("user_name", name); 
   if (!res.ok) {
-    throw data; // 👈 ВАЖНО: кидаем JSON, а не Error
+    throw data; 
   }
 
   return data;

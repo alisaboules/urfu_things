@@ -1,12 +1,12 @@
 import { FaUser } from "react-icons/fa6";
 import "./Sidebar.css";
 
-function Sidebar( { onClose }: { onClose: () => void }) {
+function Sidebar( { userName, onClose }: { userName: string; onClose: () => void }){
   return (
      <aside className="sidebar-container">
       <div className="userProfile">
         <FaUser className="profile-sidebar-icon" onClick={onClose} />
-        <div className="userName">Иван</div>
+        <div className="userName">{userName}</div>
       </div>
       <div className="navigation">
       <button className="user-data">Профиль</button>

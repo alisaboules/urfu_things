@@ -10,6 +10,17 @@ function Advertisement() {
   const [type, setType] = useState("found");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+   const [userName ] = useState(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      const savedName = localStorage.getItem("user_name");
+      if (savedName) {
+        return savedName;
+      }
+    }
+    return "Гость";
+  });
+
   return (
     <>
       <div
@@ -20,7 +31,7 @@ function Advertisement() {
           className={`sidebar-2 ${sidebarOpen ? "open" : ""}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <Sidebar onClose={() => setSidebarOpen(false)} />
+          <Sidebar userName={userName} onClose={() => setSidebarOpen(false)} />
         </div>
       </div>
 
