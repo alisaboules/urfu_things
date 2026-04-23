@@ -6,7 +6,7 @@ import { loginUser } from "../Api/Api.ts";
 
 
 type Errors = {
-  login?: string;
+  email?: string;
   password?: string;
 };
 
@@ -15,7 +15,7 @@ type Errors = {
 function Login() {
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState({
-    login: '',
+    email: '',
     password: ''
   });
   const [errors, setErrors] = useState<Errors>({});
@@ -40,10 +40,10 @@ function Login() {
   const validate = () => {
   const newErrors: Errors = {};
 
-  if (!form.login.trim()) {
-    newErrors.login = 'Введите почту';
-  } else if (form.login.length < 8) {
-    newErrors.login = 'Минимум 8 символов';
+  if (!form.email.trim()) {
+    newErrors.email = 'Введите почту';
+  } else if (form.email.length < 8) {
+    newErrors.email = 'Минимум 8 символов';
   }
 
   if (!form.password) {
@@ -76,7 +76,7 @@ function Login() {
   if (!validate()) return;
 
   try {
-    const data = await loginUser(form.login, form.password);
+    const data = await loginUser(form.email, form.password);
 
     console.log("Токен:", data);
 
@@ -89,7 +89,7 @@ function Login() {
   } catch (err) {
     console.error(err);
     setErrors({
-      login: "Такого пользователя не существует или неверный пароль"
+      email: "Такого пользователя не существует или неверный пароль"
     });
   }
 };
@@ -102,17 +102,17 @@ function Login() {
 
         <div className="field">
           <input
-            name="login"
+            name="email"
             type="text"
             placeholder="Почта"
-            className={`input ${errors.login ? "input-error" : ""}`}
-            value={form.login}
+            className={`input ${errors.email ? "input-error" : ""}`}
+            value={form.email}
             onChange={handleChange}
           />
 
 
-          {errors.login && (
-            <div className="tooltip">{errors.login}</div>
+          {errors.email && (
+            <div className="tooltip">{errors.email}</div>
           )}
         </div>
 

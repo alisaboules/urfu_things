@@ -1,13 +1,13 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 
-export const loginUser = async (login: string, password: string) => {
+export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      username: login,
+      username: email,
       password: password
     })
   });
