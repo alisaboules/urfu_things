@@ -68,3 +68,74 @@ export const getMe = async (token: string) => {
   return JSON.parse(text);
 };
 
+/* REFRESH TOKEN */
+export const refreshAccessToken = async () => {
+  const refresh = localStorage.getItem("refresh");
+
+  if (!refresh) {
+    throw new Error("No refresh token");
+  }
+
+  const res = await fetch(`${BASE_URL}/token/refresh/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      refresh,
+    }),
+  });
+
+  if (!res.ok) {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    throw new Error("Refresh failed");
+  }
+
+  const data = await res.json();
+
+  localStorage.setItem("access", data.access);
+
+  return data.access;
+};
+
+/* UNIVERSAL AUTH REQUEST */
+export const authFetch = async (url: string, options: RequestInit = {}) => {
+  let access = localStorage.getItem("access");
+
+  let res = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${access}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  /* access умер */
+  if (res.status === 401) {
+    access = await refreshAccessToken();
+
+    res = await fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${access}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  return res;
+};
+
+// /* GET ME */
+// export const getMe = async () => {
+//   const res = await authFetch(`${BASE_URL}/me/`);
+
+//   if (!res.ok) {
+//     throw new Error("Unauthorized");
+//   }
+
+//   return await res.json();
+// };

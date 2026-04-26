@@ -33,11 +33,11 @@
   padding: 0 24px;
   border: none;
   border-radius: 35px;
-  background: #fff;
   font-size: 24px;
   font-weight: 400;
   outline: none;
   height: 67px;
+  border: 2px solid var(--border-color);
 }
 
 .btn {
@@ -52,6 +52,7 @@
   height: 67px;
   background: #4811FF;
   color: #fff;
+  font-family: var(--urfu-font-family);
 }
 
 .primary:hover {
@@ -61,12 +62,13 @@
 }
 
 .secondary {
-  background: #fff;
-  color: #4811FF;
+  background: var(--based-color2);
+  color: var(--enter-btn-color);
+  border: 2px solid var(--border-color);
 }
 
 .secondary:hover {
-  background: #ebe9e9;
+  background: var(--registration-btn-bg);
   transform: scale(1.005);
 }
 
@@ -150,4 +152,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--eye-icon-bg);
 }

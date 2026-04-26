@@ -1,7 +1,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #DCD1FF;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -10,7 +10,17 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
+  --urfu-font-family: "Baloo", sans-serif;
+  --urfu-font-family-1: "Inter", sans-serif;
+  --based-color1: #000;
+  --based-color2: #fff;
+  --input-bg: #fff;
+  --eye-icon-bg: #58575b;
+  --registration-btn-bg: #ebe9e9;
+  --enter-btn-color: #4811FF;
+  --based-color3: #4811FF;
+  --based-color4: #DCD1FF;
+  --border-color: #fff;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
@@ -44,6 +54,17 @@
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
+    --urfu-font-family: "Baloo", sans-serif;
+    --urfu-font-family-1: "Inter", sans-serif;
+    --based-color1: #fff;
+    --based-color2: #000;
+    --input-bg: #0077ff2e;
+    --eye-icon-bg: #fff;
+    --registration-btn-bg: #0077ff2e;
+    --enter-btn-color: #fff;
+    --based-color3: #4811FF;
+    --based-color4: #DCD1FF;
+    --border-color: #7a7777;
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
@@ -67,16 +88,15 @@
 
 body {
   margin: 0;
-  background: #DCD1FF;
-  font-family: 'Inter', sans-serif;
-  /* height: 100vw; */
+  background: var(--bg);
+  font-family: var(--urfu-font-family);
 }
 
 h1,
 h2 {
-  font-family: var(--heading);
+  font-family: var(--urfu-font-family);
   font-weight: 500;
-  color: #000;
+  color: var(--based-color1);
 }
 
 /* h1 {
@@ -88,7 +108,7 @@ h2 {
     margin: 20px 0;
   }
 } */
-h2 {
+/* h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
@@ -96,28 +116,37 @@ h2 {
   @media (max-width: 1024px) {
     font-size: 20px;
   }
-}
+} */
 p {
   margin: 0;
-  color: #000;
+  color: var(--based-color1);
 }
 
-code,
+/* code,
 .counter {
   font-family: var(--mono);
   display: inline-flex;
   border-radius: 4px;
   color: var(--text-h);
-}
-
-code {
+} */
+  
+/* code {
   font-size: 15px;
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
-}
+} */
 
 input, textarea {
-  color: #000;        /* текст */
-  background-color: #fff;  /* фон */
+  color: var(--based-color1);       
+  background-color: var(--input-bg); 
+  font-family: var(--urfu-font-family-1);
+}
+
+input::placeholder,
+textarea::placeholder 
+{
+  color: var(--based-color1);
+  opacity: 0.5;
+  font-family: var(--urfu-font-family);
 }

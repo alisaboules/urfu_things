@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Rubik:wght@600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Rubik:wght@600&display=swap');
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #DCD1FF;
   font-family: 'Inter', sans-serif;
   /* height: 100vw; */
-}
 
 .container-registration {
   /* width: 100vw; */
@@ -42,11 +41,11 @@ body {
   padding: 0 24px;
   border: none;
   border-radius: 35px;
-  background: #fff;
   font-size: 24px;
   font-weight: 400;
   outline: none;
   height: 67px;
+  border: 2px solid var(--border-color);
 }
 
 .btn-registration {
@@ -61,6 +60,7 @@ body {
   height: 67px;
   background: #4811FF;
   color: #fff;
+  font-family: var(--urfu-font-family);
 }
 
 .primary-registration:hover {
@@ -70,12 +70,13 @@ body {
 }
 
 .secondary-registration {
-  background: #fff;
-  color: #4811FF;
+  background: var(--based-color2);
+  color: var(--enter-btn-color);
+  border: 2px solid var(--border-color);
 }
 
 .secondary-registration:hover {
-  background: #ebe9e9;
+  background: var(--registration-btn-bg);
   transform: scale(1.005);
 }
 

@@ -4,6 +4,7 @@ import { Routes, Route, HashRouter, Outlet } from 'react-router-dom';
 import { Registration } from './RegistrationScreen';
 import { MainPage } from './MainPage';
 import { Advertisement } from './Advertisement';
+import './index.css';
 
 function App() {
   return (
