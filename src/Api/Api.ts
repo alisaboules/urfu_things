@@ -41,8 +41,8 @@ export const registerUser = async (
   });
 
   const data = await res.json();
-  localStorage.setItem("user_name", data.user.first_name);
-  localStorage.setItem("user_email", data.user.email);
+  // localStorage.setItem("user_name", data.user.first_name);
+  // localStorage.setItem("user_email", data.user.email);
  
   if (!res.ok) {
     throw data; 
@@ -51,17 +51,24 @@ export const registerUser = async (
   return data;
 };
 
-export const getMe = async () => {
-  const res = await authFetch(`${BASE_URL}/me/`);
+// export const getMe = async () => {
+//   const res = await authFetch(`${BASE_URL}/me/`);
 
-  if (!res.ok) {
-    throw new Error("Unauthorized");
-  }
+//   if (!res.ok) {
+//     throw new Error("Unauthorized");
+//   }
 
-  return await res.json();
+//   return await res.json();
+// };
+
+export const getMe = async (token: string) => {
+  console.log('SENDING TOKEN:', token);
+  const res = await fetch(`${BASE_URL}/me/`, { headers: { Authorization: `Bearer ${token}` } });
+  console.log('STATUS:', res.status);
+  const text = await res.text();
+  console.log('RAW:', text);
+  return JSON.parse(text);
 };
-
-
 
 export const refreshAccessToken = async () => {
   const refresh = localStorage.getItem("refresh");

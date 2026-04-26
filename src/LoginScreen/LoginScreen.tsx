@@ -78,11 +78,11 @@ function Login() {
   try {
     const data = await loginUser(form.email, form.password);
 
-    localStorage.setItem("access", data.access);
-    localStorage.setItem("refresh", data.refresh);
+    localStorage.setItem("access_token", data.access); 
+    localStorage.setItem("refresh_token", data.refresh);
 
-    const user = await getMe();
-
+    const user = await getMe(data.access);
+    console.log("TOKEN:", data.access);
     localStorage.setItem("user_name", user.first_name);
     localStorage.setItem("user_email", user.email);
 
