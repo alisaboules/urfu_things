@@ -51,22 +51,16 @@ export const registerUser = async (
   return data;
 };
 
-export const getMe = async (token: string) => {
-  console.log("SENDING TOKEN:", token);
+export const getMe = async () => {
+  const res = await authFetch(`${BASE_URL}/me/`);
 
-  const res = await fetch(`${BASE_URL}/me/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  if (!res.ok) {
+    throw new Error("Unauthorized");
+  }
 
-  console.log("STATUS:", res.status);
-
-  const text = await res.text();
-  console.log("RAW:", text);
-
-  return JSON.parse(text);
+  return await res.json();
 };
+
 
 
 export const refreshAccessToken = async () => {

@@ -30,6 +30,13 @@ function Login() {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
+//   useEffect(() => {
+//   checkAuth().then((isAuth) => {
+//     setIsAuth(isAuth);
+//   });
+// }, []);
+
+
   const validate = () => {
     const newErrors: Errors = {};
 
@@ -71,46 +78,22 @@ function Login() {
   try {
     const data = await loginUser(form.email, form.password);
 
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
-  
+    localStorage.setItem("access", data.access);
+    localStorage.setItem("refresh", data.refresh);
 
-    const user = await getMe(data.access);
-    console.log("TOKEN:", data.access);
+    const user = await getMe();
 
     localStorage.setItem("user_name", user.first_name);
     localStorage.setItem("user_email", user.email);
 
     navigate("/main");
-
   } catch (err) {
     setErrors({
-      email: "Неверная почта или пароль"
+      email: "Неверная почта или пароль",
     });
     console.error(err);
   }
 };
-
-  // const handleSubmit = async () => {
-  //   if (!validate()) return;
-
-  //   try {
-  //     const data = await loginUser(form.email, form.password);
-
-  //     console.log('Токен:', data);
-
-  //     // сохраняем токен
-  //     localStorage.setItem('token', data.access);
-
-  //     // переход
-  //     navigate('/main');
-  //   } catch (err) {
-  //     console.error(err);
-  //     setErrors({
-  //       email: 'Такого пользователя не существует или неверный пароль',
-  //     });
-  //   }
-  // };
 
   return (
     <div className="container">

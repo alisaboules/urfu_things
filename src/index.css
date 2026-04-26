@@ -24,6 +24,7 @@
   --based-color6: #fff;
   --based-color7: #eae8f0;
   --based-color8: #5D5D5D;
+  --based-color9: #fff;
   --border-color: #fff;
   --border-color-1: #ebe9e9;
   --border-color-2: #dcdcdc;
@@ -76,8 +77,9 @@
     --based-color5: #0077ff2e;
     --based-color6: #DCD1FF;
     --based-color7: #0077ff2e;
-    --border-color: #7a7777;
     --based-color8: #DCD1FF;
+    --based-color9: #2600ff2e;
+    --border-color: #7a7777;
     --border-color-1: #0077ff2e;
     --border-color-2: #0077ff2e;
     --border-color-3: #4811FF;
@@ -112,7 +114,7 @@ body {
 
 h1,
 h2 {
-  font-family: var(--urfu-font-family);
+  font-family: var(--urfu-font-family-1);
   font-weight: 500;
   color: var(--based-color1);
 }
@@ -138,6 +140,7 @@ h2 {
 p {
   margin: 0;
   color: var(--based-color1);
+  font-family: var(--urfu-font-family-1);
 }
 
 /* code,

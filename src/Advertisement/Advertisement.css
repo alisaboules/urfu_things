@@ -102,7 +102,7 @@
   padding: 16px 43px;
   font-size: 20px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--urfu-font-family);
 }
 
 .tabs-advertisement .active {

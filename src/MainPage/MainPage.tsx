@@ -132,7 +132,7 @@ function MainPage() {
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
                 </div>
-                <div className="card-title">{item.title}</div>
+                <div className="card-title"><p>{item.title}</p></div>
               </div>
             ))}
           </div>
