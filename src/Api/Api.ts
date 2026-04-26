@@ -41,11 +41,30 @@ export const registerUser = async (
   });
 
   const data = await res.json();
-  localStorage.setItem("access_token", data.access);
-  localStorage.setItem("user_name", name); 
+  localStorage.setItem("user_name", data.user.first_name);
+  localStorage.setItem("user_email", data.user.email);
+ 
   if (!res.ok) {
     throw data; 
   }
 
   return data;
 };
+
+export const getMe = async (token: string) => {
+  console.log("SENDING TOKEN:", token);
+
+  const res = await fetch(`${BASE_URL}/me/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  console.log("STATUS:", res.status);
+
+  const text = await res.text();
+  console.log("RAW:", text);
+
+  return JSON.parse(text);
+};
+
