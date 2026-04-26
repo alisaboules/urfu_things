@@ -70,6 +70,7 @@
 .secondary:hover {
   background: var(--registration-btn-bg);
   transform: scale(1.005);
+  border: 2px solid var(--border-color-1);
 }
 
 

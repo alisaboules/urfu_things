@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background: #DCD1FF;
-  color: white;
+  background: var(--bg);
+  /* color: #fff; */
 }
 
 .header-advertisement {
@@ -69,7 +69,7 @@
 }
 
 .card-advertisement {
-  background: #fff;
+  background: var(--based-color2);
   border-radius: 35px 35px 0 0;
   display: flex;
   gap: 25px;
@@ -81,11 +81,12 @@
   padding: 30px;
   font-size: 20px;
   font-weight: 500;
+  box-shadow: 0 40px 5px var(--based-color3);
 }
 
 .tabs-advertisement {
   display: flex;
-  background: #DCD1FF;
+  background: var(--based-color5);
   border-radius: 35px;
   border: none;
   width: 100%;
@@ -106,7 +107,7 @@
 
 .tabs-advertisement .active {
   background: #4811FF;
-  color: #DCD1FF;
+  color: var(--based-color6);
 }
 
 .category-wrapper {
@@ -124,7 +125,7 @@
   /* top: 0; */
   left: 0;
   right: 0;
-  background: white;
+  background: var(--based-color2);
   border-radius: 20px 20px 35px 35px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -148,12 +149,12 @@
   padding: 12px 24px;
   cursor: pointer;
   transition: background 0.2s ease;
-  color: #333;
+  color: var(--based-color8);
   font-size: 16px;
 }
 
 .category-item:hover {
-  background: #eae8f0;
+  background: var(--based-color7);
   color: #4811FF;
 }
 
@@ -170,7 +171,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #DCD1FF;
+  background: var(--based-color5);
   padding: 16px 36px;
   border-radius: 15px;
   color: #4811FF;
@@ -185,7 +186,7 @@
 }
 
 .textarea-advertisement {
-  background: #DCD1FF;
+  background: var(--based-color5);
   border-radius: 35px;
   width: 100%;
   display: flex;
@@ -201,11 +202,11 @@
 .textarea-advertisement textarea {
   width: 100%;
   height: 100px;
-  border: none;
+  border: 2px solid var(--border-color-2);
   outline: none;
   resize: none;
   border-radius: 0 0 35px 35px;
-  background: #dcdcdc;
+  /* background: #dcdcdc; */
   padding: 10px 16px;
 }
 
@@ -220,7 +221,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background: #DCD1FF;
+  background: var(--based-color5);
   color: #4811FF;
   border-radius: 35px;
   padding: 16px 36px;
@@ -256,14 +257,14 @@
 
 .submit-advertisement {
   background: #4811FF;
-  color: #DCD1FF;
+  color: var(--based-color6);
   border: none;
   padding: 16px 55px;
   border-radius: 35px;
   cursor: pointer;
   font-size: 20px;
   font-weight: 500;
-  font-family: "Inter", sans-serif;
+  font-family: var(--urfu-font-family);
 }
 
 .cancel-advertisement {
@@ -275,9 +276,12 @@
   cursor: pointer;
   font-size: 20px;
   font-weight: 500;
-  font-family: "Inter", sans-serif;
+  font-family: var(--urfu-font-family);
 }
 
+.cancel-advertisement:hover {
+  border: 2px solid var(--border-color-3);
+}
 
 @media (max-width: 412px) {
   .submit-advertisement, .cancel-advertisement {

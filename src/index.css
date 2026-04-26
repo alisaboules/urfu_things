@@ -18,9 +18,18 @@
   --eye-icon-bg: #58575b;
   --registration-btn-bg: #ebe9e9;
   --enter-btn-color: #4811FF;
-  --based-color3: #4811FF;
-  --based-color4: #DCD1FF;
+  --based-color3: #DCD1FF;
+  --based-color4: #4811FF;
+  --based-color5: #DCD1FF;
+  --based-color6: #fff;
+  --based-color7: #eae8f0;
+  --based-color8: #5D5D5D;
   --border-color: #fff;
+  --border-color-1: #ebe9e9;
+  --border-color-2: #dcdcdc;
+  --border-color-3: #dcdcdc;
+  --border-color-4: #DCD1FF;
+  --search-icon-color: #5D5D5D;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
@@ -64,7 +73,16 @@
     --enter-btn-color: #fff;
     --based-color3: #4811FF;
     --based-color4: #DCD1FF;
+    --based-color5: #0077ff2e;
+    --based-color6: #DCD1FF;
+    --based-color7: #0077ff2e;
     --border-color: #7a7777;
+    --based-color8: #DCD1FF;
+    --border-color-1: #0077ff2e;
+    --border-color-2: #0077ff2e;
+    --border-color-3: #4811FF;
+    --border-color4: #fff;
+    --search-icon-color: #fff;
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
@@ -148,5 +166,5 @@ textarea::placeholder
 {
   color: var(--based-color1);
   opacity: 0.5;
-  font-family: var(--urfu-font-family);
+  font-family: var(--urfu-font-family-1);
 }

@@ -68,7 +68,7 @@ export const getMe = async (token: string) => {
   return JSON.parse(text);
 };
 
-/* REFRESH TOKEN */
+
 export const refreshAccessToken = async () => {
   const refresh = localStorage.getItem("refresh");
 
@@ -99,7 +99,7 @@ export const refreshAccessToken = async () => {
   return data.access;
 };
 
-/* UNIVERSAL AUTH REQUEST */
+
 export const authFetch = async (url: string, options: RequestInit = {}) => {
   let access = localStorage.getItem("access");
 
@@ -112,7 +112,6 @@ export const authFetch = async (url: string, options: RequestInit = {}) => {
     },
   });
 
-  /* access умер */
   if (res.status === 401) {
     access = await refreshAccessToken();
 

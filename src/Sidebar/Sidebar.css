@@ -4,7 +4,7 @@
   align-items: start;
   width: 100%;
   height: 100%;
-  background: #DCD1FF;
+  background: var(--bg);
 }
 
 .userProfile {
@@ -16,7 +16,7 @@
   justify-content: start;
   align-items: center;
   gap: 14px;
-  padding: 20px 0 40px 20px;
+  padding: 20px 0 30px 20px;
 }
 
 .profile-sidebar-icon {
@@ -42,6 +42,7 @@
 .userName {
   font-size: 32px;
   font-weight: 700;
+  font-family: var(--urfu-font-family-1);
 }
 
 .navigation {
@@ -53,14 +54,13 @@
   display: flex;
   justify-content: start;
   width: 100%;
-  background: #DCD1FF;
-  color: #4811FF;
+  background: var(--bg);
+  color: var(--based-color4);
   font-size: 32px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;;
+  font-family: var(--urfu-font-family-1);
   border: none;
   padding: 20px;
-  font-style: "Inter", sans-serif;
 }
 
 .user-data:hover, .user-data:focus, .user-data:active, .user-data:focus-visible {
