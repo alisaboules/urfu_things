@@ -8,6 +8,7 @@ import { Sidebar } from '../Sidebar';
 import { MdOutlinePlace } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
+// import type { ItemResponse } from '../Api/Api';
 
 type Item = {
   id: number;
@@ -18,7 +19,21 @@ type Item = {
   status: string;
 };
 
-const items: Item[] = [
+type ApiItem = {
+  id: number;
+  user: number;
+  category: number | null;
+  pickup_point: number | null;
+  location_type: string;
+  location_ref: string;
+  description: string;
+  status: string;
+  image: string | null;
+  created_at: string;
+};
+
+
+const fallbackItems: Item[] = [
   {
     id: 1,
     title: 'Кошелёк',
@@ -70,36 +85,98 @@ const items: Item[] = [
 ];
 
 function MainPage() {
+  const [items, setItems] = useState<Item[]>( []);
   const navigate = useNavigate();
-  const [type, setType] = useState('lost');
+  const [type, setType] = useState('found');
+  // const [refresh, setRefresh] = useState(0);
+
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
+ 
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      console.log('API URL:', import.meta.env.VITE_API_URL);
+
+      const url =
+        type === 'lost'
+          ? `${import.meta.env.VITE_API_URL}/lost/`
+          : `${import.meta.env.VITE_API_URL}/found/`;
+      console.log('FULL URL:', url);
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        console.log('API RAW RESPONSE:', data);
+
+        const list: ApiItem[] = Array.isArray(data)
+  ? data
+  : Array.isArray(data.results)
+    ? data.results
+    : data
+      ? [data]
+      : [];
+        // setItems(fallbackItems);
+        if (list.length > 0) {
+        setItems(
+          list.map(
+            (item): Item => ({
+              id: item.id,
+              title: item.description || 'Без названия',
+             img: item.image || '/images/аэрподс.jpg',
+              description: item.description,
+              location: item.location_ref,
+              status: item.status,
+            }),
+          ),
+        );}
+        else {
+          setItems(fallbackItems);
+        }
+        
+      } catch (e) {
+        console.error(e);
+        // setItems(fallbackItems); // только при ОШИБКЕ
+      }
+    };
+
+    fetchItems();
+  }, [type ]);
+
+  // const location = useLocation();
+
+  // useEffect(() => {
+  //   if (location.state?.refresh) {
+  //     setRefresh((prev) => prev + 1);
+  //   }
+  // }, [location.state]);
+
   const closeAllPopups = () => {
-  setIsImageOpen(false);
-  setSelectedItem(null);
-};
+    setIsImageOpen(false);
+    setSelectedItem(null);
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   useEffect(() => {
-  const handleEsc = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      closeAllPopups();
-    }
-  };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAllPopups();
+      }
+    };
 
-  window.addEventListener('keydown', handleEsc);
-  return () => window.removeEventListener('keydown', handleEsc);
-}, []);
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
-  const [userName ] = useState(() => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    const savedName = localStorage.getItem("user_name");
-    if (savedName) {
-      return savedName;
+  const [userName] = useState(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const savedName = localStorage.getItem('user_name');
+      if (savedName) {
+        return savedName;
+      }
     }
-  }
-  return "Гость";
-});
+    return 'Гость';
+  });
 
 
   return (

@@ -27,7 +27,7 @@
 .profile-advertisement-icon {
   width: 25px;
   height: 25px;
-  color: #4811FF;
+  color: var(--based-color4);
   margin-right: 5px;
 }
 
@@ -70,6 +70,7 @@
 
 .card-advertisement {
   background: var(--based-color2);
+  color: var(--based-color4);
   border-radius: 35px 35px 0 0;
   display: flex;
   gap: 25px;
@@ -98,7 +99,7 @@
   background: transparent;
   border-radius: 35px;
   cursor: pointer;
-  color: #4a2be3;
+  color: var(--based-color4);
   padding: 16px 43px;
   font-size: 20px;
   font-weight: 500;
@@ -174,7 +175,6 @@
   background: var(--based-color5);
   padding: 16px 36px;
   border-radius: 15px;
-  color: #4811FF;
   width: 100%;
   border-radius: 35px;
 }
@@ -196,7 +196,6 @@
 .textarea-advertisement label {
   display: block;
   padding: 16px 36px;
-  color: #4811FF;
 }
 
 .textarea-advertisement textarea {
@@ -222,7 +221,6 @@
   align-items: center;
   width: 100%;
   background: var(--based-color5);
-  color: #4811FF;
   border-radius: 35px;
   padding: 16px 36px;
 }
@@ -241,7 +239,7 @@
   position: absolute;
   width: 30px;
   height: 30px;
-  color: #4811FF;
+  color: var(--based-color4);
 }
 
 

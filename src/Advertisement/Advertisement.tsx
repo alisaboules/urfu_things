@@ -1,48 +1,58 @@
 import { FaUser } from 'react-icons/fa6';
 import './Advertisement.css';
 import { useState, useRef } from 'react';
-import { MdKeyboardArrowLeft } from "react-icons/md";
-import { LuCircleFadingPlus } from "react-icons/lu";
+import { MdKeyboardArrowLeft } from 'react-icons/md';
+import { LuCircleFadingPlus } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
-import { MdDelete } from "react-icons/md";
+import { MdDelete } from 'react-icons/md';
+import { createFoundItem } from '../Api/Api';
 
 function Advertisement() {
-  const [type, setType] = useState("found");
+  const [type, setType] = useState('found');
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [categoryOpen, setCategoryOpen] = useState(false); 
-  const [selectedCategory, setSelectedCategory] = useState("Категория");
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('Категория');
   const selectCategory = (category: string) => {
   setSelectedCategory(category);
   setCategoryOpen(false);
+
+  setForm((prev) => ({
+    ...prev,
+    title: category
+  }));
 };
-  const categories = [
-    "Наушники",
-    "Кошельки",
-    "Ключи",
-    "Одежда",
-    "Подзарядки",
-    "Канцелярия",
-  ];
+//   const categoriess = [
+//   { id: 1, name: "Наушники" },
+//   { id: 2, name: "Кошельки" },
+//   { id: 3, name: "Ключи" },
+// ];
+
+// const pickupPoints = [
+//   { id: 1, name: "Стойка 1" },
+//   { id: 2, name: "Главный пункт" },
+// ];
+
+  const categories = ['Наушники', 'Кошельки', 'Ключи', 'Одежда', 'Подзарядки', 'Канцелярия'];
   const toggleCategory = () => {
-  setCategoryOpen(!categoryOpen);
-  if (!categoryOpen) {
-    setSelectedCategory("Категория"); 
-  }
-};
+    setCategoryOpen(!categoryOpen);
+    if (!categoryOpen) {
+      setSelectedCategory('Категория');
+    }
+  };
 
   const navigate = useNavigate();
-   const [userName ] = useState(() => {
-    const token = localStorage.getItem("access_token");
+  const [userName] = useState(() => {
+    const token = localStorage.getItem('access_token');
     if (token) {
-      const savedName = localStorage.getItem("user_name");
+      const savedName = localStorage.getItem('user_name');
       if (savedName) {
         return savedName;
       }
     }
-    return "Гость";
+    return 'Гость';
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,22 +61,94 @@ function Advertisement() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
+    const file = e.target.files?.[0];
 
-  if (file) {
-    setPhoto(file);
-    console.log(photo);
-    setPreview(URL.createObjectURL(file));
-  }
-};
+    if (file) {
+      setPhoto(file);
+      console.log(photo);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  
+
 
   const handleDeletePhoto = () => {
-  setPhoto(null);
-  setPreview(null);
-  if (inputRef.current) {
-    inputRef.current.value = '';
+    setPhoto(null);
+    setPreview(null);
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    location: '',
+    image: '',
+    category: '',        
+    pickup_point: '',
+  });
+  // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
+
+//   const [selectedCategoryS, setSelectedCategoryS] = useState("");
+//   const [selectedPickupPoint, setSelectedPickupPoint] = useState("");
+//   const selectCategoryS = (category: {id: number, name: string}) => {
+//   setSelectedCategoryId(category.id);
+
+//   setForm(prev => ({
+//     ...prev,
+//     category: String(category.id),
+//   }));
+// };
+
+
+// const selectPickup = (point: {id: number, name: string}) => {
+//   setSelectedPickupPointId(point.id);
+
+//   setForm(prev => ({
+//     ...prev,
+//     pickup_point: String(point.id),
+//   }));
+// };
+
+
+  const handleSubmit = async () => {
+  try {
+    const data = new FormData();
+
+    // data.append("title", form.title);
+    // data.append("description", form.description);
+    // data.append("location", form.location);
+    // data.append("description", form.description);
+    // data.append("location_type", "free");
+    // data.append("location_ref", form.location);
+    if (type === "found") {
+      data.append("description", form.description);
+      data.append("location_type", "free");
+      data.append("location_ref", form.location);
+
+    } else {
+      data.append("description", form.description);
+      data.append("location_zone", "Свободно");
+      data.append("location_text", form.location);
+    }
+    if (photo) {
+      
+      data.append("image", photo);
+    }
+
+    const result = await createFoundItem(data, type);
+
+    console.log("SUCCESS:", result);
+
+    navigate("/main", { state: { refresh: true } });
+  } catch (err) {
+    console.error("CREATE ITEM ERROR:", err);
+    alert("Ошибка создания объявления");
   }
 };
+
 
 
   return (
@@ -101,29 +183,32 @@ function Advertisement() {
           </div>
 
           <div className="category-wrapper">
-  <div className="input-advertisement" onClick={toggleCategory}>
-    <span>{selectedCategory === "Категория" ? "Категория" : selectedCategory}</span>
-    <MdKeyboardArrowLeft
-      className={`arrow-advertisement ${categoryOpen ? 'rotated' : ''}`}
-    />
-  </div>
+            <div className="input-advertisement" onClick={toggleCategory}>
+              <span>{selectedCategory === 'Категория' ? 'Категория' : selectedCategory}</span>
+              <MdKeyboardArrowLeft
+                className={`arrow-advertisement ${categoryOpen ? 'rotated' : ''}`}
+              />
+            </div>
 
-  {categoryOpen && (
-    <div className="category-dropdown">
-      {categories.map((category, index) => (
-        <div
-          key={index}
-          className="category-item"
-          onClick={() => selectCategory(category)}>
-          {category}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
+            {categoryOpen && (
+              <div className="category-dropdown">
+                {categories.map((category, index) => (
+                  <div
+                    key={index}
+                    className="category-item"
+                    onClick={() => selectCategory(category)}>
+                    {category}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="textarea-advertisement">
             <label>Описание</label>
-            <textarea />
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
           </div>
 
           <div className="photo-advertisement">
@@ -147,11 +232,14 @@ function Advertisement() {
 
           <div className="textarea-advertisement">
             <label>Место</label>
-            <textarea />
+            <textarea
+              value={form.location}
+              onChange={(e) => setForm({ ...form, location: e.target.value })}
+            />
           </div>
 
           <div className="actions-advertisement">
-            <button className="submit-advertisement" onClick={() => navigate(-1)}>
+            <button className="submit-advertisement" onClick={handleSubmit}>
               Готово
             </button>
             <button className="cancel-advertisement" onClick={() => navigate(-1)}>
@@ -162,6 +250,6 @@ function Advertisement() {
       </div>
     </>
   );
-};
+}
 
 export { Advertisement };

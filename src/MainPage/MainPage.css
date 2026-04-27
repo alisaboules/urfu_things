@@ -118,7 +118,7 @@
 }
 
 .card {
-  /* background: #fff; */
+  background: var(--based-color2);
   border-radius: 20px;
   overflow: hidden;
   color: black;
@@ -198,6 +198,7 @@
   background: #4811FF;
   border-radius: 35px 35px 0 0;
   border-color: none;
+  height: 100vh;
 }
 
 /* .experiment {
