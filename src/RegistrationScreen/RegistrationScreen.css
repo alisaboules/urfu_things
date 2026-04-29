@@ -13,17 +13,21 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding: 0 20px;
+  background: var(--bg);
 }
 
 .card-registration {
-  border-radius: 8px;
+  border-radius: 20px;
   display: flex;
   gap: 22px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 412px;
-  padding: 0 22px;
+  padding: 40px 20px;
+  box-shadow: 0px 0px 15px var(--shadow);
+  border: 1px solid var(--border-color-5);
 }
 
 .title-registration {
@@ -163,3 +167,8 @@ body {
   justify-content: center;
 }
 
+@media (max-width: 412px) {
+  .card-registration {
+    padding: 40px 20px;
+  }
+}

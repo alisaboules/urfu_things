@@ -5,17 +5,21 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding: 0 20px;
+  background: var(--bg);
 }
 
 .card-menu {
-  border-radius: 8px;
+  border-radius: 20px;
   display: flex;
   gap: 22px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 412px;
-  padding: 0 22px;
+  padding: 40px 20px;
+  box-shadow: 0px 0px 15px var(--shadow);
+  border: 1px solid var(--border-color-5);
 }
 
 .title {
@@ -154,4 +158,11 @@
   align-items: center;
   justify-content: center;
   color: var(--eye-icon-bg);
+}
+
+
+@media (max-width: 412px) {
+  .card-menu {
+    padding: 40px 20px;
+  }
 }
