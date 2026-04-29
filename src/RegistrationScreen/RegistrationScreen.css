@@ -104,6 +104,8 @@ body {
   padding: 0;
   margin: 0;
   width: 100%;
+  align-items: center;
+  flex-direction: space-between;
 }
 
 .tooltip-registration {
@@ -170,5 +172,8 @@ body {
 @media (max-width: 412px) {
   .card-registration {
     padding: 40px 20px;
+  }
+  .input-registration {
+    font-size: 17px;
   }
 }

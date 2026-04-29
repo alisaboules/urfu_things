@@ -178,4 +178,8 @@ textarea::placeholder
   color: var(--based-color1);
   opacity: 0.5;
   font-family: var(--urfu-font-family-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--urfu-font-family-1);
 }
