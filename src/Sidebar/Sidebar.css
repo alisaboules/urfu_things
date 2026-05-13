@@ -61,6 +61,8 @@
   font-family: var(--urfu-font-family-1);
   border: none;
   padding: 20px;
+  text-wrap: wrap;
+  text-align: left;
 }
 
 .user-data:hover, .user-data:focus, .user-data:active, .user-data:focus-visible {

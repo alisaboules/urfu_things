@@ -5,6 +5,9 @@ import { Registration } from './RegistrationScreen';
 import { MainPage } from './MainPage';
 import { Advertisement } from './Advertisement';
 import './index.css';
+import { Appeal } from './Appeal';
+import { Appeals } from './Appeals';
+import { Magazine } from './Magazine';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
             {/* <Route index element={<Sidebar />} /> */}
           </Route>
           <Route path="/ad" element={<Advertisement />} />
+          <Route path="/appeal" element={<Appeal />} />
+          <Route path="/appeals" element={<Appeals />} />
+          <Route path="/magazine" element={<Magazine />} />
         </Routes>
       </HashRouter>
     </>

@@ -13,7 +13,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 20px;
+  padding: 20px 20px;
   background: var(--bg);
 }
 
@@ -169,11 +169,11 @@ body {
   justify-content: center;
 }
 
-@media (max-width: 412px) {
+@media (max-width: 500px) {
   .card-registration {
     padding: 40px 20px;
   }
   .input-registration {
-    font-size: 17px;
+    font-size: 18px;
   }
 }

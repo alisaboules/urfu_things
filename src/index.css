@@ -30,12 +30,15 @@
   --based-color7: #eae8f0;
   --based-color8: #5D5D5D;
   --based-color9: #fff;
+  --based-color10: #4811FF;
   --border-color: #fff;
   --border-color-1: #ebe9e9;
   --border-color-2: #dcdcdc;
   --border-color-3: #dcdcdc;
   --border-color-4: #DCD1FF;
   --border-color-5: #4811FF2e;
+  --border-color-6: #fff;
+  --border-color-7: #fff;
   --search-icon-color: #5D5D5D;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -72,12 +75,12 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --urfu-font-family: "Baloo", sans-serif;
     --urfu-font-family-1: "Inter", sans-serif;
-    --based-color1: #fff;
-    --based-color2: #000;
     --input-bg: #0077ff2e;
     --eye-icon-bg: #fff;
     --registration-btn-bg: #0077ff2e;
     --enter-btn-color: #fff;
+    --based-color1: #fff;
+    --based-color2: #000;
     --based-color3: #4811FF;
     --based-color4: #DCD1FF;
     --based-color5: #0077ff2e;
@@ -85,12 +88,15 @@
     --based-color7: #0077ff2e;
     --based-color8: #DCD1FF;
     --based-color9: #181c2c;
+    --based-color10: #000;
     --border-color: #7a7777;
     --border-color-1: #0077ff2e;
     --border-color-2: #0077ff2e;
     --border-color-3: #4811FF;
     --border-color-4: #fff;
     --border-color-5: #ffffff3e;
+    --border-color-6: #DCD1FF;
+    --border-color-7: #4811FF;
     --search-icon-color: #fff;
     --shadow: none;
   }

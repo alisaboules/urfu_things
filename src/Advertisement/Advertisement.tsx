@@ -165,7 +165,7 @@ function Advertisement() {
 
       <div className="container-advertisement">
         <div className="header-advertisement">
-          <h1>UniFind</h1>
+          <h1 onClick={() => navigate("/main")}>UniFind</h1>
           <FaUser className="profile-advertisement-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div className="card-advertisement">

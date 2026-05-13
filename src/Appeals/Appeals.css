@@ -1,0 +1,148 @@
+.container-appeals {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+.header-appeals {
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  color: #4811FF;
+  width: 100%;
+  padding: 20px 16px 0;
+}
+
+.header-appeals h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 32px;
+  color: #4811FF;
+  font-family: var(--urfu-font-family);
+}
+
+
+.profile-appeals-icon {
+  width: 25px;
+  height: 25px;
+  color: var(--based-color4);
+  margin-right: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.actions-appeals {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+  width: 100%;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+.title-appeals {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--border-color-6);
+  font-family: var(--urfu-font-family);
+  width: 100%;
+  border-radius: 35px 35px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.card-appeals {
+  background: var(--based-color10);
+  color: var(--based-color4);
+  border-radius: 35px 35px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  margin-top: 20px;
+  /* padding: 30px; */
+  font-size: 20px;
+  font-weight: 500;
+  box-shadow: 0 40px 5px var(--based-color3);
+  flex: 1;
+}
+
+.filter-appeals {
+  background: #DCD1FF;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 35px;
+  color: #4811FF;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 10px 0 0px 16px;
+  font-family: var(--urfu-font-family);
+}
+
+
+
+.wrapper-appeals {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.cards-appeals {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-appeals-item {
+  background: var(--border-color-6);
+  width: 100%;
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 12px;
+  min-height: 72px;
+}
+
+.content-appeals-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.title-appeals-item {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #111;
+  word-break: break-word;
+  font-family: var(--urfu-font-family-1);
+}
+
+.date-appeals {
+  margin: 6px 0 0;
+  font-size: 20px;
+  color: #5D5D5D;
+  font-family: var(--urfu-font-family-1);
+}
+
+.infoBtn {
+  width: 35px;
+  height: 3px;
+  color: var(--based-color4);
+}
+
+.profile-appeals-icon:hover {
+  transform: scale(1.05);
+}
