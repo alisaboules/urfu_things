@@ -28,8 +28,9 @@
 .profile-advertisement-icon {
   width: 25px;
   height: 25px;
-  color: var(--based-color4);
+  color: #4811FF;
   margin-right: 5px;
+  cursor: pointer;
 }
 
 .sidebar-overlay-2 {
@@ -316,4 +317,8 @@
   position: relative;
   display: inline-block;
   width: fit-content;
+}
+
+.profile-advertisement-icon:hover {
+  transform: scale(1.05);
 }

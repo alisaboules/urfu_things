@@ -63,7 +63,7 @@ function Registration() {
   }
 
   if (!form.name) {
-    newErrors.name= 'Введите имя';
+    newErrors.name= 'Введите ФИО';
   } else if (form.name.length < 6) {
     newErrors.name = 'Минимум 6 символов';
   }
@@ -134,7 +134,7 @@ const handleSubmit = async () => {
           <input
             name="name"
             type="text"
-            placeholder="Имя"
+            placeholder="ФИО"
             className={`input-registration ${errors.name ? "input-registration-error" : ""}`}
             value={form.name}
             onChange={handleChange}

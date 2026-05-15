@@ -1,8 +1,8 @@
 import { FaUser } from "react-icons/fa6";
-import "./Sidebar.css";
+import "../Sidebar.css";
 import { useNavigate } from "react-router-dom";
 
-function Sidebar( { userName, onClose }: { userName: string; onClose: () => void }){
+function SidebarUser( { userName, onClose }: { userName: string; onClose: () => void }){
   const navigate = useNavigate();
   return (
      <aside className="sidebar-container">
@@ -18,15 +18,9 @@ function Sidebar( { userName, onClose }: { userName: string; onClose: () => void
       <button className="user-data" onClick={() => { navigate("/appeal"); onClose(); }}>
         Обращение в администрацию
       </button>
-       <button className="user-data" onClick={() => { navigate("/appeals"); onClose(); }}>
-        Обращения
-      </button>
-       <button className="user-data" onClick={() => { navigate("/magazine"); onClose(); }}>
-        Журнал действий
-      </button>
       </div>
     </aside>
   );
 }
 
-export { Sidebar };
+export { SidebarUser };

@@ -18,7 +18,9 @@ export const loginUser = async (email: string, password: string) => {
   const data = await res.json();
   localStorage.setItem("access_token", data.access);
   localStorage.setItem("refresh_token", data.refresh);
-  return data;
+  const me = await fetchMe();
+  localStorage.setItem("user", JSON.stringify(me))
+  return { ...data, user: me };
 };
 
 
@@ -274,6 +276,22 @@ export const getItems = async (
   const res = await fetch(url);
 
   if (!res.ok) throw new Error("Ошибка");
+
+  return await res.json();
+};
+
+export const fetchMe = async () => {
+  const token = localStorage.getItem("access_token");
+
+  if (!token) return null;
+
+  const res = await fetch(`${BASE_URL}/me/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) return null;
 
   return await res.json();
 };

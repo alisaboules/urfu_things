@@ -4,10 +4,12 @@ import { FaUser } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Sidebar } from '../Sidebar';
 import { MdOutlinePlace } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
+import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
+import { SidebarUser } from '../Sidebars/SidebarUser';
+import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 // import type { ItemResponse } from '../Api/Api';
 
 type Item = {
@@ -31,7 +33,6 @@ type ApiItem = {
   image: string | null;
   created_at: string;
 };
-
 
 const fallbackItems: Item[] = [
   {
@@ -85,14 +86,14 @@ const fallbackItems: Item[] = [
 ];
 
 function MainPage() {
-  const [items, setItems] = useState<Item[]>( []);
+  const [items, setItems] = useState<Item[]>([]);
   const navigate = useNavigate();
   const [type, setType] = useState('found');
   // const [refresh, setRefresh] = useState(0);
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
- 
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -110,30 +111,29 @@ function MainPage() {
         console.log('API RAW RESPONSE:', data);
 
         const list: ApiItem[] = Array.isArray(data)
-  ? data
-  : Array.isArray(data.results)
-    ? data.results
-    : data
-      ? [data]
-      : [];
+          ? data
+          : Array.isArray(data.results)
+            ? data.results
+            : data
+              ? [data]
+              : [];
         // setItems(fallbackItems);
         if (list.length > 0) {
-        setItems(
-          list.map(
-            (item): Item => ({
-              id: item.id,
-              title: item.description || 'Без названия',
-             img: item.image || '/images/аэрподс.jpg',
-              description: item.description,
-              location: item.location_ref,
-              status: item.status,
-            }),
-          ),
-        );}
-        else {
+          setItems(
+            list.map(
+              (item): Item => ({
+                id: item.id,
+                title: item.description || 'Без названия',
+                img: item.image || '/images/аэрподс.jpg',
+                description: item.description,
+                location: item.location_ref,
+                status: item.status,
+              }),
+            ),
+          );
+        } else {
           setItems(fallbackItems);
         }
-        
       } catch (e) {
         console.error(e);
         // setItems(fallbackItems); // только при ОШИБКЕ
@@ -141,7 +141,7 @@ function MainPage() {
     };
 
     fetchItems();
-  }, [type ]);
+  }, [type]);
 
   // const location = useLocation();
 
@@ -178,7 +178,6 @@ function MainPage() {
     return 'Гость';
   });
 
-
   return (
     <>
       <div className="container_header_homepage">
@@ -209,7 +208,9 @@ function MainPage() {
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
                 </div>
-                <div className="card-title"><p>{item.title}</p></div>
+                <div className="card-title">
+                  <p>{item.title}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -221,7 +222,29 @@ function MainPage() {
         <div
           className={`sidebar ${sidebarOpen ? 'open' : ''}`}
           onClick={(e) => e.stopPropagation()}>
-          <Sidebar userName={userName} onClose={() => setSidebarOpen(false)} />
+          {user?.role === 'student' && (
+            <>
+              <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
+            </>
+          )}
+          {user?.role === 'admin' && (
+            <>
+              <SidebarAdmin
+                userName={userName}
+                role={'Администратор'}
+                onClose={() => setSidebarOpen(false)}
+              />
+            </>
+          )}
+          {user?.role === 'pickup_point' && (
+            <>
+              <SidebarPickup
+                userName={userName}
+                role={'Сотрудник пункта выдачи'}
+                onClose={() => setSidebarOpen(false)}
+              />
+            </>
+          )}
         </div>
       </div>
       {selectedItem && !isImageOpen && (

@@ -16,7 +16,7 @@
   justify-content: start;
   align-items: center;
   gap: 14px;
-  padding: 20px 0 30px 20px;
+  padding: 20px 20px 30px 20px;
 }
 
 .profile-sidebar-icon {
@@ -40,9 +40,21 @@
 }
 
 .userName {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   font-family: var(--urfu-font-family-1);
+}
+
+.userRole {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--urfu-font-family-1);
+}
+
+.roles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .navigation {
@@ -69,4 +81,24 @@
   cursor: pointer;
   border-top: 2px solid #bda0f7;
   border-bottom: 2px solid #bda0f7;
+}
+
+@media (width < 450px) {
+  .userName {
+    font-size: 16px;
+  }
+
+  .userRole {
+    font-size: 14px;
+  }
+
+  .roles {
+    gap: 2px;
+  }
+
+  .profile-sidebar-icon {
+    width: 70px;
+    height: 70px;
+  }
+
 }

@@ -27,7 +27,7 @@
 .profile-magazine-icon {
   width: 25px;
   height: 25px;
-  color: var(--based-color4);
+  color: #4811FF;
   margin-right: 5px;
   cursor: pointer;
   transition: 0.3s ease;
@@ -45,8 +45,8 @@
 }
 
 .title-magazine {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--border-color-6);
   font-family: var(--urfu-font-family);
   width: 100%;
@@ -54,7 +54,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 30px 20px 20px;
+}
+
+.hrs {
+  border: none;
+  height: 1px;
+  background-color: var(--based-color6);
+  width: 100%;
 }
 
 .card-magazine {
@@ -140,7 +147,7 @@
 .notification-info-icon {
   width: 35px;
   height: 35px;
-  color: var(--based-color4);
+  color: #4811FF;
 }
 
 .notifications {
@@ -152,18 +159,13 @@
 
 .notification-card {
   width: 100%;
-
-  background: #f2f2f2;
-
+  background: var(--based-color6);
   border-radius: 22px;
-
   padding: 16px 18px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-
   min-height: 84px;
 }
 
@@ -181,7 +183,7 @@
 }
 
 .notification-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: #1a1a1a;
   word-break: break-word;

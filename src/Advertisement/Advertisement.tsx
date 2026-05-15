@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { MdKeyboardArrowLeft } from 'react-icons/md';
 import { LuCircleFadingPlus } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
-import { Sidebar } from '../Sidebar';
+import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdDelete } from 'react-icons/md';
 import { createFoundItem } from '../Api/Api';
 
@@ -16,24 +16,24 @@ function Advertisement() {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Категория');
   const selectCategory = (category: string) => {
-  setSelectedCategory(category);
-  setCategoryOpen(false);
+    setSelectedCategory(category);
+    setCategoryOpen(false);
 
-  setForm((prev) => ({
-    ...prev,
-    title: category
-  }));
-};
-//   const categoriess = [
-//   { id: 1, name: "Наушники" },
-//   { id: 2, name: "Кошельки" },
-//   { id: 3, name: "Ключи" },
-// ];
+    setForm((prev) => ({
+      ...prev,
+      title: category,
+    }));
+  };
+  //   const categoriess = [
+  //   { id: 1, name: "Наушники" },
+  //   { id: 2, name: "Кошельки" },
+  //   { id: 3, name: "Ключи" },
+  // ];
 
-// const pickupPoints = [
-//   { id: 1, name: "Стойка 1" },
-//   { id: 2, name: "Главный пункт" },
-// ];
+  // const pickupPoints = [
+  //   { id: 1, name: "Стойка 1" },
+  //   { id: 2, name: "Главный пункт" },
+  // ];
 
   const categories = ['Наушники', 'Кошельки', 'Ключи', 'Одежда', 'Подзарядки', 'Канцелярия'];
   const toggleCategory = () => {
@@ -70,9 +70,6 @@ function Advertisement() {
     }
   };
 
-  
-
-
   const handleDeletePhoto = () => {
     setPhoto(null);
     setPreview(null);
@@ -85,71 +82,65 @@ function Advertisement() {
     description: '',
     location: '',
     image: '',
-    category: '',        
+    category: '',
     pickup_point: '',
   });
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
 
-//   const [selectedCategoryS, setSelectedCategoryS] = useState("");
-//   const [selectedPickupPoint, setSelectedPickupPoint] = useState("");
-//   const selectCategoryS = (category: {id: number, name: string}) => {
-//   setSelectedCategoryId(category.id);
+  //   const [selectedCategoryS, setSelectedCategoryS] = useState("");
+  //   const [selectedPickupPoint, setSelectedPickupPoint] = useState("");
+  //   const selectCategoryS = (category: {id: number, name: string}) => {
+  //   setSelectedCategoryId(category.id);
 
-//   setForm(prev => ({
-//     ...prev,
-//     category: String(category.id),
-//   }));
-// };
+  //   setForm(prev => ({
+  //     ...prev,
+  //     category: String(category.id),
+  //   }));
+  // };
 
+  // const selectPickup = (point: {id: number, name: string}) => {
+  //   setSelectedPickupPointId(point.id);
 
-// const selectPickup = (point: {id: number, name: string}) => {
-//   setSelectedPickupPointId(point.id);
-
-//   setForm(prev => ({
-//     ...prev,
-//     pickup_point: String(point.id),
-//   }));
-// };
-
+  //   setForm(prev => ({
+  //     ...prev,
+  //     pickup_point: String(point.id),
+  //   }));
+  // };
 
   const handleSubmit = async () => {
-  try {
-    const data = new FormData();
+    try {
+      const data = new FormData();
 
-    // data.append("title", form.title);
-    // data.append("description", form.description);
-    // data.append("location", form.location);
-    // data.append("description", form.description);
-    // data.append("location_type", "free");
-    // data.append("location_ref", form.location);
-    if (type === "found") {
-      data.append("description", form.description);
-      data.append("location_type", "free");
-      data.append("location_ref", form.location);
+      // data.append("title", form.title);
+      // data.append("description", form.description);
+      // data.append("location", form.location);
+      // data.append("description", form.description);
+      // data.append("location_type", "free");
+      // data.append("location_ref", form.location);
+      if (type === 'found') {
+        data.append('description', form.description);
+        data.append('location_type', 'free');
+        data.append('location_ref', form.location);
+      } else {
+        data.append('description', form.description);
+        data.append('location_zone', 'Свободно');
+        data.append('location_text', form.location);
+      }
+      if (photo) {
+        data.append('image', photo);
+      }
 
-    } else {
-      data.append("description", form.description);
-      data.append("location_zone", "Свободно");
-      data.append("location_text", form.location);
+      const result = await createFoundItem(data, type);
+
+      console.log('SUCCESS:', result);
+
+      navigate('/main', { state: { refresh: true } });
+    } catch (err) {
+      console.error('CREATE ITEM ERROR:', err);
+      alert('Ошибка создания объявления');
     }
-    if (photo) {
-      
-      data.append("image", photo);
-    }
-
-    const result = await createFoundItem(data, type);
-
-    console.log("SUCCESS:", result);
-
-    navigate("/main", { state: { refresh: true } });
-  } catch (err) {
-    console.error("CREATE ITEM ERROR:", err);
-    alert("Ошибка создания объявления");
-  }
-};
-
-
+  };
 
   return (
     <>
@@ -159,13 +150,13 @@ function Advertisement() {
         <div
           className={`sidebar-2 ${sidebarOpen ? 'open' : ''}`}
           onClick={(e) => e.stopPropagation()}>
-          <Sidebar userName={userName} onClose={() => setSidebarOpen(false)} />
+          <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
         </div>
       </div>
 
       <div className="container-advertisement">
         <div className="header-advertisement">
-          <h1 onClick={() => navigate("/main")}>UniFind</h1>
+          <h1 onClick={() => navigate('/main')}>UniFind</h1>
           <FaUser className="profile-advertisement-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div className="card-advertisement">

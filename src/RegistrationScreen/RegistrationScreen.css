@@ -113,18 +113,15 @@ body {
   top: 97%;
   left: 10px;
   margin-top: 8px;
-
   background: #fff;
   color: #f01111;
   padding: 10px 14px;
   font-size: 15px;
-
   border: 1px solid #d4d3d3;
   border-radius: 8px;
-
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-
   white-space: nowrap;
+  text-wrap: wrap;
   z-index: 10;
 }
 

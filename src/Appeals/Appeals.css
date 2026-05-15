@@ -27,7 +27,7 @@
 .profile-appeals-icon {
   width: 25px;
   height: 25px;
-  color: var(--based-color4);
+  color: #4811FF;
   margin-right: 5px;
   cursor: pointer;
   transition: 0.3s ease;
@@ -45,8 +45,8 @@
 }
 
 .title-appeals {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--border-color-6);
   font-family: var(--urfu-font-family);
   width: 100%;
@@ -54,7 +54,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 30px 20px 20px;
 }
 
 .card-appeals {
