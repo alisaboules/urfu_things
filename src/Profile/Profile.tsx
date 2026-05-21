@@ -35,6 +35,7 @@ function Profile() {
       <div className="profile-icon">
         <IoReturnUpBack className="return-icon" />
       </div>
+      
       <div className="avatar-circle" onClick={() => inputRef.current?.click()}>
         {user?.avatar ? <img src={user.avatar} alt="avatar" /> : <FaPlus className="plus-icon" />}
       </div>
