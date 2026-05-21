@@ -1,26 +1,30 @@
 .main-profile-icon {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
+  position: relative;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--accent-bg);
+  height: 100vh;
 }
 
 .avatar-circle {
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  /* border: 2px dashed #aaa; */
+  border: 1px solid #666;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   cursor: pointer;
   transition: 0.2s;
-  position: relative;
+  /* position: relative; */
   margin-top: 30px;
 }
 
 .avatar-circle:hover {
-  border-color: #555;
   transform: scale(1.03);
 }
 
@@ -32,5 +36,46 @@
 
 .plus-icon {
   font-size: 30px;
-  color: #666;
+  color: var(--based-color12);
+}
+
+.container-return-icon {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+}
+
+.return-icon {
+  color: var(--based-color12);
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.sign-icons {
+  display: flex;
+  gap: 100px;
+}
+
+.change-photo-icon {
+  font-size: 30px;
+  color: var(--based-color12);
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.edit-photo-icon {
+  font-size: 30px;
+  color: var(--based-color12);
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.change-photo-icon:hover, .edit-photo-icon:hover {
+  transform: scale(1.1);
+}
+
+.main-profile-name {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--based-color12);
 }

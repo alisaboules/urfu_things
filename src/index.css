@@ -31,6 +31,8 @@
   --based-color8: #5D5D5D;
   --based-color9: #fff;
   --based-color10: #4811FF;
+  --based-color11: #dcdcdc;
+  --based-color12: #4811FF;
   --border-color: #fff;
   --border-color-1: #ebe9e9;
   --border-color-2: #dcdcdc;
@@ -89,6 +91,8 @@
     --based-color8: #DCD1FF;
     --based-color9: #181c2c;
     --based-color10: #000;
+    --based-color11: #666;
+    --based-color12: #dcdcdc;
     --border-color: #7a7777;
     --border-color-1: #0077ff2e;
     --border-color-2: #0077ff2e;

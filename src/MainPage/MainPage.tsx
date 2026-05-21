@@ -91,11 +91,15 @@ function MainPage() {
   const navigate = useNavigate();
   const [type, setType] = useState('found');
   // const [refresh, setRefresh] = useState(0);
-
+  
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const fullName = user?.first_name || '';
 
+  const [name, surname] = fullName.split(' ');
+
+  const shortName = `${name || ''} ${surname || ''}`.trim();
   useEffect(() => {
     const fetchItems = async () => {
       console.log('API URL:', import.meta.env.VITE_API_URL);
@@ -168,16 +172,16 @@ function MainPage() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
-  const [userName] = useState(() => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      const savedName = localStorage.getItem('user_name');
-      if (savedName) {
-        return savedName;
-      }
-    }
-    return 'Гость';
-  });
+  // const [userName] = useState(() => {
+  //   const token = localStorage.getItem('access_token');
+  //   if (token) {
+  //     const savedName = localStorage.getItem('user_name');
+  //     if (savedName) {
+  //       return savedName;
+  //     }
+  //   }
+  //   return 'Гость';
+  // });
 
   return (
     <>
@@ -225,13 +229,13 @@ function MainPage() {
           onClick={(e) => e.stopPropagation()}>
           {user?.role === 'student' && (
             <>
-              <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
+              <SidebarUser userName={shortName} onClose={() => setSidebarOpen(false)} />
             </>
           )}
           {user?.role === 'admin' && (
             <>
               <SidebarAdmin
-                userName={userName}
+                userName={shortName}
                 role={'Администратор'}
                 onClose={() => setSidebarOpen(false)}
               />
@@ -240,7 +244,7 @@ function MainPage() {
           {user?.role === 'pickup_point' && (
             <>
               <SidebarPickup
-                userName={userName}
+                userName={shortName}
                 role={'Сотрудник пункта выдачи'}
                 onClose={() => setSidebarOpen(false)}
               />
