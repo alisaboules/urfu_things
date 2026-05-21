@@ -295,3 +295,58 @@ export const fetchMe = async () => {
 
   return await res.json();
 };
+
+export async function getNearestPickupPoint(
+  latitude: number,
+  longitude: number,
+) {
+  const response = await fetch(
+    `${BASE_URL}/pickup-points/nearby/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+      }),
+    },
+  );
+
+   if (!response.ok) {
+    const errorText = await response.text(); // 👈 ВАЖНО
+    console.log("API ERROR STATUS:", response.status);
+    console.log("API ERROR BODY:", errorText);
+
+    throw new Error(errorText);
+  }
+
+
+  return response.json();
+}
+
+export const uploadAvatar = async (file: File) => {
+  const token = localStorage.getItem("access_token");
+
+  const formData = new FormData();
+
+  formData.append("avatar", file);
+
+  const res = await fetch(
+    `${BASE_URL}/me/avatar/`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Upload failed");
+  }
+
+  return await res.json();
+};

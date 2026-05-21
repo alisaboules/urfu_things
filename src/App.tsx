@@ -8,6 +8,7 @@ import './index.css';
 import { Appeal } from './Appeal';
 import { Appeals } from './Appeals';
 import { Magazine } from './Magazine';
+import { Profile } from './Profile/Profile';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/appeal" element={<Appeal />} />
           <Route path="/appeals" element={<Appeals />} />
           <Route path="/magazine" element={<Magazine />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </HashRouter>
     </>

@@ -10,6 +10,7 @@ import { BsArrowsFullscreen } from 'react-icons/bs';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
+import { PickupFinder } from '../Components/Geolocation/Geolocation';
 // import type { ItemResponse } from '../Api/Api';
 
 type Item = {
@@ -275,10 +276,11 @@ function MainPage() {
               </div>
               <p>{selectedItem.status}</p>
               <p>{selectedItem.description}</p>
+              <PickupFinder />
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>
-                Откликнуться
+                Это моя вещь
               </button>
             </div>
           </div>

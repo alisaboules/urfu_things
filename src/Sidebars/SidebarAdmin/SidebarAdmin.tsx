@@ -22,7 +22,7 @@ function SidebarAdmin({
         </div>
       </div>
       <div className="navigation">
-        <button className="user-data">Профиль</button>
+        <button className="user-data" onClick={() => { navigate("/profile")}}>Профиль</button>
         <button className="user-data" onClick={() => { navigate("/appeals"); onClose(); }}>
           Обращения
         </button>
