@@ -12,10 +12,13 @@ export const loginUser = async (email: string, password: string) => {
     })
   });
 
+  const text = await res.text();
+  console.log("LOGIN STATUS:", res.status);
+  console.log("LOGIN RESPONSE:", text);
   if (!res.ok) {
-    throw new Error("Login failed");
+    throw new Error(text);
   }
-  const data = await res.json();
+  const data = JSON.parse(text);
   localStorage.setItem("access_token", data.access);
   localStorage.setItem("refresh_token", data.refresh);
   const me = await fetchMe();

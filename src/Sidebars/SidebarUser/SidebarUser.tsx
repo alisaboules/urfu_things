@@ -11,7 +11,9 @@ function SidebarUser( { userName, onClose }: { userName: string; onClose: () => 
         <div className="userName">{userName}</div>
       </div>
       <div className="navigation">
-      <button className="user-data">Профиль</button>
+      <button className="user-data" onClick={() => { navigate("/profile") }}>
+          Профиль
+      </button>
       <button className="user-data">Мои объявления</button>
       <button className="user-data">Мои статусы</button>
       <button className="user-data">История действий</button>

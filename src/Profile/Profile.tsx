@@ -46,6 +46,7 @@ function Profile() {
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
     email: user?.email || '',
+    student_id: user?.student_id || '',
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -110,8 +111,35 @@ function Profile() {
         <p className="user-info-label2">Имя пользователя</p>
         <p className="user-info-label1">{user?.email}</p>
         <p className="user-info-label2">Почта</p>
-        <p className="user-info-label1">{user?.id}</p>
-        <p className="user-info-label2">Номер</p>
+        {/* ADMIN */}
+        {user?.role === 'admin' && (
+          <>
+            <p className="user-info-label1">{user?.id}</p>
+            <p className="user-info-label2">Номер администратора</p>
+          </>
+        )}
+
+        {/* STUDENT */}
+        {user?.role === 'student' && (
+          <>
+            {isEditing ? (
+              <input
+                type="text"
+                name="student_id"
+                value={formData.student_id}
+                onChange={handleChange}
+                className="profile-input"
+              />
+            ) : (
+              <p className="user-info-label1">{user?.student_id}</p>
+            )}
+
+            <p className="user-info-label2">Номер студенческого</p>
+          </>
+        )}
+
+        {/* PICKUP POINT EMPLOYEE */}
+        {user?.role === 'pickup_point' && null}
       </div>
       <div>
         <div className="notifications-container">

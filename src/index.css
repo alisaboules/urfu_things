@@ -31,8 +31,10 @@
   --based-color8: #5D5D5D;
   --based-color9: #fff;
   --based-color10: #4811FF;
-  --based-color11: #dcdcdc;
+  --based-color11: #fff;
   --based-color12: #4811FF;
+  --based-color13: #d9d9d9;
+  --based-color14: #fff;
   --border-color: #fff;
   --border-color-1: #ebe9e9;
   --border-color-2: #dcdcdc;
@@ -91,8 +93,10 @@
     --based-color8: #DCD1FF;
     --based-color9: #181c2c;
     --based-color10: #000;
-    --based-color11: #666;
+    --based-color11: #0077ff2e;
     --based-color12: #dcdcdc;
+    --based-color13: #5D5D5D;
+    --based-color14: #dcdcdc;
     --border-color: #7a7777;
     --border-color-1: #0077ff2e;
     --border-color-2: #0077ff2e;
@@ -101,7 +105,7 @@
     --border-color-5: #ffffff3e;
     --border-color-6: #DCD1FF;
     --border-color-7: #4811FF;
-    --search-icon-color: #fff;
+    --search-icon-color: #dcdcdc;
     --shadow: none;
   }
 

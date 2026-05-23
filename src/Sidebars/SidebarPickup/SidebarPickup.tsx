@@ -22,7 +22,9 @@ function SidebarPickup({
         </div>
       </div>
       <div className="navigation">
-        <button className="user-data">Профиль</button>
+        <button className="user-data" onClick={() => { navigate("/profile") }}>
+          Профиль
+        </button>
         <button className="user-data">История действий</button>
         <button className="user-data" onClick={() => { navigate("/appeal"); onClose(); }}>
           Обращение в администрацию
