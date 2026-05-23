@@ -1,22 +1,27 @@
-import { uploadAvatar } from "../Api/Api.ts";
-import { FaPlus } from "react-icons/fa";
-import "./Profile.css";
-import { IoReturnUpBack } from "react-icons/io5";
-import { MdAddAPhoto } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
-import { useState, useRef  } from "react";
-import { useNavigate } from "react-router-dom";
+import { uploadAvatar, updateProfile } from '../Api/Api.ts';
+import { FaPlus } from 'react-icons/fa';
+import './Profile.css';
+import { IoReturnUpBack } from 'react-icons/io5';
+import { MdAddAPhoto } from 'react-icons/md';
+import { MdEdit } from 'react-icons/md';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
+import { FaCheck } from 'react-icons/fa';
 
 function Profile() {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem('user') || 'null')
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
+  const toggleNotifications = async () => {
+    const newValue = !enabled;
+    setEnabled(newValue);
 
+    await updateProfile({
+      notifications_enabled: newValue,
+    });
+  };
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) return;
@@ -26,23 +31,44 @@ function Profile() {
 
       setUser(updatedUser);
 
-      localStorage.setItem(
-        'user',
-        JSON.stringify(updatedUser)
-      );
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const shortName = (user?.first_name || '')
-  .trim()
-  .split(/\s+/)
-  .slice(0, 2)
-  .join(' ');
+  const shortName = (user?.first_name || '').trim().split(/\s+/).slice(0, 2).join(' ');
 
   const navigate = useNavigate();
+  const [enabled, setEnabled] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
+  const [formData, setFormData] = useState({
+    first_name: user?.first_name || '',
+    email: user?.email || '',
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSave = async () => {
+  try {
+    const updatedUser = await updateProfile(formData);
+
+    setUser(updatedUser);
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify(updatedUser)
+    );
+
+    setIsEditing(false);
+  } catch (err) {
+    console.error(err);
+  }
+};
   return (
     <div className="main-profile-icon">
       <div className="container-return-icon">
@@ -50,7 +76,7 @@ function Profile() {
       </div>
 
       <div
-        className="avatar-circle"
+        className={`avatar-circle ${user?.avatar ? 'has-avatar' : ''}`}
         onClick={() => {
           if (!user?.avatar) {
             inputRef.current?.click();
@@ -61,9 +87,45 @@ function Profile() {
       <p className="main-profile-name">{shortName}</p>
       <div className="sign-icons">
         <MdAddAPhoto className="change-photo-icon" onClick={() => inputRef.current?.click()} />
-        <MdEdit className="edit-photo-icon" onClick={() => inputRef.current?.click()} />
+        {isEditing ? (
+          <FaCheck className="edit-photo-icon" onClick={handleSave} />
+        ) : (
+          <MdEdit className="edit-photo-icon" onClick={() => setIsEditing(true)} />
+        )}
       </div>
-
+      <div className="main-user-info">
+        {isEditing ? (
+          <input
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            className="profile-input"
+          />
+        ) : (
+          <p className={`user-info-label1 ${isEditing ? 'editable-field' : ''}`}>
+            {user?.first_name}
+          </p>
+        )}
+        <p className="user-info-label2">Имя пользователя</p>
+        <p className="user-info-label1">{user?.email}</p>
+        <p className="user-info-label2">Почта</p>
+        <p className="user-info-label1">{user?.id}</p>
+        <p className="user-info-label2">Номер</p>
+      </div>
+      <div>
+        <div className="notifications-container">
+          {enabled ? (
+            <IoMdNotifications className="notifications-icon" />
+          ) : (
+            <IoMdNotificationsOff className="no-notifications-icon" />
+          )}
+          <p>Уведомления</p>
+          <div className={`switch ${enabled ? 'active' : ''}`} onClick={toggleNotifications}>
+            <div className="switch-circle"></div>
+          </div>
+        </div>
+      </div>
       <input
         type="file"
         accept="image/*"

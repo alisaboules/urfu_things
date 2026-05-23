@@ -208,34 +208,6 @@ export type ItemResponse = {
 };
 
 
-// export const createFoundItem = async (
-//   formData: FormData,
-//   type: string
-// ): Promise<ItemResponse> => {
-//   const token = localStorage.getItem("access_token");
-
-//   const url =
-//     type === "found"
-//       ? `${BASE_URL}/found/`
-//       : `${BASE_URL}/lost/`;
-
-//   const res = await fetch(url, {
-//     method: "POST",
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: formData,
-//   });
-
-//   if (!res.ok) {
-//     const errorData = await res.json();
-//   console.log("BACKEND ERROR:", errorData);
-//   throw errorData;
-//   }
-
-//   return await res.json();
-// };
-
 export const createFoundItem = async (formData: FormData, type: string) => {
   const token = localStorage.getItem("access_token");
 
@@ -315,7 +287,7 @@ export async function getNearestPickupPoint(
   );
 
    if (!response.ok) {
-    const errorText = await response.text(); // 👈 ВАЖНО
+    const errorText = await response.text(); 
     console.log("API ERROR STATUS:", response.status);
     console.log("API ERROR BODY:", errorText);
 
@@ -343,10 +315,46 @@ export const uploadAvatar = async (file: File) => {
       body: formData,
     }
   );
+  const text = await res.text();
+
+  console.log("STATUS:", res.status);
+  console.log("RESPONSE:", text);
 
   if (!res.ok) {
-    throw new Error("Upload failed");
+    throw new Error(text);
   }
 
-  return await res.json();
+  return JSON.parse(text); 
+};
+
+export const updateProfile = async (formData: {
+  first_name?: string;
+  email?: string;
+  notifications_enabled?: boolean;
+  fcm_token?: string;
+}) => {
+  const token = localStorage.getItem("access_token");
+
+  const res = await fetch(
+    `${BASE_URL}/me/`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+
+  const text = await res.text();
+
+  console.log("STATUS:", res.status);
+  console.log("RESPONSE:", text);
+
+  if (!res.ok) {
+    throw new Error(text);
+  }
+
+  return JSON.parse(text);
 };

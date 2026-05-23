@@ -13,7 +13,7 @@
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  border: 1px solid #666;
+  border: 1px solid var(--based-color12);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,7 +36,7 @@
 
 .plus-icon {
   font-size: 30px;
-  color: var(--based-color12);
+  color: #4811FF;
 }
 
 .container-return-icon {
@@ -46,7 +46,7 @@
 }
 
 .return-icon {
-  color: var(--based-color12);
+  color: #4811FF;
   font-size: 40px;
   cursor: pointer;
 }
@@ -78,4 +78,102 @@
   font-size: 20px;
   font-weight: 500;
   color: var(--based-color12);
+}
+
+.avatar-circle.has-avatar {
+  border: none; 
+}
+
+.main-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 15px;
+}
+
+.main-user-info,
+.notifications-container {
+  width: 320px;
+  box-sizing: border-box;
+}
+
+.user-info-label2 {
+  color: #5D5D5D;
+  font-size: 14px;
+}
+
+.switch {
+  width: 60px;
+  height: 32px;
+  background: #d9d9d9;
+  border-radius: 50px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.switch-circle {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.switch.active {
+  background: #4811FF;
+}
+
+.switch.active .switch-circle {
+  transform: translateX(28px);
+}
+
+.notifications-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  /* justify-content: center; */
+  background: #fff;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px 15px;
+  flex-direction: row;
+}
+
+.notifications-icon {
+  font-size: 30px;
+  margin-right: 10px;
+  color: #4811FF;
+}
+
+.no-notifications-icon {
+  font-size: 30px;
+  margin-right: 10px;
+  color: #5D5D5D;
+}
+
+/* .profile-input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  width: 100%;
+} */
+
+.editable-field {
+  border-bottom: 2px solid #4811FF;
+  padding-bottom: 2px;
+}
+
+.profile-input {
+  border: none;
+  border-bottom: 2px solid #4811FF;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  width: 100%;
 }

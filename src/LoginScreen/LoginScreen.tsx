@@ -3,6 +3,9 @@ import './LoginScreen.css';
 import { PiEyeFill, PiEyeSlashFill } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, getMe } from '../Api/Api.ts';
+import { getToken } from 'firebase/messaging';
+import { messaging } from '../firebase.ts';
+import { updateProfile } from '../Api/Api.ts';
 
 type Errors = {
   email?: string;
@@ -30,12 +33,11 @@ function Login() {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-//   useEffect(() => {
-//   checkAuth().then((isAuth) => {
-//     setIsAuth(isAuth);
-//   });
-// }, []);
-
+  //   useEffect(() => {
+  //   checkAuth().then((isAuth) => {
+  //     setIsAuth(isAuth);
+  //   });
+  // }, []);
 
   const validate = () => {
     const newErrors: Errors = {};
@@ -70,30 +72,54 @@ function Login() {
       [name]: undefined,
     }));
   };
+  const swRef = useRef<ServiceWorkerRegistration | undefined>(undefined);
 
+useEffect(() => {
+  const registerSW = async () => {
+    swRef.current = await navigator.serviceWorker.register(
+      '/urfu_things/firebase-messaging-sw.js'
+    );
+  };
 
+  registerSW();
+}, []);
   const handleSubmit = async () => {
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const data = await loginUser(form.email, form.password);
+    try {
+      const data = await loginUser(form.email, form.password);
 
-    localStorage.setItem("access_token", data.access); 
-    localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
 
-    const user = await getMe(data.access);
-    console.log("TOKEN:", data.access);
-    localStorage.setItem("user_name", user.first_name);
-    localStorage.setItem("user_email", user.email);
+      const user = await getMe(data.access);
+      console.log('TOKEN:', data.access);
+      localStorage.setItem('user_name', user.first_name);
+      localStorage.setItem('user_email', user.email);
+      const registration = swRef.current;
+      const permission = await Notification.requestPermission();
+      
+      if (permission === 'granted') {
+        const fcmToken = await getToken(messaging, {
+          vapidKey:
+            'BKLYZEBACn2K9NfR_tmiEN7SzI4p6wXRyjmPjfvg3OhuDdyE5XHzP9CyZ5ZfZA-_J-ANOpeRCgLv0qjWFz5m004',
+          serviceWorkerRegistration: registration,
+        });
 
-    navigate("/main");
-  } catch (err) {
-    setErrors({
-      email: "Неверная почта или пароль",
-    });
-    console.error(err);
-  }
-};
+        console.log('FCM TOKEN:', fcmToken);
+        await updateProfile({
+          fcm_token: fcmToken,
+        });
+      }
+
+      navigate('/main');
+    } catch (err) {
+      setErrors({
+        email: 'Неверная почта или пароль',
+      });
+      console.error(err);
+    }
+  };
 
   return (
     <div className="container">

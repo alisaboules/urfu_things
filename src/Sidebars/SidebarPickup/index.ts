@@ -1,0 +1,1 @@
+export { SidebarPickup } from "./SidebarPickup";

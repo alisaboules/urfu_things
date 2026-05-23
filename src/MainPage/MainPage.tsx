@@ -7,11 +7,10 @@ import { useState, useEffect } from 'react';
 import { MdOutlinePlace } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
-import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
+import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
 import { SidebarUser } from '../Sidebars/SidebarUser';
-import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
+import { SidebarPickup } from '../Sidebars/SidebarPickup';
 import { PickupFinder } from '../Components/Geolocation/Geolocation';
-// import type { ItemResponse } from '../Api/Api';
 
 type Item = {
   id: number;
