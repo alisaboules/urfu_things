@@ -1,0 +1,19 @@
+.pickup-finder-btn {
+  background: #4811FF;
+  color: #DCD1FF;
+  border: none;
+  border-radius: 35px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.pickup-name {
+  color: var(--based-color8);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+
+

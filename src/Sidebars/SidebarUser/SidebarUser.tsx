@@ -17,9 +17,6 @@ function SidebarUser( { userName, onClose }: { userName: string; onClose: () => 
       <button className="user-data">Мои объявления</button>
       <button className="user-data">Мои статусы</button>
       <button className="user-data">История действий</button>
-      <button className="user-data" onClick={() => { navigate("/appeal"); onClose(); }}>
-        Обращение в администрацию
-      </button>
       </div>
     </aside>
   );

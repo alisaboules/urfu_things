@@ -429,3 +429,11 @@
   object-fit: contain;
 }
 
+.appeal-btn {
+  color: red;
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+  font-size: 30px;
+  cursor: pointer;
+}

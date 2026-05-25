@@ -10,7 +10,7 @@ import { BsArrowsFullscreen } from 'react-icons/bs';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
-import { PickupFinder } from '../Components/Geolocation/Geolocation';
+import { TbMessageQuestion } from 'react-icons/tb';
 
 type Item = {
   id: number;
@@ -87,6 +87,9 @@ const fallbackItems: Item[] = [
 
 function MainPage() {
   const [items, setItems] = useState<Item[]>([]);
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
   const navigate = useNavigate();
   const [type, setType] = useState('found');
   // const [refresh, setRefresh] = useState(0);
@@ -128,7 +131,7 @@ function MainPage() {
               (item): Item => ({
                 id: item.id,
                 title: item.description || 'Без названия',
-                img: item.image || '/images/аэрподс.jpg',
+                img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
                 description: item.description,
                 location: item.location_ref,
                 status: item.status,
@@ -147,14 +150,6 @@ function MainPage() {
     fetchItems();
   }, [type]);
 
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   if (location.state?.refresh) {
-  //     setRefresh((prev) => prev + 1);
-  //   }
-  // }, [location.state]);
-
   const closeAllPopups = () => {
     setIsImageOpen(false);
     setSelectedItem(null);
@@ -171,16 +166,7 @@ function MainPage() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
-  // const [userName] = useState(() => {
-  //   const token = localStorage.getItem('access_token');
-  //   if (token) {
-  //     const savedName = localStorage.getItem('user_name');
-  //     if (savedName) {
-  //       return savedName;
-  //     }
-  //   }
-  //   return 'Гость';
-  // });
+  const isPickupEmployee = user?.role === 'pickup_point';
 
   return (
     <>
@@ -199,9 +185,13 @@ function MainPage() {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType('lost')}>Потерянные</button>
+              <button onClick={() => setType('lost')}>
+                {isPickupEmployee ? 'В пункте' : 'Потерянные'}
+              </button>
 
-              <button onClick={() => setType('found')}>Найденные</button>
+              <button onClick={() => setType('found')}>
+                {isPickupEmployee ? 'Выданы' : 'Найденные'}
+              </button>
             </div>
           </div>
           <button className="filter">Фильтры</button>
@@ -269,6 +259,9 @@ function MainPage() {
                 }}>
                 <BsArrowsFullscreen className="fullscreen-icon" />
               </button>
+              <TbMessageQuestion className="appeal-btn" onClick={() => {
+                navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
+              }} />
             </div>
 
             <div className="discription-for-card">
@@ -279,11 +272,10 @@ function MainPage() {
               </div>
               <p>{selectedItem.status}</p>
               <p>{selectedItem.description}</p>
-              <PickupFinder />
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>
-                Это моя вещь
+                {user?.role != 'student' ? 'Подтвердить выдачу' : 'Это моя вещь'}
               </button>
             </div>
           </div>

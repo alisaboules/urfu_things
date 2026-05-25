@@ -5,11 +5,24 @@ import './Appeal.css';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
+import { createAppeal } from '../Api/Api';
+import { useLocation } from 'react-router-dom';
+
+export type AppealPayload = {
+  subject: string;
+  message: string;
+  found_item?: number;
+  lost_item?: number;
+};
 
 function Appeal() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const location = useLocation();
+  const { itemId, type } = location.state || {};
   const [userName] = useState(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -20,6 +33,33 @@ function Appeal() {
     }
     return 'Гость';
   });
+  const handleSubmit = async () => {
+  try {
+    const payload: AppealPayload = {
+  subject,
+  message,
+};
+
+    if (type === 'found') {
+      payload.found_item = itemId;
+    }
+
+    if (type === 'lost') {
+      payload.lost_item = itemId;
+    }
+    
+    await createAppeal(payload);
+
+    alert('Обращение отправлено');
+
+    navigate('/main');
+  } catch (error) {
+    console.error(error);
+
+    alert('Ошибка');
+  }
+};
+
   return (
     <>
       <div className="container-appeal">
@@ -63,14 +103,22 @@ function Appeal() {
 
           <div className="textarea-appeal">
             <label>Тема обращения</label>
-            <textarea placeholder="Введите тему обращения"></textarea>
+             <textarea
+              placeholder="Введите тему обращения"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            />
           </div>
           <hr className="hr-appeal" />
           <div className="textarea-appeal oi">
-            <textarea placeholder="Введите текст обращения"></textarea>
+            <textarea
+              placeholder="Введите текст обращения"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
           </div>
           <div className="actions-appeal">
-            <button className="submit-appeal" onClick={() => navigate('/main')}>
+            <button className="submit-appeal" onClick={() => handleSubmit()}>
               Отправить
             </button>
             <button className="cancel-appeal" onClick={() => navigate('/main')}>

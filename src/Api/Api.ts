@@ -1,4 +1,6 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
+import axios from 'axios';
+import type { AppealPayload } from '../Appeal/Appeal';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
@@ -58,15 +60,6 @@ export const registerUser = async (
   return data;
 };
 
-// export const getMe = async () => {
-//   const res = await authFetch(`${BASE_URL}/me/`);
-
-//   if (!res.ok) {
-//     throw new Error("Unauthorized");
-//   }
-
-//   return await res.json();
-// };
 
 export const getMe = async (token: string) => {
   console.log('SENDING TOKEN:', token);
@@ -77,35 +70,6 @@ export const getMe = async (token: string) => {
   return JSON.parse(text);
 };
 
-// export const refreshAccessToken = async () => {
-//   const refresh = localStorage.getItem("refresh");
-
-//   if (!refresh) {
-//     throw new Error("No refresh token");
-//   }
-
-//   const res = await fetch(`${BASE_URL}/token/refresh/`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       refresh,
-//     }),
-//   });
-
-//   if (!res.ok) {
-//     // localStorage.removeItem("access");
-//     // localStorage.removeItem("refresh");
-//     throw new Error("Refresh failed");
-//   }
-
-//   const data = await res.json();
-
-//   localStorage.setItem("access", data.access);
-
-//   return data.access;
-// };
 
 export const refreshAccessToken = async () => {
   const refresh = localStorage.getItem("refresh_token");
@@ -136,34 +100,6 @@ export const refreshAccessToken = async () => {
 };
 
 
-// export const authFetch = async (url: string, options: RequestInit = {}) => {
-//   let access = localStorage.getItem("access");
-
-//   let res = await fetch(url, {
-//     ...options,
-//     headers: {
-//       ...options.headers,
-//       Authorization: `Bearer ${access}`,
-//       "Content-Type": "application/json",
-//     },
-//   });
-
-//   if (res.status === 401) {
-//     access = await refreshAccessToken();
-
-//     res = await fetch(url, {
-//       ...options,
-//       headers: {
-//         ...options.headers,
-//         Authorization: `Bearer ${access}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   }
-
-//   return res;
-// };
-
 export const authFetch = async (url: string, options: RequestInit = {}) => {
   let access = localStorage.getItem("access_token");
 
@@ -189,17 +125,6 @@ export const authFetch = async (url: string, options: RequestInit = {}) => {
 
   return res;
 };
-
-// /* GET ME */
-// export const getMe = async () => {
-//   const res = await authFetch(`${BASE_URL}/me/`);
-
-//   if (!res.ok) {
-//     throw new Error("Unauthorized");
-//   }
-
-//   return await res.json();
-// };
 
 export type ItemResponse = {
   id: number;
@@ -360,4 +285,43 @@ export const updateProfile = async (formData: {
   }
 
   return JSON.parse(text);
+};
+
+
+export const createAppeal = async (data: AppealPayload) => {
+  const token = localStorage.getItem('access_token');
+  try {
+    console.log("found_item:", data.found_item);
+    console.log("lost_item:", data.lost_item);
+    const response = await axios.post(
+      `${BASE_URL}/appeals/create/`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  
+    return response.data.results;
+  }
+  catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    console.log("APPEAL ERROR:", error.response?.data);
+  } else
+    console.log("UNKNOWN ERROR:", error);
+  throw error;
+}
+};
+
+export const getAppeals = async () => {
+  const token = localStorage.getItem('access_token');
+
+  const res = await axios.get(`${BASE_URL}/appeals/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
 };

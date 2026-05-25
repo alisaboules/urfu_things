@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdDelete } from 'react-icons/md';
 import { createFoundItem } from '../Api/Api';
+import { PickupFinder } from '../Components/Geolocation/Geolocation';
 
 function Advertisement() {
   const [type, setType] = useState('found');
@@ -22,6 +23,7 @@ function Advertisement() {
     setForm((prev) => ({
       ...prev,
       title: category,
+      category: category,
     }));
   };
   //   const categoriess = [
@@ -35,7 +37,7 @@ function Advertisement() {
   //   { id: 2, name: "Главный пункт" },
   // ];
 
-  const categories = ['Наушники', 'Кошельки', 'Ключи', 'Одежда', 'Подзарядки', 'Канцелярия'];
+  // const categories = ['Наушники', 'Кошельки', 'Ключи', 'Одежда', 'Подзарядки', 'Канцелярия'];
   const toggleCategory = () => {
     setCategoryOpen(!categoryOpen);
     if (!categoryOpen) {
@@ -85,6 +87,11 @@ function Advertisement() {
     category: '',
     pickup_point: '',
   });
+  const categories = [
+  { id: 1, name: "Наушники" },
+  { id: 2, name: "Кошельки" }
+];
+const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
 
@@ -120,8 +127,9 @@ function Advertisement() {
       // data.append("location_ref", form.location);
       if (type === 'found') {
         data.append('description', form.description);
-        data.append('location_type', 'free');
+        data.append('location_type',  'free');
         data.append('location_ref', form.location);
+        data.append('category', String(selectedCategoryId));
       } else {
         data.append('description', form.description);
         data.append('location_zone', 'Свободно');
@@ -129,6 +137,7 @@ function Advertisement() {
       }
       if (photo) {
         data.append('image', photo);
+        console.log("PHOTO BEFORE SEND:", photo);
       }
 
       const result = await createFoundItem(data, type);
@@ -187,8 +196,11 @@ function Advertisement() {
                   <div
                     key={index}
                     className="category-item"
-                    onClick={() => selectCategory(category)}>
-                    {category}
+                    onClick={() => {
+                      selectCategory(category.name);
+                      setSelectedCategoryId(category.id);
+                    }}>
+                    {category.name}
                   </div>
                 ))}
               </div>
@@ -228,7 +240,7 @@ function Advertisement() {
               onChange={(e) => setForm({ ...form, location: e.target.value })}
             />
           </div>
-
+          <PickupFinder />
           <div className="actions-advertisement">
             <button className="submit-advertisement" onClick={handleSubmit}>
               Готово

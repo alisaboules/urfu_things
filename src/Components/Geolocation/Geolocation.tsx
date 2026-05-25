@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getNearestPickupPoint } from "../../Api/Api";
+import "./Geolocation.css";
 
 interface PickupPointResponse {
   nearest: {
@@ -51,7 +52,7 @@ function PickupFinder() {
 
   return (
     <div>
-      <button onClick={handleFindPickup}>
+      <button className="pickup-finder-btn" onClick={handleFindPickup}>
         {loading ? "Загрузка..." : "Найти пункт"}
       </button>
 
@@ -59,10 +60,9 @@ function PickupFinder() {
 
       {pickupPoint && (
         <div>
-          <h3>{pickupPoint.nearest.name}</h3>
-
-          <p>
-            Расстояние: {pickupPoint.distance_km} км
+          <h3>Ближайший пункт выдачи: <span className="pickup-name">{pickupPoint.nearest.name}</span></h3>
+          <p className="pickup-name">
+            Расстояние: <span className="pickup-name">{pickupPoint.distance_km} км</span>
           </p>
         </div>
       )}

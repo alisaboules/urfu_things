@@ -26,9 +26,6 @@ function SidebarPickup({
           Профиль
         </button>
         <button className="user-data">История действий</button>
-        <button className="user-data" onClick={() => { navigate("/appeal"); onClose(); }}>
-          Обращение в администрацию
-        </button>
       </div>
     </aside>
   );
