@@ -89,7 +89,11 @@ function Advertisement() {
   });
   const categories = [
   { id: 1, name: "Наушники" },
-  { id: 2, name: "Кошельки" }
+  { id: 2, name: "Кошельки" },
+  { id: 3, name: "Ключи" },
+  { id: 4, name: "Одежда" },
+  { id: 5, name: "Подзарядки" },
+  { id: 6, name: "Канцелярия" },
 ];
 const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -134,6 +138,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
         data.append('description', form.description);
         data.append('location_zone', 'Свободно');
         data.append('location_text', form.location);
+        data.append('category', String(selectedCategoryId));
       }
       if (photo) {
         data.append('image', photo);
