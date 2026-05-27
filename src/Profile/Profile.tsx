@@ -4,7 +4,7 @@ import './Profile.css';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { MdAddAPhoto } from 'react-icons/md';
 import { MdEdit } from 'react-icons/md';
-import { useState, useRef } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
@@ -15,9 +15,18 @@ function Profile() {
     const newValue = !enabled;
     setEnabled(newValue);
 
-    await updateProfile({
+     try {
+    const updatedUser = await updateProfile({
       notifications_enabled: newValue,
     });
+
+    setUser(updatedUser);
+
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  } catch (err) {
+    console.error(err);
+    setEnabled(!newValue); // откат если ошибка
+  };
   };
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +50,9 @@ function Profile() {
 
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
+  useLayoutEffect(() => {
+  setEnabled(user?.notifications_enabled ?? false);
+}, [user]);
   const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({

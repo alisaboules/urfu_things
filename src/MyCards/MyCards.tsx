@@ -1,35 +1,45 @@
-import './MainPage.css';
+import '../MainPage/MainPage.css';
+import { FaPlus, FaUser } from 'react-icons/fa6';
 import { IoIosSearch } from 'react-icons/io';
-import { FaUser } from 'react-icons/fa6';
-import { FaPlus } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { MdOutlinePlace } from 'react-icons/md';
-import { RxCross1 } from 'react-icons/rx';
-import { BsArrowsFullscreen } from 'react-icons/bs';
-import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
-import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
+import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
+import { RxCross1 } from 'react-icons/rx';
 import { TbMessageQuestion } from 'react-icons/tb';
-import type { Item } from '../App';
+import { BsArrowsFullscreen } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { SidebarUser } from '../Sidebars/SidebarUser';
+import { MdOutlinePlace } from 'react-icons/md';
 
-type MainPageProps = {
+type Item = {
+  id: number;
+  title: string;
+  img: string;
+  description: string;
+  location_ref: string;
+  status: string;
+  user: number;
+  type: 'found' | 'lost';
+};
+
+type MyCardsProps = {
   items: Item[];
 };
 
-function MainPage({ items }: MainPageProps) {
+function MyCards({ items }: MyCardsProps) {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
   const navigate = useNavigate();
-  const [type, setType] = useState('found');
-  
+  const [type, setType] = useState<'found' | 'lost'>('found');
+  const myItems = items.filter((item) => item.user === user?.id && item.type === type);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
   const fullName = user?.first_name || '';
 
   const [name, surname] = fullName.split(' ');
 
   const shortName = `${name || ''} ${surname || ''}`.trim();
-  
+
   const closeAllPopups = () => {
     setIsImageOpen(false);
     setSelectedItem(null);
@@ -46,7 +56,7 @@ function MainPage({ items }: MainPageProps) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
-  const isPickupEmployee = user?.role === 'pickup_point';
+  // const isPickupEmployee = user?.role === 'pickup_point';
 
   return (
     <>
@@ -65,28 +75,28 @@ function MainPage({ items }: MainPageProps) {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType('lost')}>
-                {isPickupEmployee ? 'В пункте' : 'Потерянные'}
-              </button>
+              <button onClick={() => setType('lost')}>Потерянные</button>
 
-              <button onClick={() => setType('found')}>
-                {isPickupEmployee ? 'Выданы' : 'Найденные'}
-              </button>
+              <button onClick={() => setType('found')}>Найденные</button>
             </div>
           </div>
           <button className="filter">Фильтры</button>
-
           <div className="grid">
-            {items.map((item) => (
-              <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
-                <div className="card-image-main">
-                  <img src={item.img} alt={item.title} />
+            {myItems.length > 0 ? (
+              myItems.map((item) => (
+                <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
+                  <div className="card-image-main">
+                    <img src={item.img} alt={item.title} />
+                  </div>
+
+                  <div className="card-title">
+                    <p>{item.title}</p>
+                  </div>
                 </div>
-                <div className="card-title">
-                  <p>{item.title}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="no-items">У вас пока нет объявлений</p>
+            )}
           </div>
         </div>
       </div>
@@ -139,9 +149,12 @@ function MainPage({ items }: MainPageProps) {
                 }}>
                 <BsArrowsFullscreen className="fullscreen-icon" />
               </button>
-              <TbMessageQuestion className="appeal-btn" onClick={() => {
-                navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
-              }} />
+              <TbMessageQuestion
+                className="appeal-btn"
+                onClick={() => {
+                  navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
+                }}
+              />
             </div>
 
             <div className="discription-for-card">
@@ -179,4 +192,4 @@ function MainPage({ items }: MainPageProps) {
   );
 }
 
-export { MainPage };
+export { MyCards };

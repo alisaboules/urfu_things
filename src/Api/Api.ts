@@ -130,11 +130,18 @@ export type ItemResponse = {
   id: number;
   title: string;
   description: string;
-  location: string;
+  location_ref: string;
+  user: number;
   image: string;
   status: string;
 };
 
+export type ItemsResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ItemResponse[];
+};
 
 export const createFoundItem = async (formData: FormData, type: string) => {
   const token = localStorage.getItem("access_token");
@@ -167,7 +174,7 @@ export const createFoundItem = async (formData: FormData, type: string) => {
 
 export const getItems = async (
   type: string
-): Promise<ItemResponse[]> => {
+): Promise<ItemsResponse> => {
   const url =
     type === "found"
       ? `${BASE_URL}/found/`
