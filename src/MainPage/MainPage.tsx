@@ -29,7 +29,7 @@ function MainPage({ items }: MainPageProps) {
   const [name, surname] = fullName.split(' ');
 
   const shortName = `${name || ''} ${surname || ''}`.trim();
-  
+  const filteredItems = items.filter((item) => item.type === type);
   const closeAllPopups = () => {
     setIsImageOpen(false);
     setSelectedItem(null);
@@ -52,7 +52,7 @@ function MainPage({ items }: MainPageProps) {
     <>
       <div className="container_header_homepage">
         <div className="header">
-          <h1>UniFind</h1>
+          <h1 onClick={() => navigate('/')}>UniFind</h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
 
@@ -77,7 +77,7 @@ function MainPage({ items }: MainPageProps) {
           <button className="filter">Фильтры</button>
 
           <div className="grid">
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
@@ -139,9 +139,12 @@ function MainPage({ items }: MainPageProps) {
                 }}>
                 <BsArrowsFullscreen className="fullscreen-icon" />
               </button>
-              <TbMessageQuestion className="appeal-btn" onClick={() => {
-                navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
-              }} />
+              <TbMessageQuestion
+                className="appeal-btn"
+                onClick={() => {
+                  navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
+                }}
+              />
             </div>
 
             <div className="discription-for-card">
@@ -150,8 +153,9 @@ function MainPage({ items }: MainPageProps) {
                 <MdOutlinePlace className="location-icon" />
                 <p>{selectedItem.location_ref}</p>
               </div>
-              <p>{selectedItem.status}</p>
+              {/* <p>{selectedItem.status}</p> */}
               <p>{selectedItem.description}</p>
+              {user?.role != 'student' ? <p className="card-author">Опубликовал/а: <span className='author'>{selectedItem.author}</span></p> : null}
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>

@@ -15,6 +15,7 @@ function Advertisement() {
   const [preview, setPreview] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [selectedCategory, setSelectedCategory] = useState('Категория');
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
@@ -134,11 +135,13 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
         data.append('location_type',  'free');
         data.append('location_ref', form.location);
         data.append('category', String(selectedCategoryId));
+        data.append('author', user?.name || 'Гость');
       } else {
         data.append('description', form.description);
         data.append('location_zone', 'Свободно');
         data.append('location_text', form.location);
         data.append('category', String(selectedCategoryId));
+        data.append('author', user?.first_name || 'Гость');
       }
       if (photo) {
         data.append('image', photo);

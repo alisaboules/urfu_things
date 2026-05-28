@@ -437,3 +437,14 @@
   font-size: 30px;
   cursor: pointer;
 }
+
+
+.card-author {
+  font-size: 14px;
+  color: var(--based-color6);
+  margin-top: 10px;
+}
+
+.author {
+  color: #4811FF;
+}

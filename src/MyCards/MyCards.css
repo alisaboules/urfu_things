@@ -1,0 +1,11 @@
+.no-items {
+  text-align: center;
+  color: var(--based-color14);
+}
+
+.no-items-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

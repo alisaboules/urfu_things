@@ -12,10 +12,20 @@ function SidebarAdmin({
   onClose: () => void;
 }) {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
   return (
      <aside className="sidebar-container">
       <div className="userProfile">
-        <FaUser className="profile-sidebar-icon" onClick={onClose} />
+        {user?.avatar ? (
+          <img
+            src={user.avatar}
+            alt="avatar"
+            className="header-avatar"
+            onClick={() => onClose()}
+          />
+        ) : (
+          <FaUser className="profile-icon" onClick={() => onClose()} />
+        )}
         <div className="roles">
           <div className="userName">{userName}</div>
           <div className="userRole">{role}</div>

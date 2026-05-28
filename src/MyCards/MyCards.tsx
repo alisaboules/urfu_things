@@ -10,17 +10,20 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdOutlinePlace } from 'react-icons/md';
+import type { Item } from '../App';
+import './MyCards.css';
 
-type Item = {
-  id: number;
-  title: string;
-  img: string;
-  description: string;
-  location_ref: string;
-  status: string;
-  user: number;
-  type: 'found' | 'lost';
-};
+// type Item = {
+//   id: number;
+//   title: string;
+//   img: string;
+//   description: string;
+//   location_ref: string;
+//   status: string;
+//   user: number;
+//   type: 'found' | 'lost';
+//   author: string;
+// };
 
 type MyCardsProps = {
   items: Item[];
@@ -75,15 +78,15 @@ function MyCards({ items }: MyCardsProps) {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType('lost')}>Потерянные</button>
+              <button onClick={() => setType('lost')}>Опубликованные</button>
 
-              <button onClick={() => setType('found')}>Найденные</button>
+              <button onClick={() => setType('found')}>Забранные</button>
             </div>
           </div>
           <button className="filter">Фильтры</button>
-          <div className="grid">
             {myItems.length > 0 ? (
               myItems.map((item) => (
+                <div className="grid">
                 <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                   <div className="card-image-main">
                     <img src={item.img} alt={item.title} />
@@ -93,11 +96,13 @@ function MyCards({ items }: MyCardsProps) {
                     <p>{item.title}</p>
                   </div>
                 </div>
+                </div>
               ))
             ) : (
-              <p className="no-items">У вас пока нет объявлений</p>
+              <div className="no-items-wrapper">
+                <p className="no-items">У вас пока нет объявлений</p>
+              </div>
             )}
-          </div>
         </div>
       </div>
       <div
@@ -165,6 +170,7 @@ function MyCards({ items }: MyCardsProps) {
               </div>
               <p>{selectedItem.status}</p>
               <p>{selectedItem.description}</p>
+              {user?.role != 'student' ? <p className="card-author">Опубликовал: {selectedItem.author}</p> : null}
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>

@@ -102,3 +102,10 @@
   }
 
 }
+
+.header-avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+}

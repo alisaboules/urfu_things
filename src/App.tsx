@@ -23,6 +23,7 @@ export type Item = {
   status: string;
   user: number;
   type: 'found' | 'lost';
+  author?: string;
 };
 
 export type ApiItem = {
@@ -58,6 +59,7 @@ const fallbackItems: Item[] = [
     status: 'Найден',
     user: 2,
     type: 'found',
+    author: 'Сидоров Сидор',
   },
   {
     id: 3,
@@ -68,6 +70,7 @@ const fallbackItems: Item[] = [
     status: 'Не найден',
     user: 1,
     type: 'lost',
+    author: 'Иванов Иван',
   },
   {
     id: 4,
@@ -78,6 +81,7 @@ const fallbackItems: Item[] = [
     status: 'Найден',
     user: 3,
     type: 'found',
+    author: 'Сидоров Сидор',
   },
   {
     id: 5,
@@ -88,6 +92,7 @@ const fallbackItems: Item[] = [
     status: 'Не найден',
     user: 2,
     type: 'lost',
+    author: 'Петров Петр',
   },
   {
     id: 6,
@@ -98,6 +103,7 @@ const fallbackItems: Item[] = [
     status: 'Найден',
     user: 1,
     type: 'found',
+    author: 'Иванов Иван',
   },
 ];
 
@@ -122,6 +128,7 @@ function App() {
             description: item.description,
             location_ref: item.location_ref,
             status: item.status,
+            author: item.author,
           })),
 
           ...lost.map((item) => ({
@@ -133,6 +140,7 @@ function App() {
             description: item.description,
             location_ref: item.location_ref,
             status: item.status,
+            author: item.author,
           })),
         ];
 
