@@ -40,7 +40,7 @@ function SidebarAdmin({
           Журнал действий
         </button>
         <button className="user-data">Справочники</button>
-        <button className="user-data">Статистика</button>
+        <button className="user-data" onClick={() => { navigate("/statistic")}}>Статистика</button>
       </div>
     </aside>
   );

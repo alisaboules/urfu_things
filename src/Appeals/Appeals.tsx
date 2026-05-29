@@ -8,7 +8,7 @@ import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { getAppeals } from '../Api/Api';
 
-export type Appeal = {
+type AppealImage = {
   id: number;
   subject: string;
   message: string;
@@ -19,7 +19,7 @@ export type Appeal = {
 
 function Appeals() {
   const navigate = useNavigate();
-  const [cards, setCards] = useState<Appeal[]>([]);
+  const [cards, setCards] = useState<AppealImage[]>([]);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userName] = useState(() => {
@@ -33,18 +33,18 @@ function Appeals() {
     return 'Гость';
   });
   useEffect(() => {
-  const load = async () => {
-    try {
-      const data = await getAppeals();
-      setCards(data.results || data);
-      console.log("APPEALS RAW:", data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+    const load = async () => {
+      try {
+        const data = await getAppeals();
+        setCards(data.results || data);
+        console.log('APPEALS RAW:', data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-  load();
-}, []);
+    load();
+  }, []);
   // const cards = [
   //   {
   //     id: 1,
@@ -75,39 +75,39 @@ function Appeals() {
           <FaUser className="profile-appeals-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div
-        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
-        onClick={() => setSidebarOpen(false)}>
-        <div
-          className={`sidebar ${sidebarOpen ? 'open' : ''}`}
-          onClick={(e) => e.stopPropagation()}>
-          {user?.role === 'student' && (
-            <>
-              <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
-            </>
-          )}
-          {user?.role === 'admin' && (
-            <>
-              <SidebarAdmin
-                userName={userName}
-                role={'Администратор'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
-          {user?.role === 'pickup_point' && (
-            <>
-              <SidebarPickup
-                userName={userName}
-                role={'Сотрудник пункта выдачи'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
+          className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+          onClick={() => setSidebarOpen(false)}>
+          <div
+            className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+            onClick={(e) => e.stopPropagation()}>
+            {user?.role === 'student' && (
+              <>
+                <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
+              </>
+            )}
+            {user?.role === 'admin' && (
+              <>
+                <SidebarAdmin
+                  userName={userName}
+                  role={'Администратор'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+            {user?.role === 'pickup_point' && (
+              <>
+                <SidebarPickup
+                  userName={userName}
+                  role={'Сотрудник пункта выдачи'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
         <div className="card-appeals">
           <div className="title-appeals">Обращения пользователей</div>
-          <hr className='hrs'/>
+          <hr className="hrs" />
           <button className="filter-appeals">Фильтры</button>
           <div className="wrapper-appeals">
             <div className="cards-appeals">
@@ -115,9 +115,7 @@ function Appeals() {
                 <div className="card-appeals-item" key={item.id}>
                   <div className="content-appeals-item">
                     <h3 className="title-appeals-item">{item.subject}</h3>
-                    <p className="date-appeals">
-                      {new Date(item.created_at).toLocaleDateString()}
-                    </p>
+                    <p className="date-appeals">{new Date(item.created_at).toLocaleDateString()}</p>
                   </div>
                   <PiInfoLight className="infoBtn" />
                 </div>
@@ -130,4 +128,4 @@ function Appeals() {
   );
 }
 
-export { Appeals };
+export { Appeals, type AppealImage };

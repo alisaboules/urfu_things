@@ -17,7 +17,7 @@ function SidebarUser( { userName, onClose }: { userName: string; onClose: () => 
             onClick={() => onClose()}
           />
         ) : (
-          <FaUser className="profile-icon" onClick={() => onClose()} />
+          <FaUser className="profile-sidebar-icon" onClick={() => onClose()} />
         )}
         <div className="userName">{userName}</div>
       </div>
@@ -39,7 +39,7 @@ function SidebarUser( { userName, onClose }: { userName: string; onClose: () => 
         <button
           className="user-data"
           onClick={() => {
-            navigate('/my-statuses');
+            navigate('');
           }}>
           Мои статусы
         </button>

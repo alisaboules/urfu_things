@@ -7,11 +7,14 @@ import { Advertisement } from './Advertisement';
 import './index.css';
 import { Appeal } from './Appeal';
 import { Appeals } from './Appeals';
+
 import { Magazine } from './Magazine';
 import { Profile } from './Profile/Profile';
 import { MyCards } from './MyCards/MyCards';
 import { useLayoutEffect, useState } from 'react';
-import { getItems } from './Api/Api';
+import { getAppeals, getItems } from './Api/Api';
+import { MyStatistic } from './Statistic/Statistic';
+import type { AppealImage } from './Appeals/Appeals';
 
 
 export type Item = {
@@ -109,50 +112,118 @@ const fallbackItems: Item[] = [
 
 function App() {
   const [items, setItems] = useState<Item[]>([]);
+  const [appeals, setAppeals] = useState<AppealImage[]>([]);
   useLayoutEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const foundData = await getItems('found');
-        console.log(foundData);
-        const lostData = await getItems('lost');
-        const found = Array.isArray(foundData) ? foundData : foundData.results || [];
+  const fetchData = async () => {
+    try {
+      const foundData = await getItems('found');
+      const lostData = await getItems('lost');
 
-        const lost = Array.isArray(lostData) ? lostData : lostData.results || [];
-        const allItems: Item[] = [
-          ...found.map((item) => ({
-            id: item.id,
-            user: item.user,
-            type: 'found' as const,
-            title: item.description || 'Без названия',
-            img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-            description: item.description,
-            location_ref: item.location_ref,
-            status: item.status,
-            author: item.author,
-          })),
+      const found = Array.isArray(foundData)
+        ? foundData
+        : foundData.results || [];
 
-          ...lost.map((item) => ({
-            id: item.id,
-            user: item.user,
-            type: 'lost' as const,
-            title: item.description || 'Без названия',
-            img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-            description: item.description,
-            location_ref: item.location_ref,
-            status: item.status,
-            author: item.author,
-          })),
-        ];
+      const lost = Array.isArray(lostData)
+        ? lostData
+        : lostData.results || [];
 
-        setItems(allItems);
-      } catch (e) {
-        console.error(e);
-        setItems(fallbackItems);
-      }
-    };
+      const allItems: Item[] = [
+        ...found.map((item) => ({
+          id: item.id,
+          user: item.user,
+          type: 'found' as const,
+          title: item.description || 'Без названия',
+          img:
+            item.image ||
+            `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+          description: item.description,
+          location_ref: item.location_ref,
+          status: item.status,
+          author: item.author,
+        })),
 
-    fetchItems();
-  }, []);
+        ...lost.map((item) => ({
+          id: item.id,
+          user: item.user,
+          type: 'lost' as const,
+          title: item.description || 'Без названия',
+          img:
+            item.image ||
+            `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+          description: item.description,
+          location_ref: item.location_ref,
+          status: item.status,
+          author: item.author,
+        })),
+      ];
+
+      setItems(allItems);
+
+    } catch (e) {
+      console.error(e);
+      setItems(fallbackItems);
+    }
+
+    try {
+      const appealsData = await getAppeals();
+
+      setAppeals(
+        Array.isArray(appealsData)
+          ? appealsData
+          : appealsData.results || []
+      );
+    } catch (e) {
+      console.error("APPEALS ERROR:", e);
+      setAppeals([]);
+    }
+  };
+
+  fetchData();
+}, []);
+  // useLayoutEffect(() => {
+  //   const fetchItems = async () => {
+  //     try {
+  //       const foundData = await getItems('found');
+  //       console.log(foundData);
+  //       const lostData = await getItems('lost');
+  //       const found = Array.isArray(foundData) ? foundData : foundData.results || [];
+
+  //       const lost = Array.isArray(lostData) ? lostData : lostData.results || [];
+  //       const allItems: Item[] = [
+  //         ...found.map((item) => ({
+  //           id: item.id,
+  //           user: item.user,
+  //           type: 'found' as const,
+  //           title: item.description || 'Без названия',
+  //           img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+  //           description: item.description,
+  //           location_ref: item.location_ref,
+  //           status: item.status,
+  //           author: item.author,
+  //         })),
+
+  //         ...lost.map((item) => ({
+  //           id: item.id,
+  //           user: item.user,
+  //           type: 'lost' as const,
+  //           title: item.description || 'Без названия',
+  //           img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+  //           description: item.description,
+  //           location_ref: item.location_ref,
+  //           status: item.status,
+  //           author: item.author,
+  //         })),
+  //       ];
+
+  //       setItems(allItems);
+  //     } catch (e) {
+  //       console.error(e);
+  //       setItems(fallbackItems);
+  //     }
+  //   };
+
+  //   fetchItems();
+  // }, []);
 
   return (
     <>
@@ -169,6 +240,7 @@ function App() {
           <Route path="/magazine" element={<Magazine />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-cards" element={<MyCards items={items} />} />
+          <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />}/>
         </Routes>
       </HashRouter>
     </>

@@ -65,7 +65,7 @@ function MyCards({ items }: MyCardsProps) {
     <>
       <div className="container_header_homepage">
         <div className="header">
-          <h1>UniFind</h1>
+          <h1 onClick={() => navigate('/main')}>UniFind</h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
 
@@ -78,9 +78,9 @@ function MyCards({ items }: MyCardsProps) {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType('lost')}>Опубликованные</button>
+              <button onClick={() => setType('found')}>Опубликованные</button>
 
-              <button onClick={() => setType('found')}>Забранные</button>
+              <button onClick={() => setType('lost')}>Забранные</button>
             </div>
           </div>
           <button className="filter">Фильтры</button>
