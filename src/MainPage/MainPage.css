@@ -449,3 +449,34 @@
 .author {
   color: #4811FF;
 }
+
+.search {
+  margin: 20px 0 35px;
+  position: relative;
+  display: flex;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0,0,0,.15);
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: #333;
+}
+
+.search-suggestion:hover {
+  background: #f5f5f5;
+}

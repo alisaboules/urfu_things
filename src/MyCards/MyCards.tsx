@@ -60,7 +60,7 @@ function MyCards({ items }: MyCardsProps) {
   }, []);
 
   // const isPickupEmployee = user?.role === 'pickup_point';
-
+  
   return (
     <>
       <div className="container_header_homepage">
@@ -78,9 +78,9 @@ function MyCards({ items }: MyCardsProps) {
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
-              <button onClick={() => setType('found')}>Опубликованные</button>
+              <button onClick={() => setType('lost')}>Опубликованные</button>
 
-              <button onClick={() => setType('lost')}>Забранные</button>
+              <button onClick={() => setType('found')}>Забранные</button>
             </div>
           </div>
           <button className="filter">Фильтры</button>

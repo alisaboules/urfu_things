@@ -25,37 +25,50 @@ type MainPageProps = {
 function MainPage({ items }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('found');
-  const fuse = useMemo(() => {
-  return new Fuse(items, {
-    keys: ['title', 'description', 'location_ref'],
-    threshold: 0.4, // чем меньше → тем строже
-    ignoreLocation: true,
-  });
-}, [items]);
+ 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const fullName = user?.first_name || '';
-  
+
   const [name, surname] = fullName.split(' ');
   const [search, setSearch] = useState('');
   // const [searchResults, setSearchResults] = useState<Item[]>([]);
   const shortName = `${name || ''} ${surname || ''}`.trim();
   const filteredItems = items.filter((item) => item.type === type);
+  const suggestions = useMemo(() => {
+  if (!search.trim()) return [];
+
+  return filteredItems
+    .filter(
+      (item) =>
+        item.title.toLowerCase().includes(search.toLowerCase()) ||
+        item.location_ref.toLowerCase().includes(search.toLowerCase())
+    )
+    .slice(0, 5);
+}, [search, filteredItems]);
+
   const closeAllPopups = () => {
     setIsImageOpen(false);
     setSelectedItem(null);
   };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isPickupEmployee = user?.role === 'pickup_point';
-  
+  const fuse = useMemo(() => {
+    return new Fuse(filteredItems, {
+      keys: ['title', 'description', 'location_ref', 'location_text'],
+      threshold: 0.2,
+      ignoreLocation: true,
+    });
+  }, [filteredItems]);
+
   const searchResults = useMemo(() => {
-  if (!search.trim()) return [];
+    if (!search.trim()) return filteredItems;
 
-  return fuse.search(search).map((r) => r.item);
-}, [search, fuse]);
+    return fuse.search(search).map((r) => r.item);
+  }, [search, fuse, filteredItems]);
 
-  const displayedItems = search.trim() ? searchResults : filteredItems;
+  const displayedItems = searchResults;
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -102,7 +115,8 @@ function MainPage({ items }: MainPageProps) {
 
   //   return () => clearTimeout(timeout);
   // }, [search, type]);
-
+  console.log('search:', search);
+  console.log('suggestions:', suggestions);
   return (
     <>
       <div className="container_header_homepage">
@@ -113,12 +127,28 @@ function MainPage({ items }: MainPageProps) {
 
         <div className="search">
           <IoIosSearch className="icon-search" />
+
           <input
             type="text"
             placeholder="Поиск"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          {search.trim() && suggestions.length > 0 && (
+            <div className="search-suggestions">
+              {suggestions.map((item) => (
+                <div
+                  key={item.id}
+                  className="search-suggestion"
+                  onClick={() => {
+                    setSearch(item.title);
+                  }}>
+                  <span>{item.title}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="container_main_homepage">
@@ -216,7 +246,8 @@ function MainPage({ items }: MainPageProps) {
               {/* <p>{selectedItem.status}</p> */}
               {selectedItem.created_at && (
                 <p className="date">
-                   Дата создания: {new Date(selectedItem.created_at).toLocaleDateString('ru-RU', {
+                  Дата создания:{' '}
+                  {new Date(selectedItem.created_at).toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric',
