@@ -10,6 +10,10 @@ import { getAppeals } from '../Api/Api';
 
 type AppealImage = {
   id: number;
+  user: number;
+  username: string;
+  found_item: number | null;
+  lost_item: number | null;
   subject: string;
   message: string;
   status: string;
@@ -20,6 +24,7 @@ type AppealImage = {
 function Appeals() {
   const navigate = useNavigate();
   const [cards, setCards] = useState<AppealImage[]>([]);
+  const [selectedAppeal, setSelectedAppeal] = useState<AppealImage | null>(null);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userName] = useState(() => {
@@ -112,7 +117,10 @@ function Appeals() {
           <div className="wrapper-appeals">
             <div className="cards-appeals">
               {cards.map((item) => (
-                <div className="card-appeals-item" key={item.id}>
+                <div
+                  className="card-appeals-item"
+                  key={item.id}
+                  onClick={() => setSelectedAppeal(item)}>
                   <div className="content-appeals-item">
                     <h3 className="title-appeals-item">{item.subject}</h3>
                     <p className="date-appeals">{new Date(item.created_at).toLocaleDateString()}</p>
@@ -123,6 +131,56 @@ function Appeals() {
             </div>
           </div>
         </div>
+
+        {selectedAppeal && (
+          <div className="modal-overlay" onClick={() => setSelectedAppeal(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h1>{selectedAppeal.subject}</h1>
+
+              <p>
+                <strong>Дата:</strong>{' '}
+                <span className="descript-appeals">
+                  {new Date(selectedAppeal.created_at).toLocaleDateString()}
+                </span>
+              </p>
+
+              <p>
+                <strong>Статус:</strong>{' '}
+                <span className="descript-appeals">{selectedAppeal.status}</span>
+              </p>
+              <p>
+                <strong>Автор:</strong>{' '}
+                <span className="descript-appeals">{selectedAppeal.username}</span>
+              </p>
+
+              <p>
+                <strong>ID карточки:</strong>{' '}
+                <span className="descript-appeals">
+                  {selectedAppeal.found_item ?? selectedAppeal.lost_item}
+                </span>
+              </p>
+              <p>
+                <strong>Сообщение:</strong>
+              </p>
+
+              <div className="appeal-message">{selectedAppeal.message}</div>
+
+              {selectedAppeal.admin_comment && (
+                <>
+                  <p>
+                    <span className="descript-appeals">Ответ администратора</span>:
+                  </p>
+
+                  <div className="admin-comment">{selectedAppeal.admin_comment}</div>
+                </>
+              )}
+
+              <button className="close-modal-btn" onClick={() => setSelectedAppeal(null)}>
+                Закрыть
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

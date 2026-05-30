@@ -113,6 +113,12 @@
   flex-direction: row;
   gap: 12px;
   min-height: 72px;
+  transition: transform 0.2s ease;
+}
+
+.card-appeals-item:hover {
+  transform: scale(1.005);
+  cursor: pointer;
 }
 
 .content-appeals-item {
@@ -145,4 +151,57 @@
 
 .profile-appeals-icon:hover {
   transform: scale(1.05);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--based-color2);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  padding: 24px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.appeal-message,
+.admin-comment {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--border-color-1);
+  border-radius: 10px;
+  white-space: pre-wrap;
+}
+
+.close-modal-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #4811FF;
+  color: #DCD1FF;
+  font-family: var(--urfu-font-family);
+  font-size: 18px;
+  transition: 0.4s ease;
+}
+
+.close-modal-btn:hover {
+  transform: scale(1.02);
+}
+
+.descript-appeals {
+  color: #4811FF;
+  font-weight: 600;
+  font-size: 16px;
 }
