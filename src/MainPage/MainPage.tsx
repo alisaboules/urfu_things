@@ -11,7 +11,12 @@ import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
 import { TbMessageQuestion } from 'react-icons/tb';
+// import type { ApiItem, Item } from '../App';
+// import { searchItems } from '../Api/Api';
+import { useMemo } from 'react';
+
 import type { Item } from '../App';
+import Fuse from 'fuse.js';
 
 type MainPageProps = {
   items: Item[];
@@ -20,14 +25,21 @@ type MainPageProps = {
 function MainPage({ items }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('found');
-  
+  const fuse = useMemo(() => {
+  return new Fuse(items, {
+    keys: ['title', 'description', 'location_ref'],
+    threshold: 0.4, // чем меньше → тем строже
+    ignoreLocation: true,
+  });
+}, [items]);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const fullName = user?.first_name || '';
-
+  
   const [name, surname] = fullName.split(' ');
-
+  const [search, setSearch] = useState('');
+  // const [searchResults, setSearchResults] = useState<Item[]>([]);
   const shortName = `${name || ''} ${surname || ''}`.trim();
   const filteredItems = items.filter((item) => item.type === type);
   const closeAllPopups = () => {
@@ -35,6 +47,15 @@ function MainPage({ items }: MainPageProps) {
     setSelectedItem(null);
   };
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isPickupEmployee = user?.role === 'pickup_point';
+  
+  const searchResults = useMemo(() => {
+  if (!search.trim()) return [];
+
+  return fuse.search(search).map((r) => r.item);
+}, [search, fuse]);
+
+  const displayedItems = search.trim() ? searchResults : filteredItems;
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -46,7 +67,41 @@ function MainPage({ items }: MainPageProps) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
-  const isPickupEmployee = user?.role === 'pickup_point';
+
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(async () => {
+  //     try {
+  //       if (!search.trim()) {
+  //         setSearchResults([]);
+  //         return;
+  //       }
+
+  //       const data = await searchItems(search, type as 'found' | 'lost');
+  //       console.log('SEARCH RAW:', data);
+  //       //   const results = (data.results || data).map((item: ApiItem) => ({
+  //       //   ...item,
+  //       //   img: item.image || '',
+  //       // }));
+  //       const results = (data.results || data).map((item: ApiItem) => ({
+  //         id: item.id,
+  //         user: item.user,
+  //         type: type as 'found' | 'lost',
+  //         title: item.category_name || 'Без названия',
+  //         img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+  //         description: item.description,
+  //         location_ref: item.location_ref,
+  //         status: item.status,
+  //         author: item.author,
+  //       }));
+  //       setSearchResults(results);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }, 500);
+
+  //   return () => clearTimeout(timeout);
+  // }, [search, type]);
 
   return (
     <>
@@ -58,7 +113,12 @@ function MainPage({ items }: MainPageProps) {
 
         <div className="search">
           <IoIosSearch className="icon-search" />
-          <input type="text" placeholder="Поиск" />
+          <input
+            type="text"
+            placeholder="Поиск"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
       <div className="container_main_homepage">
@@ -77,7 +137,7 @@ function MainPage({ items }: MainPageProps) {
           <button className="filter">Фильтры</button>
 
           <div className="grid">
-            {filteredItems.map((item) => (
+            {displayedItems.map((item) => (
               <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
@@ -154,8 +214,23 @@ function MainPage({ items }: MainPageProps) {
                 <p>{selectedItem.location_ref}</p>
               </div>
               {/* <p>{selectedItem.status}</p> */}
-              <p>{selectedItem.description}</p>
-              {user?.role != 'student' ? <p className="card-author">Опубликовал/а: <span className='author'>{selectedItem.author}</span></p> : null}
+              {selectedItem.created_at && (
+                <p className="date">
+                   Дата создания: {new Date(selectedItem.created_at).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </p>
+              )}
+              <p>Описание: {selectedItem.description}</p>
+              {user?.role != 'student' ? (
+                <p className="card-author">
+                  Опубликовал/а: <span className="author">{selectedItem.author}</span>
+                </p>
+              ) : null}
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>

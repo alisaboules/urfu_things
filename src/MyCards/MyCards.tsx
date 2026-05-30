@@ -84,9 +84,9 @@ function MyCards({ items }: MyCardsProps) {
             </div>
           </div>
           <button className="filter">Фильтры</button>
-            {myItems.length > 0 ? (
-              myItems.map((item) => (
-                <div className="grid">
+          {myItems.length > 0 ? (
+            <div className="grid">
+              {myItems.map((item) => (
                 <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                   <div className="card-image-main">
                     <img src={item.img} alt={item.title} />
@@ -96,13 +96,13 @@ function MyCards({ items }: MyCardsProps) {
                     <p>{item.title}</p>
                   </div>
                 </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-items-wrapper">
-                <p className="no-items">У вас пока нет объявлений</p>
-              </div>
-            )}
+              ))}
+            </div>
+          ) : (
+            <div className="no-items-wrapper">
+              <p className="no-items">У вас пока нет объявлений</p>
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -170,7 +170,9 @@ function MyCards({ items }: MyCardsProps) {
               </div>
               <p>{selectedItem.status}</p>
               <p>{selectedItem.description}</p>
-              {user?.role != 'student' ? <p className="card-author">Опубликовал: {selectedItem.author}</p> : null}
+              {user?.role != 'student' ? (
+                <p className="card-author">Опубликовал: {selectedItem.author}</p>
+              ) : null}
             </div>
             <div className="popup-footer">
               <button className="responce-btn" onClick={() => setSelectedItem(null)}>

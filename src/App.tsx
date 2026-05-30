@@ -27,12 +27,14 @@ export type Item = {
   user: number;
   type: 'found' | 'lost';
   author?: string;
+  created_at?: string;
 };
 
 export type ApiItem = {
   id: number;
   user: number;
   category: number | null;
+  category_name?: string;
   pickup_point: number | null;
   location_type: string;
   location_ref: string;
@@ -40,6 +42,7 @@ export type ApiItem = {
   status: string;
   image: string | null;
   created_at: string;
+  author?: string;
 };
 
 const fallbackItems: Item[] = [
@@ -132,28 +135,30 @@ function App() {
           id: item.id,
           user: item.user,
           type: 'found' as const,
-          title: item.description || 'Без названия',
+          title: item.category_name?.trim() || 'Без категории',
           img:
-            item.image ||
+            item.image?.trim() ||
             `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
           description: item.description,
-          location_ref: item.location_ref,
+          location_ref: item.location_ref || 'Без локации',
           status: item.status,
           author: item.author,
+          created_at: item.created_at,
         })),
 
         ...lost.map((item) => ({
           id: item.id,
           user: item.user,
           type: 'lost' as const,
-          title: item.description || 'Без названия',
+          title: item.category_name?.trim() || 'Без категории',
           img:
-            item.image ||
+            item.image?.trim() ||
             `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
           description: item.description,
-          location_ref: item.location_ref,
+          location_ref: item.location_ref || item.location_text || 'Без локации',
           status: item.status,
           author: item.author,
+          created_at: item.created_at,
         })),
       ];
 

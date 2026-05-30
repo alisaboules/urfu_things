@@ -332,3 +332,28 @@ export const getAppeals = async () => {
 
   return res.data;
 };
+
+export const searchItems = async (
+  query: string,
+  type: 'found' | 'lost'
+) => {
+  const endpoint =
+    type === 'found'
+      ? '/found/'
+      : '/lost/';
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${endpoint}?search=${encodeURIComponent(query)}`
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('STATUS:', error.response?.status);
+      console.log('DATA:', error.response?.data);
+    }
+
+    throw error;
+  }
+};
