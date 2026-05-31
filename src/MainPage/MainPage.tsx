@@ -1,10 +1,10 @@
 import './MainPage.css';
 import { IoIosSearch } from 'react-icons/io';
-import { FaUser } from 'react-icons/fa6';
+import { FaCheck, FaUser } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { MdOutlinePlace } from 'react-icons/md';
+import { useState, useEffect, useRef } from 'react';
+import { MdKeyboardArrowLeft, MdOutlinePlace } from 'react-icons/md';
 import { RxCross1 } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
@@ -26,7 +26,7 @@ type MainPageProps = {
 function MainPage({ items }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('found');
- 
+
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -37,17 +37,22 @@ function MainPage({ items }: MainPageProps) {
   // const [searchResults, setSearchResults] = useState<Item[]>([]);
   const shortName = `${name || ''} ${surname || ''}`.trim();
   const filteredItems = items.filter((item) => item.type === type);
-//   const suggestions = useMemo(() => {
-//   if (!search.trim()) return [];
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
-//   return filteredItems
-//     .filter(
-//       (item) =>
-//         item.title.toLowerCase().includes(search.toLowerCase()) ||
-//         item.location_ref.toLowerCase().includes(search.toLowerCase())
-//     )
-//     .slice(0, 5);
-// }, [search, filteredItems]);
+  const [locationFilter, setLocationFilter] = useState('');
+
+  const [dateFilter, setDateFilter] = useState<'new' | 'old' | null>(null);
+  //   const suggestions = useMemo(() => {
+  //   if (!search.trim()) return [];
+
+  //   return filteredItems
+  //     .filter(
+  //       (item) =>
+  //         item.title.toLowerCase().includes(search.toLowerCase()) ||
+  //         item.location_ref.toLowerCase().includes(search.toLowerCase())
+  //     )
+  //     .slice(0, 5);
+  // }, [search, filteredItems]);
 
   const closeAllPopups = () => {
     setIsImageOpen(false);
@@ -68,8 +73,34 @@ function MainPage({ items }: MainPageProps) {
 
     return fuse.search(search).map((r) => r.item);
   }, [search, fuse, filteredItems]);
-  
-  const displayedItems = searchResults;
+
+  const displayedItems = useMemo(() => {
+    let result = searchResults;
+
+    // 1. категория (если есть поле category)
+    if (categoryFilter) {
+      result = result.filter((item) => item.title === categoryFilter);
+    }
+
+    // 2. место
+    if (locationFilter.trim()) {
+      result = result.filter((item) =>
+        item.location_ref?.toLowerCase().includes(locationFilter.toLowerCase()),
+      );
+    }
+
+    // 3. дата
+    if (dateFilter) {
+      result = [...result].sort((a, b) => {
+        const da = new Date(a.created_at || 0).getTime();
+        const db = new Date(b.created_at || 0).getTime();
+
+        return dateFilter === 'new' ? db - da : da - db;
+      });
+    }
+
+    return result;
+  }, [searchResults, categoryFilter, locationFilter, dateFilter]);
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -80,8 +111,6 @@ function MainPage({ items }: MainPageProps) {
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
-
-
 
   // useEffect(() => {
   //   const timeout = setTimeout(async () => {
@@ -116,13 +145,19 @@ function MainPage({ items }: MainPageProps) {
 
   //   return () => clearTimeout(timeout);
   // }, [search, type]);
-  
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
+  const [pickupOpen, setPickupOpen] = useState(false);
+  const categories = useMemo(() => {
+    return [...new Set(items.map((item) => item.title))];
+  }, [items]);
+  const locations = useMemo(() => {
+    return [...new Set(items.map((item) => item.location_ref))];
+  }, [items]);
   const [history, setHistory] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const firstSuggestion = suggestions.find((s) =>
-  s.toLowerCase().startsWith(search.toLowerCase())
-);
+  const firstSuggestion = suggestions.find((s) => s.toLowerCase().startsWith(search.toLowerCase()));
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -140,18 +175,17 @@ function MainPage({ items }: MainPageProps) {
     const loadSuggestions = async () => {
       try {
         if (!search.trim()) {
-          setSuggestions(history);
+          setSuggestions(history.slice(0, 5));
           return;
         }
 
         const data = await getSearchSuggestions(search);
 
-      console.log("SEARCH:", search);
-      console.log("SUGGESTIONS:", data);
+        // console.log("SEARCH:", search);
+        // console.log("SUGGESTIONS:", data);
 
-        setSuggestions(data);
-        console.log("DATA:", data);
-     
+        setSuggestions(data.slice(0, 5));
+        // console.log("DATA:", data);
       } catch (err) {
         console.error(err);
       }
@@ -159,20 +193,39 @@ function MainPage({ items }: MainPageProps) {
 
     loadSuggestions();
   }, [search, history]);
+ const filtersRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+  filtersRef.current &&
+  !filtersRef.current.contains(event.target as Node)
+) {
+  setCategoryOpen(false);
+  setDateOpen(false);
+  setPickupOpen(false);
+}
+  };
 
- const saveSearch = async (query: string) => {
-  try {
-    await saveSearchQuery(query);
+  document.addEventListener('mousedown', handleClickOutside);
 
-    const historyData = await getSearchHistory();
-    setHistory(historyData);
-  } catch (err) {
-    console.error(err);
-  }
-};
-console.log("showSuggestions =", showSuggestions);
-console.log("suggestions =", suggestions);
- 
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
+  const saveSearch = async (query: string) => {
+    try {
+      await saveSearchQuery(query);
+
+      const historyData = await getSearchHistory();
+      setHistory(historyData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  // console.log("showSuggestions =", showSuggestions);
+  // console.log("suggestions =", suggestions);
+console.log(categoryFilter);
+console.log(displayedItems);
   return (
     <>
       <div className="container_header_homepage">
@@ -236,7 +289,100 @@ console.log("suggestions =", suggestions);
               </button>
             </div>
           </div>
-          <button className="filter">Фильтры</button>
+          <div className="filters" ref={filtersRef}>
+            <div className="filter-block">
+              <button className={`filter ${categoryFilter ? 'filter-active' : ''}`} onClick={() => setCategoryOpen(!categoryOpen)}>
+                Категория
+                <MdKeyboardArrowLeft className={`filter-icon ${categoryOpen ? 'rotated' : ''}`} />
+              </button>
+              {categoryOpen && (
+                <div className="filter-popup">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setCategoryFilter(category);
+                        setCategoryOpen(false);
+                      }}>
+                      {category}
+                      {categoryFilter === category && <FaCheck className="filter-check" />}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => {
+                      setCategoryFilter(null);
+                      setCategoryOpen(false);
+                    }}>
+                    Сбросить
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="filter-block" ref={filtersRef}>
+              <button className={`filter ${dateFilter ? 'filter-active' : ''}`} onClick={() => setDateOpen(!dateOpen)}>
+                По дате
+                <MdKeyboardArrowLeft className={`filter-icon ${dateOpen ? 'rotated' : ''}`} />
+              </button>
+              {dateOpen && (
+                <div className="filter-popup">
+                  <button
+                    onClick={() => {
+                      setDateFilter('new');
+                      setDateOpen(false);
+                    }}>
+                    Сначала новые
+                    {dateFilter === 'new' && <FaCheck className="filter-check" />}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setDateFilter('old');
+                      setDateOpen(false);
+                    }}>
+                    Сначала старые
+                    {dateFilter === 'old' && <FaCheck className="filter-check" />}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setDateFilter(null);
+                      setDateOpen(false);
+                    }}>
+                    Сбросить
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="filter-block" ref={filtersRef}>
+              <button className={`filter ${locationFilter ? 'filter-active' : ''}`} onClick={() => setPickupOpen(!pickupOpen)}>
+                По месту
+                <MdKeyboardArrowLeft className={`filter-icon ${pickupOpen ? 'rotated' : ''}`} />
+              </button>
+              {pickupOpen && (
+                <div className="filter-popup">
+                  {locations.map((location) => (
+                    <button
+                      key={location}
+                      onClick={() => {
+                        setLocationFilter(location);
+                        setPickupOpen(false);
+                      }}>
+                      {location}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => {
+                      setLocationFilter('');
+                      setPickupOpen(false);
+                    }}>
+                    Сбросить
+                  </button>
+                </div>
+              )} 
+            </div>
+          </div>
 
           <div className="grid">
             {displayedItems.map((item) => (
