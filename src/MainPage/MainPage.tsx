@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 
 import type { Item } from '../App';
 import Fuse from 'fuse.js';
+import { getSearchHistory, getSearchSuggestions, saveSearchQuery } from '../Api/Api';
 
 type MainPageProps = {
   items: Item[];
@@ -36,17 +37,17 @@ function MainPage({ items }: MainPageProps) {
   // const [searchResults, setSearchResults] = useState<Item[]>([]);
   const shortName = `${name || ''} ${surname || ''}`.trim();
   const filteredItems = items.filter((item) => item.type === type);
-  const suggestions = useMemo(() => {
-  if (!search.trim()) return [];
+//   const suggestions = useMemo(() => {
+//   if (!search.trim()) return [];
 
-  return filteredItems
-    .filter(
-      (item) =>
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.location_ref.toLowerCase().includes(search.toLowerCase())
-    )
-    .slice(0, 5);
-}, [search, filteredItems]);
+//   return filteredItems
+//     .filter(
+//       (item) =>
+//         item.title.toLowerCase().includes(search.toLowerCase()) ||
+//         item.location_ref.toLowerCase().includes(search.toLowerCase())
+//     )
+//     .slice(0, 5);
+// }, [search, filteredItems]);
 
   const closeAllPopups = () => {
     setIsImageOpen(false);
@@ -67,7 +68,7 @@ function MainPage({ items }: MainPageProps) {
 
     return fuse.search(search).map((r) => r.item);
   }, [search, fuse, filteredItems]);
-
+  
   const displayedItems = searchResults;
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -115,8 +116,63 @@ function MainPage({ items }: MainPageProps) {
 
   //   return () => clearTimeout(timeout);
   // }, [search, type]);
-  console.log('search:', search);
-  console.log('suggestions:', suggestions);
+  
+  const [history, setHistory] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const firstSuggestion = suggestions.find((s) =>
+  s.toLowerCase().startsWith(search.toLowerCase())
+);
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const data = await getSearchHistory();
+        setHistory(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadHistory();
+  }, []);
+
+  useEffect(() => {
+    const loadSuggestions = async () => {
+      try {
+        if (!search.trim()) {
+          setSuggestions(history);
+          return;
+        }
+
+        const data = await getSearchSuggestions(search);
+
+      console.log("SEARCH:", search);
+      console.log("SUGGESTIONS:", data);
+
+        setSuggestions(data);
+        console.log("DATA:", data);
+     
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadSuggestions();
+  }, [search, history]);
+
+ const saveSearch = async (query: string) => {
+  try {
+    await saveSearchQuery(query);
+
+    const historyData = await getSearchHistory();
+    setHistory(historyData);
+  } catch (err) {
+    console.error(err);
+  }
+};
+console.log("showSuggestions =", showSuggestions);
+console.log("suggestions =", suggestions);
+ 
   return (
     <>
       <div className="container_header_homepage">
@@ -132,19 +188,35 @@ function MainPage({ items }: MainPageProps) {
             type="text"
             placeholder="Поиск"
             value={search}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && search.trim()) {
+                saveSearch(search);
+                setShowSuggestions(false);
+              }
+            }}
           />
+          {firstSuggestion && search && (
+            <div className="ghost">
+              {search}
+              <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
+            </div>
+          )}
 
-          {search.trim() && suggestions.length > 0 && (
+          {showSuggestions && suggestions.length > 0 && (
             <div className="search-suggestions">
-              {suggestions.map((item) => (
+              {suggestions.map((suggestion, index) => (
                 <div
-                  key={item.id}
+                  key={index}
                   className="search-suggestion"
                   onClick={() => {
-                    setSearch(item.title);
+                    setSearch(suggestion);
+                    saveSearch(suggestion);
+                    setShowSuggestions(false);
                   }}>
-                  <span>{item.title}</span>
+                  <span>{suggestion}</span>
                 </div>
               ))}
             </div>

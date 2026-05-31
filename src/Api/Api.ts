@@ -357,3 +357,65 @@ export const searchItems = async (
     throw error;
   }
 };
+
+
+export const getSearchHistory = async () => {
+  const token = localStorage.getItem('access_token');
+
+  const res = await fetch(`${BASE_URL}/search/history/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Ошибка загрузки истории');
+  }
+
+  return await res.json();
+};
+
+export const getSearchSuggestions = async (query: string) => {
+  const token = localStorage.getItem('access_token');
+
+  const res = await fetch(
+    `${BASE_URL}/search/suggestions/?q=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const text = await res.text();
+
+  console.log('STATUS:', res.status);
+  console.log('BODY:', text);
+
+  if (!res.ok) {
+    throw new Error(text);
+  }
+
+  return JSON.parse(text);
+};
+
+export const saveSearchQuery = async (query: string) => {
+  const token = localStorage.getItem('access_token');
+
+  const res = await fetch(`${BASE_URL}/search/save/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      query,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Ошибка сохранения поиска');
+  }
+
+  return await res.json();
+};
