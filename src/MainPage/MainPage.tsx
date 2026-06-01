@@ -25,7 +25,7 @@ type MainPageProps = {
 
 function MainPage({ items }: MainPageProps) {
   const navigate = useNavigate();
-  const [type, setType] = useState('found');
+  const [type, setType] = useState('lost');
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
@@ -182,7 +182,7 @@ function MainPage({ items }: MainPageProps) {
         const data = await getSearchSuggestions(search);
 
         // console.log("SEARCH:", search);
-        // console.log("SUGGESTIONS:", data);
+        console.log("SUGGESTIONS:", data);
 
         setSuggestions(data.slice(0, 5));
         // console.log("DATA:", data);
@@ -236,28 +236,28 @@ console.log(displayedItems);
 
         <div className="search">
           <IoIosSearch className="icon-search" />
-
-          <input
-            type="text"
-            placeholder="Поиск"
-            value={search}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && search.trim()) {
-                saveSearch(search);
-                setShowSuggestions(false);
-              }
-            }}
-          />
-          {firstSuggestion && search && (
-            <div className="ghost">
-              {search}
-              <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
-            </div>
-          )}
-
+          <div className="search-wrapper">
+            {firstSuggestion && search && (
+              <div className="ghost">
+                {search}
+                <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
+              </div>
+            )}
+            <input
+              type="text"
+              placeholder="Поиск"
+              value={search}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && search.trim()) {
+                  saveSearch(search);
+                  setShowSuggestions(false);
+                }
+              }}
+            />
+          </div>
           {showSuggestions && suggestions.length > 0 && (
             <div className="search-suggestions">
               {suggestions.map((suggestion, index) => (
@@ -291,7 +291,9 @@ console.log(displayedItems);
           </div>
           <div className="filters" ref={filtersRef}>
             <div className="filter-block">
-              <button className={`filter ${categoryFilter ? 'filter-active' : ''}`} onClick={() => setCategoryOpen(!categoryOpen)}>
+              <button
+                className={`filter ${categoryFilter ? 'filter-active' : ''}`}
+                onClick={() => setCategoryOpen(!categoryOpen)}>
                 Категория
                 <MdKeyboardArrowLeft className={`filter-icon ${categoryOpen ? 'rotated' : ''}`} />
               </button>
@@ -320,7 +322,9 @@ console.log(displayedItems);
               )}
             </div>
             <div className="filter-block" ref={filtersRef}>
-              <button className={`filter ${dateFilter ? 'filter-active' : ''}`} onClick={() => setDateOpen(!dateOpen)}>
+              <button
+                className={`filter ${dateFilter ? 'filter-active' : ''}`}
+                onClick={() => setDateOpen(!dateOpen)}>
                 По дате
                 <MdKeyboardArrowLeft className={`filter-icon ${dateOpen ? 'rotated' : ''}`} />
               </button>
@@ -355,7 +359,9 @@ console.log(displayedItems);
               )}
             </div>
             <div className="filter-block" ref={filtersRef}>
-              <button className={`filter ${locationFilter ? 'filter-active' : ''}`} onClick={() => setPickupOpen(!pickupOpen)}>
+              <button
+                className={`filter ${locationFilter ? 'filter-active' : ''}`}
+                onClick={() => setPickupOpen(!pickupOpen)}>
                 По месту
                 <MdKeyboardArrowLeft className={`filter-icon ${pickupOpen ? 'rotated' : ''}`} />
               </button>
@@ -380,7 +386,7 @@ console.log(displayedItems);
                     Сбросить
                   </button>
                 </div>
-              )} 
+              )}
             </div>
           </div>
 

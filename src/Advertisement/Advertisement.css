@@ -322,3 +322,9 @@
 .profile-advertisement-icon:hover {
   transform: scale(1.05);
 }
+
+
+.custom-toast-warning {
+  background-color: var(--based-color2) !important;
+  color: var(--based-color8) !important;
+}

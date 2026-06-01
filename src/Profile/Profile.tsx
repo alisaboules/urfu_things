@@ -126,7 +126,7 @@ function Profile() {
         {/* ADMIN */}
         {user?.role === 'admin' && (
           <>
-            <p className="user-info-label1">{user?.id}</p>
+            <p className="user-info-label1">№ {user?.id}</p>
             <p className="user-info-label2">Номер администратора</p>
           </>
         )}

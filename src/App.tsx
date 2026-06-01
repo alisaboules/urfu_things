@@ -15,6 +15,7 @@ import { useLayoutEffect, useState } from 'react';
 import { getAppeals, getItems } from './Api/Api';
 import { MyStatistic } from './Statistic/Statistic';
 import type { AppealImage } from './Appeals/Appeals';
+import { ToastContainer } from 'react-toastify';
 
 
 export type Item = {
@@ -232,6 +233,7 @@ function App() {
 
   return (
     <>
+     <ToastContainer progressClassName="toast-progress" />
       <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />

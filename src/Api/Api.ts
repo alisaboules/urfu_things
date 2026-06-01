@@ -322,15 +322,13 @@ export const createAppeal = async (data: AppealPayload) => {
 };
 
 export const getAppeals = async () => {
-  const token = localStorage.getItem('access_token');
+  const res = await authFetch(`${BASE_URL}/appeals/`);
 
-  const res = await axios.get(`${BASE_URL}/appeals/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  if (!res.ok) {
+    throw new Error('Ошибка загрузки обращений');
+  }
 
-  return res.data;
+  return await res.json();
 };
 
 export const searchItems = async (

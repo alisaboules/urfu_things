@@ -12,6 +12,17 @@
   font-display: swap;
 }
 
+.toast-progress {
+  background: #4811FF !important;
+}
+
+.Toastify__toast-icon svg {
+  fill: #8b5cf6 !important;
+}
+
+.Toastify__progress-bar--bg {
+  background: #8b5cf6 !important;
+}
 
 /* .counter {
   font-size: 16px;

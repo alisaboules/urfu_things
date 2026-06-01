@@ -8,9 +8,10 @@ import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdDelete } from 'react-icons/md';
 import { createFoundItem } from '../Api/Api';
 import { PickupFinder } from '../Components/Geolocation/Geolocation';
+import { toast } from 'react-toastify';
 
 function Advertisement() {
-  const [type, setType] = useState('found');
+  const [type, setType] = useState('lost');
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -96,6 +97,7 @@ function Advertisement() {
   { id: 5, name: "Подзарядки" },
   { id: 6, name: "Канцелярия" },
 ];
+// const places = [''];
 const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
@@ -121,6 +123,10 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
   // };
 
   const handleSubmit = async () => {
+    if (!selectedCategoryId) {
+        toast.warning('Выберите категорию.', { className: 'custom-toast-warning' });
+        return;
+      }
     try {
       const data = new FormData();
 
@@ -132,7 +138,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       // data.append("location_ref", form.location);
       if (type === 'found') {
         data.append('description', form.description);
-        data.append('location_type',  'free');
+        data.append('location_type', 'free');
         data.append('location_ref', form.location);
         data.append('category', String(selectedCategoryId));
         data.append('author', user?.name || 'Гость');
@@ -145,17 +151,20 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       }
       if (photo) {
         data.append('image', photo);
-        console.log("PHOTO BEFORE SEND:", photo);
+        console.log('PHOTO BEFORE SEND:', photo);
       }
 
       const result = await createFoundItem(data, type);
 
       console.log('SUCCESS:', result);
+      toast.success('Объявление успешно создано.', {
+        className: 'custom-toast',
+      });
 
       navigate('/main', { state: { refresh: true } });
     } catch (err) {
       console.error('CREATE ITEM ERROR:', err);
-      alert('Ошибка создания объявления');
+      toast.error('Ошибка создания объявления.', { className: 'custom-toast-error' });
     }
   };
 
@@ -239,8 +248,8 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
                 </div>
               </>
             )}
+         
           </div>
-
           <div className="textarea-advertisement">
             <label>Место</label>
             <textarea

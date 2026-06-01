@@ -39,7 +39,6 @@ function SidebarAdmin({
         <button className="user-data" onClick={() => { navigate("/magazine"); onClose(); }}>
           Журнал действий
         </button>
-        <button className="user-data">Справочники</button>
         <button className="user-data" onClick={() => { navigate("/statistic")}}>Статистика</button>
       </div>
     </aside>

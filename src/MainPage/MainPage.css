@@ -285,6 +285,11 @@
   position: relative;
 }
 
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .popup {
   /* position: relative; */
   background: var(--based-color2);
@@ -481,6 +486,7 @@
   pointer-events: none;
   z-index: 1;
   box-sizing: border-box;
+  white-space: pre;
 }
 
 .ghost-rest {

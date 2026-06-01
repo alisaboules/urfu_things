@@ -7,6 +7,7 @@ import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { createAppeal } from '../Api/Api';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export type AppealPayload = {
   subject: string;
@@ -50,13 +51,13 @@ function Appeal() {
     
     await createAppeal(payload);
 
-    alert('Обращение отправлено');
+    toast.success('Обращение успешно отправлено.');
 
     navigate('/main');
   } catch (error) {
     console.error(error);
 
-    alert('Ошибка');
+    toast.error('Ошибка отправки обращения. Попробуйте снова.');
   }
 };
 
