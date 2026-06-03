@@ -546,7 +546,8 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  min-width: 130px;
+  /* min-width: 100px; */
+  width: 100%;
   background: var(--based-color2);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -565,7 +566,7 @@
   cursor: pointer;
   font-family: var(--urfu-font-family);
   color: var(--based-color8);
-  font-size: 14px;
+  font-size: 20px;
   transition: 0.2s;
   display: flex;
   align-items: center;
@@ -606,6 +607,11 @@
     gap: clamp(10px, 2vw, 30px);
     justify-content: space-between;
   }
+
+  .filter-popup button {
+    font-size: 16px;
+  }
+
 }
 
 @media (max-width: 400px) {
@@ -613,5 +619,12 @@
     font-size: 14px;
     padding: 6px 8px;
   }
+
+  .filter-popup {
+    width: 100px;
+  }
   
+  .filter-popup button {
+    font-size: 14px;
+  }
 }
