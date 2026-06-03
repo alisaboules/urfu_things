@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { getNearestPickupPoint } from "../../Api/Api";
-import "./Geolocation.css";
-import { toast } from "react-toastify";
+import { useState } from 'react';
+import { getNearestPickupPoint } from '../../Api/Api';
+import './Geolocation.css';
+import { toast } from 'react-toastify';
 
 interface PickupPointResponse {
   nearest: {
@@ -19,25 +19,20 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
   const [pickupPoint, setPickupPoint] = useState<PickupPointResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const handleFindPickup = async () => {
     try {
       setLoading(true);
-      setError("");
+      setError('');
 
-      const position = await new Promise<GeolocationPosition>(
-        (resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        },
-      );
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
 
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      const data = await getNearestPickupPoint(
-        latitude,
-        longitude,
-      );
+      const data = await getNearestPickupPoint(latitude, longitude);
 
       setPickupPoint(data);
     } catch (err) {
@@ -46,7 +41,7 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Неизвестная ошибка");
+        setError('Неизвестная ошибка');
       }
     } finally {
       setLoading(false);
@@ -56,46 +51,43 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
   return (
     <div>
       <button className="pickup-finder-btn" onClick={handleFindPickup}>
-        {loading ? "Загрузка..." : "Найти пункт"}
+        {loading ? 'Загрузка...' : 'Найти пункт'}
       </button>
 
-      {error && toast.error(error, { className: "custom-toast-error" })}
+      {error && toast.error(error, { className: 'custom-toast-error' })}
 
       {pickupPoint && !confirmed && (
-  <div className="pickup-confirm">
-    <h3>
-      Ближайший пункт:
-      <span>{pickupPoint.nearest.name}</span>
-    </h3>
+        <div className="pickup-confirm">
+          <h3>
+            Ближайший пункт: <span>{pickupPoint.nearest.name}</span>
+          </h3>
 
-    <p>{pickupPoint.distance_km} км</p>
+          <p>{pickupPoint.distance_km} км</p>
 
-    <p>Готовы отнести вещь в этот пункт?</p>
+          <p className="ready">Готовы отнести вещь в этот пункт?</p>
+          <div className="pickup-confirm-buttons">
+            <button
+              className="pickup-confirms"
+              onClick={() => {
+                onSelectPickup(pickupPoint.nearest.id, pickupPoint.nearest.name);
 
-    <button
-      onClick={() => {
-        onSelectPickup(
-          pickupPoint.nearest.id,
-          pickupPoint.nearest.name
-        );
+                setConfirmed(true);
 
-        setConfirmed(true);
+                toast.success('Пункт выбран');
+              }}>
+              Да
+            </button>
 
-        toast.success("Пункт выбран");
-      }}
-    >
-      Да
-    </button>
-
-    <button
-      onClick={() => {
-        setPickupPoint(null);
-      }}
-    >
-      Нет
-    </button>
-  </div>
-)}
+            <button
+              className="pickup-confirms"
+              onClick={() => {
+                setPickupPoint(null);
+              }}>
+              Нет
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

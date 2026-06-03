@@ -12,11 +12,10 @@ import { Magazine } from './Magazine';
 import { Profile } from './Profile/Profile';
 import { MyCards } from './MyCards/MyCards';
 import { useLayoutEffect, useState } from 'react';
-import { getAppeals, getItems } from './Api/Api';
+import { getAppeals, getItems, getItemsPage } from './Api/Api';
 import { MyStatistic } from './Statistic/Statistic';
 import type { AppealImage } from './Appeals/Appeals';
 import { ToastContainer } from 'react-toastify';
-
 
 export type Item = {
   id: number;
@@ -119,78 +118,111 @@ const fallbackItems: Item[] = [
 
 function App() {
   const [items, setItems] = useState<Item[]>([]);
+  const [nextFound, setNextFound] = useState<string | null>(null);
+  const [nextLost, setNextLost] = useState<string | null>(null);
+
   const [appeals, setAppeals] = useState<AppealImage[]>([]);
   useLayoutEffect(() => {
-  const fetchData = async () => {
-    try {
-      const foundData = await getItems('found');
-      const lostData = await getItems('lost');
+    const fetchData = async () => {
+      try {
+        const foundData = await getItems('found');
+        const lostData = await getItems('lost');
+        console.log('FOUND DATA:', foundData);
+        setNextFound(foundData.next);
+        setNextLost(lostData.next);
+        const found = Array.isArray(foundData) ? foundData : foundData.results || [];
 
-      const found = Array.isArray(foundData)
-        ? foundData
-        : foundData.results || [];
+        const lost = Array.isArray(lostData) ? lostData : lostData.results || [];
 
-      const lost = Array.isArray(lostData)
-        ? lostData
-        : lostData.results || [];
+        const allItems: Item[] = [
+          ...found.map((item) => ({
+            id: item.id,
+            user: item.user,
+            type: 'found' as const,
+            title: item.category_name?.trim() || 'Без категории',
+            img: item.image?.trim() || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+            description: item.description,
+            location_ref: item.location_ref || 'Без локации',
+            pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
+            status: item.status,
+            author: item.author,
+            created_at: item.created_at,
+          })),
 
-      const allItems: Item[] = [
-        ...found.map((item) => ({
-          id: item.id,
-          user: item.user,
-          type: 'found' as const,
-          title: item.category_name?.trim() || 'Без категории',
-          img:
-            item.image?.trim() ||
-            `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-          description: item.description,
-          location_ref: item.location_ref || 'Без локации',
-          pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
-          status: item.status,
-          author: item.author,
-          created_at: item.created_at,
-        })),
+          ...lost.map((item) => ({
+            id: item.id,
+            user: item.user,
+            type: 'lost' as const,
+            title: item.category_name?.trim() || 'Без категории',
+            img: item.image?.trim() || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+            description: item.description,
+            location_ref: item.location_ref || item.location_text || 'Без локации',
+            pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
+            status: item.status,
+            author: item.author,
+            created_at: item.created_at,
+          })),
+        ];
 
-        ...lost.map((item) => ({
-          id: item.id,
-          user: item.user,
-          type: 'lost' as const,
-          title: item.category_name?.trim() || 'Без категории',
-          img:
-            item.image?.trim() ||
-            `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-          description: item.description,
-          location_ref: item.location_ref || item.location_text || 'Без локации',
-          pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
-          status: item.status,
-          author: item.author,
-          created_at: item.created_at,
-        })),
-      ];
+        setItems(allItems);
+      } catch (e) {
+        console.error(e);
+        setItems(fallbackItems);
+      }
 
-      setItems(allItems);
+      try {
+        const appealsData = await getAppeals();
 
-    } catch (e) {
-      console.error(e);
-      setItems(fallbackItems);
-    }
+        setAppeals(Array.isArray(appealsData) ? appealsData : appealsData.results || []);
+      } catch (e) {
+        console.error('APPEALS ERROR:', e);
+        setAppeals([]);
+      }
+    };
 
-    try {
-      const appealsData = await getAppeals();
+    fetchData();
+  }, []);
 
-      setAppeals(
-        Array.isArray(appealsData)
-          ? appealsData
-          : appealsData.results || []
-      );
-    } catch (e) {
-      console.error("APPEALS ERROR:", e);
-      setAppeals([]);
+  const loadMore = async (type: 'found' | 'lost') => {
+    const nextUrl = type === 'found' ? nextFound : nextLost;
+    if (!nextUrl) return;
+
+    const data = await getItemsPage(nextUrl);
+
+    const newItems: Item[] = data.results.map((item: ApiItem) => ({
+      id: item.id,
+      user: item.user,
+      type,
+      title: item.category_name?.trim() || 'Без категории',
+      img: item.image?.trim() || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+      description: item.description,
+      location_ref: item.location_ref || 'Без локации',
+      pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
+      status: item.status,
+      author: item.author,
+      created_at: item.created_at,
+    }));
+
+    if (type === 'found') {
+      setItems((prev) => {
+        const existing = new Set(prev.map((i) => i.id));
+
+        const filtered = newItems.filter((i) => !existing.has(i.id));
+
+        return [...prev, ...filtered];
+      });
+      setNextFound(data.next);
+    } else {
+      setItems((prev) => {
+        const existing = new Set(prev.map((i) => i.id));
+
+        const filtered = newItems.filter((i) => !existing.has(i.id));
+
+        return [...prev, ...filtered];
+      });
+      setNextLost(data.next);
     }
   };
-
-  fetchData();
-}, []);
   // useLayoutEffect(() => {
   //   const fetchItems = async () => {
   //     try {
@@ -238,12 +270,12 @@ function App() {
 
   return (
     <>
-     <ToastContainer progressClassName="toast-progress" />
+      <ToastContainer progressClassName="toast-progress" />
       <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Registration />} />
-          <Route path="/main" element={<OutletWrapper items={items} />}>
+          <Route path="/main" element={<OutletWrapper items={items} loadMore={loadMore} />}>
             {/* <Route index element={<Sidebar />} /> */}
           </Route>
           <Route path="/ad" element={<Advertisement />} />
@@ -252,17 +284,23 @@ function App() {
           <Route path="/magazine" element={<Magazine />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-cards" element={<MyCards items={items} />} />
-          <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />}/>
+          <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />} />
         </Routes>
       </HashRouter>
     </>
   );
 }
 
-function OutletWrapper({ items }: { items: Item[] }) {
+function OutletWrapper({
+  items,
+  loadMore,
+}: {
+  items: Item[];
+  loadMore: (type: 'found' | 'lost') => Promise<void>;
+}) {
   return (
     <div>
-      <MainPage items={items} />
+      <MainPage items={items} loadMore={loadMore} />
       <Outlet />
     </div>
   );

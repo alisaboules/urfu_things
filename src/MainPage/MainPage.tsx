@@ -21,11 +21,12 @@ import { getSearchHistory, getSearchSuggestions, saveSearchQuery } from '../Api/
 
 type MainPageProps = {
   items: Item[];
+  loadMore: (type: 'found' | 'lost') => Promise<void>;
 };
 
 const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
 
-function MainPage({ items }: MainPageProps) {
+function MainPage({ items, loadMore }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
 
@@ -116,6 +117,27 @@ function MainPage({ items }: MainPageProps) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
+  const loaderRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+          console.log('INTERSECTION', entry.isIntersecting);
+
+        if (entry.isIntersecting) {
+          await loadMore(type as 'found' | 'lost');
+        }
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [type, loadMore]);
   // useEffect(() => {
   //   const timeout = setTimeout(async () => {
   //     try {
@@ -226,13 +248,14 @@ function MainPage({ items }: MainPageProps) {
   };
   // console.log("showSuggestions =", showSuggestions);
   // console.log("suggestions =", suggestions);
-  console.log('FILTER CLICK:', locationFilter);
+  // console.log('FILTER CLICK:', locationFilter);
 
-  console.log(
-    'ALL PICKUP VALUES:',
-    items.map((i) => i.pickup_point_name),
-  );
-  console.log(displayedItems);
+  // console.log(
+  //   'ALL PICKUP VALUES:',
+  //   items.map((i) => i.pickup_point_name),
+  // );
+  // console.log(displayedItems);
+  
   return (
     <>
       <div className="container_header_homepage">
@@ -399,7 +422,7 @@ function MainPage({ items }: MainPageProps) {
 
           <div className="grid">
             {displayedItems.map((item) => (
-              <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
+              <div  key={`${item.type}-${item.id}`} className="card" onClick={() => setSelectedItem(item)}>
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
                 </div>
@@ -409,6 +432,11 @@ function MainPage({ items }: MainPageProps) {
               </div>
             ))}
           </div>
+          <div
+            ref={loaderRef}
+            style={{
+              height: '50px',
+            }}></div>
         </div>
       </div>
       <div

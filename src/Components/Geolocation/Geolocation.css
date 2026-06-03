@@ -1,6 +1,6 @@
 .pickup-finder-btn {
   background: #4811FF;
-  color: #DCD1FF;
+  color: var(--based-color6);
   border: none;
   border-radius: 35px;
   padding: 10px 20px;
@@ -15,5 +15,31 @@
   font-size: 18px;
 }
 
+.pickup-confirms {
+  background: #4811FF;
+  color: var(--based-color6);
+  border: none;
+  padding: 16px 30px;
+  border-radius: 35px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: var(--urfu-font-family);
+  transition: all 0.3s ease;
+  
+}
 
+.pickup-confirms:hover {
+  transform: scale(1.05);
+}
 
+.pickup-confirm-buttons {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+}
+
+.ready {
+  font-size: 18px;
+  margin: 20px 0;
+}

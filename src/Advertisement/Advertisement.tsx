@@ -273,8 +273,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
 />
 {selectedPickupName && (
   <p>
-    Выбран пункт выдачи:
-    <strong>{selectedPickupName}</strong>
+    Выбран пункт выдачи: <strong>{selectedPickupName}</strong>
   </p>
 )}
 

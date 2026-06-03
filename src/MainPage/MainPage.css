@@ -186,7 +186,7 @@
   background: #4811FF;
   border-radius: 35px 35px 0 0;
   border-color: none;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 /* .experiment {
@@ -540,6 +540,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  min-height: 40px;
 }
 
 .filter-popup {

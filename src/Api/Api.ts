@@ -367,7 +367,8 @@ export const getSearchHistory = async () => {
   });
 
   if (!res.ok) {
-    throw new Error('Ошибка загрузки истории');
+    console.warn("history API failed:", res.status);
+    return [];
   }
 
   return await res.json();
@@ -413,6 +414,16 @@ export const saveSearchQuery = async (query: string) => {
 
   if (!res.ok) {
     throw new Error('Ошибка сохранения поиска');
+  }
+
+  return await res.json();
+};
+
+export const getItemsPage = async (url: string) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error('Ошибка');
   }
 
   return await res.json();
