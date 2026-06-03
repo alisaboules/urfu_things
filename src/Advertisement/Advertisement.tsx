@@ -9,8 +9,9 @@ import { MdDelete } from 'react-icons/md';
 import { createFoundItem } from '../Api/Api';
 import { PickupFinder } from '../Components/Geolocation/Geolocation';
 import { toast } from 'react-toastify';
+import type { Item } from '../App';
 
-function Advertisement() {
+function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
   const [type, setType] = useState('lost');
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -163,7 +164,16 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       }
 
       const result = await createFoundItem(data, type);
-
+      addItem({
+  id: result.id,
+  title: result.category_name,
+  img: result.image,
+  description: result.description,
+  location_ref: result.location_ref,
+  status: result.status,
+  user: result.user,
+  type: type as 'found' | 'lost',
+});
       console.log('SUCCESS:', result);
       toast.success('Объявление успешно создано.', {
         className: 'custom-toast',
@@ -175,6 +185,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       toast.error('Ошибка создания объявления.', { className: 'custom-toast-error' });
     }
   };
+
 
   return (
     <>

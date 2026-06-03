@@ -120,7 +120,9 @@ function App() {
   const [items, setItems] = useState<Item[]>([]);
   const [nextFound, setNextFound] = useState<string | null>(null);
   const [nextLost, setNextLost] = useState<string | null>(null);
-
+  const addItem = (item: Item) => {
+  setItems(prev => [item, ...prev]);
+};
   const [appeals, setAppeals] = useState<AppealImage[]>([]);
   useLayoutEffect(() => {
     const fetchData = async () => {
@@ -278,7 +280,7 @@ function App() {
           <Route path="/main" element={<OutletWrapper items={items} loadMore={loadMore} />}>
             {/* <Route index element={<Sidebar />} /> */}
           </Route>
-          <Route path="/ad" element={<Advertisement />} />
+          <Route path="/ad" element={<Advertisement addItem={addItem} />} />
           <Route path="/appeal" element={<Appeal />} />
           <Route path="/appeals" element={<Appeals />} />
           <Route path="/magazine" element={<Magazine />} />

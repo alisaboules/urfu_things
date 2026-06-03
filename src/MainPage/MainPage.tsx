@@ -26,7 +26,7 @@ type MainPageProps = {
 
 const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
 
-function MainPage({ items, loadMore }: MainPageProps) {
+function MainPage({ items, loadMore}: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
 
@@ -138,6 +138,7 @@ function MainPage({ items, loadMore }: MainPageProps) {
 
     return () => observer.disconnect();
   }, [type, loadMore]);
+  
   // useEffect(() => {
   //   const timeout = setTimeout(async () => {
   //     try {
