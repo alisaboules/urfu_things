@@ -1,22 +1,25 @@
 import { useState } from "react";
 import { getNearestPickupPoint } from "../../Api/Api";
 import "./Geolocation.css";
+import { toast } from "react-toastify";
 
 interface PickupPointResponse {
   nearest: {
+    id: number;
     name: string;
   };
   distance_km: number;
 }
 
-function PickupFinder() {
-  const [pickupPoint, setPickupPoint] =
-    useState<PickupPointResponse | null>(null);
+interface PickupFinderProps {
+  onSelectPickup: (pickupId: number, pickupName: string) => void;
+}
 
+function PickupFinder({ onSelectPickup }: PickupFinderProps) {
+  const [pickupPoint, setPickupPoint] = useState<PickupPointResponse | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState("");
-
   const handleFindPickup = async () => {
     try {
       setLoading(true);
@@ -56,16 +59,43 @@ function PickupFinder() {
         {loading ? "Загрузка..." : "Найти пункт"}
       </button>
 
-      {error && <p>{error}</p>}
+      {error && toast.error(error, { className: "custom-toast-error" })}
 
-      {pickupPoint && (
-        <div>
-          <h3>Ближайший пункт выдачи: <span className="pickup-name">{pickupPoint.nearest.name}</span></h3>
-          <p className="pickup-name">
-            Расстояние: <span className="pickup-name">{pickupPoint.distance_km} км</span>
-          </p>
-        </div>
-      )}
+      {pickupPoint && !confirmed && (
+  <div className="pickup-confirm">
+    <h3>
+      Ближайший пункт:
+      <span>{pickupPoint.nearest.name}</span>
+    </h3>
+
+    <p>{pickupPoint.distance_km} км</p>
+
+    <p>Готовы отнести вещь в этот пункт?</p>
+
+    <button
+      onClick={() => {
+        onSelectPickup(
+          pickupPoint.nearest.id,
+          pickupPoint.nearest.name
+        );
+
+        setConfirmed(true);
+
+        toast.success("Пункт выбран");
+      }}
+    >
+      Да
+    </button>
+
+    <button
+      onClick={() => {
+        setPickupPoint(null);
+      }}
+    >
+      Нет
+    </button>
+  </div>
+)}
     </div>
   );
 }

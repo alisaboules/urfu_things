@@ -121,6 +121,8 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
   //     pickup_point: String(point.id),
   //   }));
   // };
+  const [selectedPickupId, setSelectedPickupId] = useState<number | null>(null);
+  const [selectedPickupName, setSelectedPickupName] = useState("");
 
   const handleSubmit = async () => {
     if (!selectedCategoryId) {
@@ -142,12 +144,18 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
         data.append('location_ref', form.location);
         data.append('category', String(selectedCategoryId));
         data.append('author', user?.name || 'Гость');
+        if (selectedPickupId) {
+          data.append('pickup_point', String(selectedPickupId));
+  }
       } else {
         data.append('description', form.description);
         data.append('location_zone', 'Свободно');
         data.append('location_text', form.location);
         data.append('category', String(selectedCategoryId));
         data.append('author', user?.first_name || 'Гость');
+        if (selectedPickupId) {
+          data.append('pickup_point', String(selectedPickupId));
+  }
       }
       if (photo) {
         data.append('image', photo);
@@ -257,7 +265,19 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
               onChange={(e) => setForm({ ...form, location: e.target.value })}
             />
           </div>
-          <PickupFinder />
+          <PickupFinder
+  onSelectPickup={(id, name) => {
+    setSelectedPickupId(id);
+    setSelectedPickupName(name);
+  }}
+/>
+{selectedPickupName && (
+  <p>
+    Выбран пункт выдачи:
+    <strong>{selectedPickupName}</strong>
+  </p>
+)}
+
           <div className="actions-advertisement">
             <button className="submit-advertisement" onClick={handleSubmit}>
               Готово

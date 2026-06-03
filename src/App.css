@@ -24,6 +24,11 @@
   background: #8b5cf6 !important;
 }
 
+.custom-toast-warning, .custom-toast-error, .custom-toast {
+  background-color: var(--based-color2) !important;
+  color: var(--based-color8) !important;
+}
+
 /* .counter {
   font-size: 16px;
   padding: 5px 10px;

@@ -23,6 +23,8 @@ type MainPageProps = {
   items: Item[];
 };
 
+const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
+
 function MainPage({ items }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
@@ -84,8 +86,10 @@ function MainPage({ items }: MainPageProps) {
 
     // 2. место
     if (locationFilter.trim()) {
-      result = result.filter((item) =>
-        item.location_ref?.toLowerCase().includes(locationFilter.toLowerCase()),
+      result = result.filter(
+        (item) =>
+          (item.pickup_point_name ?? '').trim().toLowerCase() ===
+          locationFilter.trim().toLowerCase(),
       );
     }
 
@@ -151,10 +155,11 @@ function MainPage({ items }: MainPageProps) {
   const categories = useMemo(() => {
     return [...new Set(items.map((item) => item.title))];
   }, [items]);
-  const locations = useMemo(() => {
-    return [...new Set(items.map((item) => item.location_ref))];
-  }, [items]);
   const [history, setHistory] = useState<string[]>([]);
+
+  const locations = useMemo(() => {
+    return [...allPickupPoints];
+  }, []);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const firstSuggestion = suggestions.find((s) => s.toLowerCase().startsWith(search.toLowerCase()));
@@ -182,7 +187,7 @@ function MainPage({ items }: MainPageProps) {
         const data = await getSearchSuggestions(search);
 
         // console.log("SEARCH:", search);
-        console.log("SUGGESTIONS:", data);
+        console.log('SUGGESTIONS:', data);
 
         setSuggestions(data.slice(0, 5));
         // console.log("DATA:", data);
@@ -193,25 +198,22 @@ function MainPage({ items }: MainPageProps) {
 
     loadSuggestions();
   }, [search, history]);
- const filtersRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-  filtersRef.current &&
-  !filtersRef.current.contains(event.target as Node)
-) {
-  setCategoryOpen(false);
-  setDateOpen(false);
-  setPickupOpen(false);
-}
-  };
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
+        setCategoryOpen(false);
+        setDateOpen(false);
+        setPickupOpen(false);
+      }
+    };
 
-  document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   const saveSearch = async (query: string) => {
     try {
       await saveSearchQuery(query);
@@ -224,8 +226,13 @@ function MainPage({ items }: MainPageProps) {
   };
   // console.log("showSuggestions =", showSuggestions);
   // console.log("suggestions =", suggestions);
-console.log(categoryFilter);
-console.log(displayedItems);
+  console.log('FILTER CLICK:', locationFilter);
+
+  console.log(
+    'ALL PICKUP VALUES:',
+    items.map((i) => i.pickup_point_name),
+  );
+  console.log(displayedItems);
   return (
     <>
       <div className="container_header_homepage">

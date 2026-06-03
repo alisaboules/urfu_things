@@ -51,13 +51,13 @@ function Appeal() {
     
     await createAppeal(payload);
 
-    toast.success('Обращение успешно отправлено.');
+    toast.success('Обращение успешно отправлено.', { className: 'custom-toast' });
 
     navigate('/main');
   } catch (error) {
     console.error(error);
 
-    toast.error('Ошибка отправки обращения. Попробуйте снова.');
+    toast.error('Ошибка отправки обращения. Попробуйте снова.', { className: 'custom-toast-error' });
   }
 };
 

@@ -29,6 +29,8 @@ export type Item = {
   type: 'found' | 'lost';
   author?: string;
   created_at?: string;
+  pickup_point_name?: string;
+  pickup_point?: number;
 };
 
 export type ApiItem = {
@@ -37,6 +39,7 @@ export type ApiItem = {
   category: number | null;
   category_name?: string;
   pickup_point: number | null;
+  pickup_point_name?: string;
   location_type: string;
   location_ref: string;
   description: string;
@@ -142,6 +145,7 @@ function App() {
             `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
           description: item.description,
           location_ref: item.location_ref || 'Без локации',
+          pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
           status: item.status,
           author: item.author,
           created_at: item.created_at,
@@ -157,6 +161,7 @@ function App() {
             `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
           description: item.description,
           location_ref: item.location_ref || item.location_text || 'Без локации',
+          pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
           status: item.status,
           author: item.author,
           created_at: item.created_at,
