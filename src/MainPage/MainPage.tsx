@@ -406,6 +406,7 @@ function MainPage({ items, loadMore}: MainPageProps) {
                         setPickupOpen(false);
                       }}>
                       {location}
+                      {locationFilter === location && <FaCheck className="filter-check" />}
                     </button>
                   ))}
 
