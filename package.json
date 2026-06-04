@@ -9,7 +9,7 @@
     "dev:chrome": "set BROWSER=chrome && vite",
     "build": "tsc -b && vite build",
     "build:render": "tsc -b && vite build",
-    "build:github": "cross-env VITE_TARGET=github tsc -b && vite build",
+    "build:github": "tsc -b && vite build --mode github",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build:github",
