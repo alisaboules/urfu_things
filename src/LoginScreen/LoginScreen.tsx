@@ -77,7 +77,7 @@ function Login() {
 useEffect(() => {
   const registerSW = async () => {
     swRef.current = await navigator.serviceWorker.register(
-      '/urfu_things/firebase-messaging-sw.js'
+      '/firebase-messaging-sw.js'
     );
   };
 
