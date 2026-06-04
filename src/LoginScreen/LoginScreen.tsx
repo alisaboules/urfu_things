@@ -77,7 +77,7 @@ function Login() {
 useEffect(() => {
   const registerSW = async () => {
     swRef.current = await navigator.serviceWorker.register(
-      '/firebase-messaging-sw.js'
+    `${import.meta.env.BASE_URL}firebase-messaging-sw.js`
     );
   };
 
