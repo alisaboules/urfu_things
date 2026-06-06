@@ -60,7 +60,9 @@ function Magazine() {
     <>
       <div className="container-magazine">
         <div className="header-magazine">
-          <h1 onClick={() => navigate('/main')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/main')}>
+            UniFind
+          </h1>
           <FaUser className="profile-magazine-icon" onClick={() => setSidebarOpen(true)} />
         </div>
        <div

@@ -9,3 +9,11 @@
   align-items: center;
   width: 100%;
 }
+
+.logo-uni {
+  cursor: pointer;
+}
+
+.block {
+  margin-top: 30px;
+}

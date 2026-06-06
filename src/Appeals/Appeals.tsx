@@ -76,7 +76,9 @@ function Appeals() {
     <>
       <div className="container-appeals">
         <div className="header-appeals">
-          <h1 onClick={() => navigate('/main')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/main')}>
+            UniFind
+          </h1>
           <FaUser className="profile-appeals-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div

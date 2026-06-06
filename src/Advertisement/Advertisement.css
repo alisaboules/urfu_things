@@ -33,6 +33,10 @@
   cursor: pointer;
 }
 
+.logo-uni {
+  cursor: pointer;
+}
+
 .sidebar-overlay-2 {
   background: rgba(0, 0, 0, 0.3);
   position: fixed;
@@ -275,7 +279,7 @@
 
 .cancel-advertisement {
   background: none;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   color: #4811FF;
   padding: 16px 55px;
   border-radius: 35px;

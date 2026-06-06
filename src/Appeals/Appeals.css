@@ -200,6 +200,11 @@
   transform: scale(1.02);
 }
 
+.logo-uni {
+  cursor: pointer;
+}
+
+
 .descript-appeals {
   color: #4811FF;
   font-weight: 600;

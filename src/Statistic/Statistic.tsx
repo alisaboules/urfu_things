@@ -34,7 +34,9 @@ function MyStatistic({ items, appeals }: MyStatisticProps) {
     <>
       <div className="container-appeal">
         <div className="header-appeal">
-          <h1 onClick={() => navigate('/main')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/main')}>
+            UniFind
+          </h1>
           <FaUser className="profile-appeal-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div

@@ -6,7 +6,7 @@ import { LuCircleFadingPlus } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdDelete } from 'react-icons/md';
-import { createFoundItem } from '../Api/Api';
+import { createFoundItem, upsertImage } from '../Api/Api';
 import { PickupFinder } from '../Components/Geolocation/Geolocation';
 import { toast } from 'react-toastify';
 import type { Item } from '../App';
@@ -164,6 +164,9 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       }
 
       const result = await createFoundItem(data, type);
+      if (photo && result?.id) {
+        await upsertImage(result.id, photo);
+}
       addItem({
   id: result.id,
   title: result.category_name,
@@ -201,7 +204,9 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
 
       <div className="container-advertisement">
         <div className="header-advertisement">
-          <h1 onClick={() => navigate('/main')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/main')}>
+            UniFind
+          </h1>
           <FaUser className="profile-advertisement-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div className="card-advertisement">

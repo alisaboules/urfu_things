@@ -14,10 +14,12 @@ import { TbMessageQuestion } from 'react-icons/tb';
 // import type { ApiItem, Item } from '../App';
 // import { searchItems } from '../Api/Api';
 import { useMemo } from 'react';
-
+import { TbCameraAi } from 'react-icons/tb';
+import { FaRegHourglassHalf } from 'react-icons/fa6';
 import type { Item } from '../App';
 import Fuse from 'fuse.js';
-import { getSearchHistory, getSearchSuggestions, saveSearchQuery } from '../Api/Api';
+import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage } from '../Api/Api';
+import { toast } from 'react-toastify';
 
 type MainPageProps = {
   items: Item[];
@@ -26,10 +28,42 @@ type MainPageProps = {
 
 const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
 
-function MainPage({ items, loadMore}: MainPageProps) {
+function MainPage({ items, loadMore }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
-
+  const [searchByImageActive, setSearchByImageActive] = useState(false);
+  const [imageSearchIds, setImageSearchIds] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleImageSearch = async (file: File) => {
+    if (!file) return;
+    setIsSearching(true);
+    try {
+      const results = await searchByImage(file);
+      console.log('Результаты поиска по фото:', results);
+      // results: [{ id: "img1", distance: 0.2 }, ...]
+      const filtered = results.filter((r: { distance: number }) => r.distance > 0.8);
+      const ids = filtered.map((r: { id: string }) => String(r.id));
+      if (ids.length === 0) {
+        toast.warning('Похожих фото не найдено.', { className: 'custom-toast-warning' });
+        setImageSearchIds([]);
+        setSearchByImageActive(false);
+      } else {
+        setImageSearchIds(ids);
+        setSearchByImageActive(true);
+      }
+    } catch (err) {
+      console.error('Ошибка поиска по фото', err);
+      toast.error('Не удалось выполнить поиск по фото.', { className: 'custom-toast-error' });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+  // const resetImageSearch = () => {
+  //   setImageSearchIds([]);
+  //   setSearchByImageActive(false);
+  //   if (fileInputRef.current) fileInputRef.current.value = '';
+  // };
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -106,6 +140,10 @@ function MainPage({ items, loadMore}: MainPageProps) {
 
     return result;
   }, [searchResults, categoryFilter, locationFilter, dateFilter]);
+  const finalItems = useMemo(() => {
+    if (!searchByImageActive || imageSearchIds.length === 0) return displayedItems;
+    return displayedItems.filter((item) => imageSearchIds.includes(String(item.id)));
+  }, [displayedItems, searchByImageActive, imageSearchIds]);
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -121,7 +159,7 @@ function MainPage({ items, loadMore}: MainPageProps) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       async ([entry]) => {
-          console.log('INTERSECTION', entry.isIntersecting);
+        console.log('INTERSECTION', entry.isIntersecting);
 
         if (entry.isIntersecting) {
           await loadMore(type as 'found' | 'lost');
@@ -138,7 +176,7 @@ function MainPage({ items, loadMore}: MainPageProps) {
 
     return () => observer.disconnect();
   }, [type, loadMore]);
-  
+
   // useEffect(() => {
   //   const timeout = setTimeout(async () => {
   //     try {
@@ -247,6 +285,7 @@ function MainPage({ items, loadMore}: MainPageProps) {
       console.error(err);
     }
   };
+
   // console.log("showSuggestions =", showSuggestions);
   // console.log("suggestions =", suggestions);
   // console.log('FILTER CLICK:', locationFilter);
@@ -256,17 +295,19 @@ function MainPage({ items, loadMore}: MainPageProps) {
   //   items.map((i) => i.pickup_point_name),
   // );
   // console.log(displayedItems);
-  
+
   return (
     <>
       <div className="container_header_homepage">
         <div className="header">
-          <h1 onClick={() => navigate('/')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/')}>
+            UniFind
+          </h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
 
         <div className="search">
-          <IoIosSearch className="icon-search" />
+          
           <div className="search-wrapper">
             {firstSuggestion && search && (
               <div className="ghost">
@@ -274,6 +315,9 @@ function MainPage({ items, loadMore}: MainPageProps) {
                 <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
               </div>
             )}
+            <div className='search-icon-wrapper'>
+              <IoIosSearch className="icon-search" />
+            </div>
             <input
               type="text"
               placeholder="Поиск"
@@ -288,6 +332,28 @@ function MainPage({ items, loadMore}: MainPageProps) {
                 }
               }}
             />
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleImageSearch(e.target.files[0]);
+                }
+              }}
+            />
+            <button
+              className="search-by-image-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSearching}
+              title="Поиск по фото">
+              {isSearching ? (
+                <FaRegHourglassHalf className="ai-icon" />
+              ) : (
+                <TbCameraAi className="ai-icon" />
+              )}
+            </button>
           </div>
           {showSuggestions && suggestions.length > 0 && (
             <div className="search-suggestions">
@@ -423,8 +489,11 @@ function MainPage({ items, loadMore}: MainPageProps) {
           </div>
 
           <div className="grid">
-            {displayedItems.map((item) => (
-              <div  key={`${item.type}-${item.id}`} className="card" onClick={() => setSelectedItem(item)}>
+            {finalItems.map((item) => (
+              <div
+                key={`${item.type}-${item.id}`}
+                className="card"
+                onClick={() => setSelectedItem(item)}>
                 <div className="card-image-main">
                   <img src={item.img} alt={item.title} />
                 </div>
@@ -437,7 +506,8 @@ function MainPage({ items, loadMore}: MainPageProps) {
           <div
             ref={loaderRef}
             style={{
-              height: '50px',
+              flex: '1',
+              background: '#4811ff',
             }}></div>
         </div>
       </div>

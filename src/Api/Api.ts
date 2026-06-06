@@ -428,3 +428,52 @@ export const getItemsPage = async (url: string) => {
 
   return await res.json();
 };
+
+
+export const searchByImage = async (imageFile: File) => {
+  // Пока локально — твой FastAPI сервер на 8000 порту
+  const VECTOR_SEARCH_URL = "http://localhost:8000/search";
+
+  const formData = new FormData();
+  formData.append("file", imageFile);
+
+  try {
+    const response = await fetch(VECTOR_SEARCH_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+
+    const data = await response.json();
+    // data = { results: [{ id: "img1", distance: 0.2 }, ...] }
+    return data.results;
+  } catch (error) {
+    console.error("Ошибка поиска по картинке:", error);
+    throw error;
+  }
+};
+
+export const upsertImage = async (id: number, imageFile: File) => {
+  const formData = new FormData();
+  formData.append('file', imageFile);
+  formData.append('datapoint_id', String(id));
+
+  // Если ваш векторный сервер запущен локально
+  const VECTOR_SEARCH_URL = `http://localhost:8000/upsert?datapoint_id=${id}`;
+
+  try {
+    const response = await fetch(VECTOR_SEARCH_URL, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!response.ok) {
+      console.error('Ошибка upsert:', await response.text());
+    }
+  } catch (error) {
+    console.error('Не удалось добавить изображение в поиск:', error);
+  }
+};

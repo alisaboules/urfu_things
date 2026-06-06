@@ -65,7 +65,9 @@ function MyCards({ items }: MyCardsProps) {
     <>
       <div className="container_header_homepage">
         <div className="header">
-          <h1 onClick={() => navigate('/main')}>UniFind</h1>
+          <h1 className="logo-uni" onClick={() => navigate('/main')}>
+            UniFind
+          </h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
 
@@ -83,7 +85,8 @@ function MyCards({ items }: MyCardsProps) {
               <button onClick={() => setType('found')}>Забранные</button>
             </div>
           </div>
-          <button className="filter">Фильтры</button>
+          {/* <button className="filter">Фильтры</button> */}
+          <div className='block'></div>
           {myItems.length > 0 ? (
             <div className="grid">
               {myItems.map((item) => (

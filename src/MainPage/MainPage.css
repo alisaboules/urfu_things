@@ -37,27 +37,71 @@
   margin: 20px 0 35px;
   position: relative;
   display: flex;
+  flex-direction: row;
 }
 
 .search input {
   width: 100%;
-  border-radius: 35px;
+  /* border-radius: 35px; */
   border: none;
   outline: none;
-  padding: 14px 14px 14px 45px;
+  /* padding: 14px 14px 14px 45px; */
   font-size: 24px;
+  background: transparent;
+  /* padding: 0 30px; */
 }
+
+
+
+.search-by-image-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 2px 8px 0;
+  color: #555;
+  cursor: pointer;
+}
+
+.clear-image-search {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #999;
+}
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+}
+
 
 .icon-search {
   position: absolute;
   color: var(--search-icon-color);
-  left: 12px;
+  left: 15px;
   top: 25%;
   z-index: 2;
   width: 27px;
   height: 27px;
+
 }
 
+.search-icon-wrapper {
+  width: 40px;
+  height: 40px;
+} 
+
+.logo-uni {
+  cursor: pointer;
+}
+
+.ai-icon {
+  width: 30px;
+  height: 30px;
+  color: #4811FF;
+}
 
 .tabs {
   display: flex;
@@ -186,6 +230,9 @@
   background: #4811FF;
   border-radius: 35px 35px 0 0;
   border-color: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   /* height: 100vh; */
 }
 
@@ -288,6 +335,11 @@
 .search-wrapper {
   position: relative;
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  background: var(--input-bg);
+  border-radius: 35px;
+  padding: 5px 15px;
 }
 
 .popup {
@@ -310,6 +362,7 @@
 
 .discription-for-card p {
   color: var(--eye-icon-bg);
+  font-size: 18px;
 }
 .popup h2 {
   font-size: 24px;
@@ -436,12 +489,6 @@
 
 .author {
   color: #4811FF;
-}
-
-.search {
-  margin: 20px 0 35px;
-  position: relative;
-  display: flex;
 }
 
 .search-suggestions {
@@ -614,6 +661,10 @@
     padding: 12px 8px;
   }
 
+  .discription-for-card p {
+    font-size: 16px;
+  }
+
 }
 
 @media (max-width: 400px) {
@@ -629,5 +680,9 @@
   .filter-popup button {
     font-size: 14px;
     padding: 12px 8px;
+  }
+
+  .discription-for-card p {
+    font-size: 14px;
   }
 }
