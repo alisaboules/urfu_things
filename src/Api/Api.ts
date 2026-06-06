@@ -432,7 +432,7 @@ export const getItemsPage = async (url: string) => {
 
 export const searchByImage = async (imageFile: File) => {
   // Пока локально — твой FastAPI сервер на 8000 порту
-  const VECTOR_SEARCH_URL = "http://localhost:8000/search";
+  const VECTOR_SEARCH_URL = "https://urfu-things-bakend-1.onrender.com/search";
 
   const formData = new FormData();
   formData.append("file", imageFile);
@@ -463,7 +463,7 @@ export const upsertImage = async (id: number, imageFile: File) => {
   formData.append('datapoint_id', String(id));
 
   // Если ваш векторный сервер запущен локально
-  const VECTOR_SEARCH_URL = `http://localhost:8000/upsert?datapoint_id=${id}`;
+  const VECTOR_SEARCH_URL = `https://urfu-things-bakend-1.onrender.com/upsert?datapoint_id=${id}`;
 
   try {
     const response = await fetch(VECTOR_SEARCH_URL, {
