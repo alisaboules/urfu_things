@@ -73,7 +73,7 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
 
                 setConfirmed(true);
 
-                toast.success('Пункт выбран');
+                toast.success('Пункт выбран', { className: 'custom-toast-success' });
               }}>
               Да
             </button>
