@@ -97,6 +97,7 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
   { id: 4, name: "Одежда" },
   { id: 5, name: "Подзарядки" },
   { id: 6, name: "Канцелярия" },
+  { id: 7, name: "Другое" },
 ];
 // const places = [''];
 const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -294,7 +295,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
 )}
 
           <div className="actions-advertisement">
-            <button className="submit-advertisement" onClick={handleSubmit}>
+            <button type="button" className="submit-advertisement" onClick={handleSubmit}>
               Готово
             </button>
             <button className="cancel-advertisement" onClick={() => navigate(-1)}>
