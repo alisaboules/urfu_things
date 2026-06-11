@@ -357,21 +357,47 @@ export const searchItems = async (
 };
 
 
+// export const getSearchHistory = async () => {
+//   const token = localStorage.getItem('access_token');
+
+//   const res = await fetch(`${BASE_URL}/search/history/`, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+
+//   if (!res.ok) {
+//     console.warn("history API failed:", res.status);
+//     return [];
+//   }
+
+//   return await res.json();
+// };
+
 export const getSearchHistory = async () => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem("access_token");
 
-  const res = await fetch(`${BASE_URL}/search/history/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    console.log("Request:", `${BASE_URL}/search/history/`);
 
-  if (!res.ok) {
-    console.warn("history API failed:", res.status);
+    const res = await fetch(`${BASE_URL}/search/history/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Status:", res.status);
+
+    if (!res.ok) {
+      console.log(await res.text());
+      return [];
+    }
+
+    return await res.json();
+  } catch (e) {
+    console.error("FETCH ERROR:", e);
     return [];
   }
-
-  return await res.json();
 };
 
 export const getSearchSuggestions = async (query: string) => {

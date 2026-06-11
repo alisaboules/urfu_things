@@ -91,16 +91,16 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
     pickup_point: '',
   });
   const categories = [
-  { id: 1, name: "Наушники" },
-  { id: 2, name: "Кошельки" },
-  { id: 3, name: "Ключи" },
-  { id: 4, name: "Одежда" },
-  { id: 5, name: "Подзарядки" },
-  { id: 6, name: "Канцелярия" },
-  { id: 7, name: "Другое" },
-];
-// const places = [''];
-const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    { id: 1, name: 'Наушники' },
+    { id: 2, name: 'Кошельки' },
+    { id: 3, name: 'Ключи' },
+    { id: 4, name: 'Одежда' },
+    { id: 5, name: 'Подзарядки' },
+    { id: 6, name: 'Канцелярия' },
+    { id: 7, name: 'Другое' },
+  ];
+  // const places = [''];
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
 
@@ -124,13 +124,13 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
   //   }));
   // };
   const [selectedPickupId, setSelectedPickupId] = useState<number | null>(null);
-  const [selectedPickupName, setSelectedPickupName] = useState("");
+  const [selectedPickupName, setSelectedPickupName] = useState('');
 
   const handleSubmit = async () => {
     if (!selectedCategoryId) {
-        toast.warning('Выберите категорию.', { className: 'custom-toast-warning' });
-        return;
-      }
+      toast.warning('Выберите категорию.', { className: 'custom-toast-warning' });
+      return;
+    }
     try {
       const data = new FormData();
 
@@ -148,7 +148,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
         data.append('author', user?.name || 'Гость');
         if (selectedPickupId) {
           data.append('pickup_point', String(selectedPickupId));
-  }
+        }
       } else {
         data.append('description', form.description);
         data.append('location_zone', 'Свободно');
@@ -157,7 +157,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
         data.append('author', user?.first_name || 'Гость');
         if (selectedPickupId) {
           data.append('pickup_point', String(selectedPickupId));
-  }
+        }
       }
       if (photo) {
         data.append('image', photo);
@@ -165,31 +165,34 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
       }
 
       const result = await createFoundItem(data, type);
-      if (photo && result?.id) {
-        await upsertImage(result.id, photo);
-}
+      try {
+        if (photo && result.id) {
+          await upsertImage(result.id, photo);
+        }
+      } catch (e) {
+        console.log(e);
+      }
       addItem({
-  id: result.id,
-  title: result.category_name,
-  img: result.image,
-  description: result.description,
-  location_ref: result.location_ref,
-  status: result.status,
-  user: result.user,
-  type: type as 'found' | 'lost',
-});
+        id: result.id,
+        title: result.category_name,
+        img: result.image,
+        description: result.description,
+        location_ref: result.location_ref,
+        status: result.status,
+        user: result.user,
+        type: type as 'found' | 'lost',
+      });
+      navigate('/main', { state: { refresh: true } });
+      setTimeout(() => window.location.reload(), 100);
       console.log('SUCCESS:', result);
       toast.success('Объявление успешно создано.', {
         className: 'custom-toast',
-      });
-
-      navigate('/main', { state: { refresh: true } });
+      });      
     } catch (err) {
       console.error('CREATE ITEM ERROR:', err);
       toast.error('Ошибка создания объявления.', { className: 'custom-toast-error' });
     }
   };
-
 
   return (
     <>
@@ -273,7 +276,6 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
                 </div>
               </>
             )}
-         
           </div>
           <div className="textarea-advertisement">
             <label>Место</label>
@@ -283,16 +285,16 @@ const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null
             />
           </div>
           <PickupFinder
-  onSelectPickup={(id, name) => {
-    setSelectedPickupId(id);
-    setSelectedPickupName(name);
-  }}
-/>
-{selectedPickupName && (
-  <p>
-    Выбран пункт выдачи: <strong>{selectedPickupName}</strong>
-  </p>
-)}
+            onSelectPickup={(id, name) => {
+              setSelectedPickupId(id);
+              setSelectedPickupName(name);
+            }}
+          />
+          {selectedPickupName && (
+            <p>
+              Выбран пункт выдачи: <strong>{selectedPickupName}</strong>
+            </p>
+          )}
 
           <div className="actions-advertisement">
             <button type="button" className="submit-advertisement" onClick={handleSubmit}>

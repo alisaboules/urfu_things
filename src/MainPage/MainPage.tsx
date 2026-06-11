@@ -167,6 +167,7 @@ function MainPage({ items, loadMore }: MainPageProps) {
       },
       {
         threshold: 0.1,
+        rootMargin: '200px',
       },
     );
 
@@ -378,11 +379,11 @@ function MainPage({ items, loadMore }: MainPageProps) {
           <div className="tabs">
             <div className={`tabs ${type}`}>
               <button onClick={() => setType('lost')}>
-                {isPickupEmployee ? 'В пункте' : 'Потерянные'}
+                {isPickupEmployee ? 'В пункте' : 'Потери'}
               </button>
 
               <button onClick={() => setType('found')}>
-                {isPickupEmployee ? 'Выданы' : 'Найденные'}
+                {isPickupEmployee ? 'Выданы' : 'Находки'}
               </button>
             </div>
           </div>
@@ -506,8 +507,8 @@ function MainPage({ items, loadMore }: MainPageProps) {
           <div
             ref={loaderRef}
             style={{
-              flex: '1',
-              background: '#4811ff',
+              opacity: 0,
+              // background: '#4811ff',
             }}></div>
         </div>
       </div>

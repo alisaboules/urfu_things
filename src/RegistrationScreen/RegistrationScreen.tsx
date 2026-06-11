@@ -207,7 +207,7 @@ const handleSubmit = async () => {
           )}
         </div>
 
-        <button className="btn-registration primary-registration" onClick={handleSubmit}>Зарегестрироваться</button>
+        <button className="btn-registration primary-registration" onClick={handleSubmit}>Зарегистрироваться</button>
 
         <button className="btn-registration secondary-registration" onClick={() => navigate(-1)}>
           Вход
