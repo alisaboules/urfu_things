@@ -1,5 +1,4 @@
 import './MainPage.css';
-import { IoIosSearch } from 'react-icons/io';
 import { FaCheck, FaUser } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
@@ -11,54 +10,41 @@ import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
 import { TbMessageQuestion } from 'react-icons/tb';
-// import type { ApiItem, Item } from '../App';
-// import { searchItems } from '../Api/Api';
 import { useMemo } from 'react';
-import { TbCameraAi } from 'react-icons/tb';
-import { FaRegHourglassHalf } from 'react-icons/fa6';
-import type { Item } from '../App';
+import type { ApiItem, Item, PickupPointResponse, PickupPointType } from '../App';
 import Fuse from 'fuse.js';
-import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage } from '../Api/Api';
+import { Searchbar } from '../Searchbar';
+import { FaTrashAlt } from 'react-icons/fa';
+import {
+  claimFoundItem,
+  confirmIssuance,
+  deleteFoundItem,
+  deleteLostItem,
+  getFoundItemsByPickupPoint,
+  getIssuanceHistory,
+  getPickupPointItems,
+} from '../Api/Api';
 import { toast } from 'react-toastify';
 
 type MainPageProps = {
   items: Item[];
   loadMore: (type: 'found' | 'lost') => Promise<void>;
+  onItemDeleted?: (id: number, type: 'found' | 'lost') => void;
 };
 
 const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
 
-function MainPage({ items, loadMore }: MainPageProps) {
+function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
-  const [searchByImageActive, setSearchByImageActive] = useState(false);
-  const [imageSearchIds, setImageSearchIds] = useState<string[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleImageSearch = async (file: File) => {
-    if (!file) return;
-    setIsSearching(true);
-    try {
-      const results = await searchByImage(file);
-      console.log('Результаты поиска по фото:', results);
-      // results: [{ id: "img1", distance: 0.2 }, ...]
-      const filtered = results.filter((r: { distance: number }) => r.distance > 0.8);
-      const ids = filtered.map((r: { id: string }) => String(r.id));
-      if (ids.length === 0) {
-        toast.warning('Похожих фото не найдено.', { className: 'custom-toast-warning' });
-        setImageSearchIds([]);
-        setSearchByImageActive(false);
-      } else {
-        setImageSearchIds(ids);
-        setSearchByImageActive(true);
-      }
-    } catch (err) {
-      console.error('Ошибка поиска по фото', err);
-      toast.error('Не удалось выполнить поиск по фото.', { className: 'custom-toast-error' });
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  const [imageIds, setImageIds] = useState<string[]>([]);
+  // Для сотрудника: отдельные списки
+  const [pickupItems, setPickupItems] = useState<Item[]>([]); // "В пункте"
+  const [issuedItems, setIssuedItems] = useState<Item[]>([]); // "Выданы"
+
+  // const fileInputRef = useRef<HTMLInputElement>(null);
+  //   const [imageSearchIds, setImageSearchIds] = useState<string[]>([]);
+  // const [searchByImageActive, setSearchByImageActive] = useState(false);
   // const resetImageSearch = () => {
   //   setImageSearchIds([]);
   //   setSearchByImageActive(false);
@@ -73,11 +59,11 @@ function MainPage({ items, loadMore }: MainPageProps) {
   const [search, setSearch] = useState('');
   // const [searchResults, setSearchResults] = useState<Item[]>([]);
   const shortName = `${name || ''} ${surname || ''}`.trim();
-  const filteredItems = items.filter((item) => item.type === type);
+  // const filteredItems = items.filter((item) => item.type === type);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   const [locationFilter, setLocationFilter] = useState('');
-
+  const isPickupEmployee = user?.role === 'pickup_point';
   const [dateFilter, setDateFilter] = useState<'new' | 'old' | null>(null);
   //   const suggestions = useMemo(() => {
   //   if (!search.trim()) return [];
@@ -95,21 +81,30 @@ function MainPage({ items, loadMore }: MainPageProps) {
     setIsImageOpen(false);
     setSelectedItem(null);
   };
+  const baseFiltered = useMemo(() => {
+    if (isPickupEmployee) {
+      // Для сотрудника: type='lost' -> "В пункте", type='found' -> "Выданы"
+      return type === 'lost' ? pickupItems : issuedItems;
+    } else {
+      // Для студента: обычная фильтрация по типу
+      return items.filter((item) => item.type === type);
+    }
+  }, [isPickupEmployee, type, pickupItems, issuedItems, items]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isPickupEmployee = user?.role === 'pickup_point';
+
   const fuse = useMemo(() => {
-    return new Fuse(filteredItems, {
+    return new Fuse(baseFiltered, {
       keys: ['title', 'description', 'location_ref', 'location_text'],
       threshold: 0.2,
       ignoreLocation: true,
     });
-  }, [filteredItems]);
+  }, [baseFiltered]);
 
   const searchResults = useMemo(() => {
-    if (!search.trim()) return filteredItems;
+    if (!search.trim()) return baseFiltered;
 
     return fuse.search(search).map((r) => r.item);
-  }, [search, fuse, filteredItems]);
+  }, [search, fuse, baseFiltered]);
 
   const displayedItems = useMemo(() => {
     let result = searchResults;
@@ -141,9 +136,10 @@ function MainPage({ items, loadMore }: MainPageProps) {
     return result;
   }, [searchResults, categoryFilter, locationFilter, dateFilter]);
   const finalItems = useMemo(() => {
-    if (!searchByImageActive || imageSearchIds.length === 0) return displayedItems;
-    return displayedItems.filter((item) => imageSearchIds.includes(String(item.id)));
-  }, [displayedItems, searchByImageActive, imageSearchIds]);
+    if (imageIds.length === 0) return displayedItems;
+
+    return displayedItems.filter((item) => imageIds.includes(String(item.id)));
+  }, [displayedItems, imageIds]);
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -214,52 +210,50 @@ function MainPage({ items, loadMore }: MainPageProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [pickupOpen, setPickupOpen] = useState(false);
+
   const categories = useMemo(() => {
     return [...new Set(items.map((item) => item.title))];
   }, [items]);
-  const [history, setHistory] = useState<string[]>([]);
 
   const locations = useMemo(() => {
     return [...allPickupPoints];
   }, []);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const firstSuggestion = suggestions.find((s) => s.toLowerCase().startsWith(search.toLowerCase()));
-  useEffect(() => {
-    const loadHistory = async () => {
-      try {
-        const data = await getSearchHistory();
-        setHistory(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  // const firstSuggestion = suggestions.find((s) => s.toLowerCase().startsWith(search.toLowerCase()));
+  // useEffect(() => {
+  //   const loadHistory = async () => {
+  //     try {
+  //       const data = await getSearchHistory();
+  //       setHistory(data);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
 
-    loadHistory();
-  }, []);
+  //   loadHistory();
+  // }, []);
 
-  useEffect(() => {
-    const loadSuggestions = async () => {
-      try {
-        if (!search.trim()) {
-          setSuggestions(history.slice(0, 5));
-          return;
-        }
+  // useEffect(() => {
+  //   const loadSuggestions = async () => {
+  //     try {
+  //       if (!search.trim()) {
+  //         setSuggestions(history.slice(0, 5));
+  //         return;
+  //       }
 
-        const data = await getSearchSuggestions(search);
+  //       const data = await getSearchSuggestions(search);
 
-        // console.log("SEARCH:", search);
-        console.log('SUGGESTIONS:', data);
+  //       // console.log("SEARCH:", search);
+  //       console.log('SUGGESTIONS:', data);
 
-        setSuggestions(data.slice(0, 5));
-        // console.log("DATA:", data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  //       setSuggestions(data.slice(0, 5));
+  //       // console.log("DATA:", data);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
 
-    loadSuggestions();
-  }, [search, history]);
+  //   loadSuggestions();
+  // }, [search, history]);
   const filtersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -276,16 +270,16 @@ function MainPage({ items, loadMore }: MainPageProps) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  const saveSearch = async (query: string) => {
-    try {
-      await saveSearchQuery(query);
+  // const saveSearch = async (query: string) => {
+  //   try {
+  //     await saveSearchQuery(query);
 
-      const historyData = await getSearchHistory();
-      setHistory(historyData);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     const historyData = await getSearchHistory();
+  //     setHistory(historyData);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   // console.log("showSuggestions =", showSuggestions);
   // console.log("suggestions =", suggestions);
@@ -296,7 +290,139 @@ function MainPage({ items, loadMore }: MainPageProps) {
   //   items.map((i) => i.pickup_point_name),
   // );
   // console.log(displayedItems);
+  const [pickupPoints, setPickupPoints] = useState<{ id: number; name: string }[]>([]);
+  const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
+  useEffect(() => {
+    if (isPickupEmployee) {
+      getPickupPointItems().then((data) => {
+        const points = data.results || data;
+        const formatted: PickupPointType[] = points.map((p: PickupPointResponse) => ({
+          id: p.id,
+          name: p.name,
+        }));
+        setPickupPoints(formatted);
+        // По умолчанию выбираем свой пункт сотрудника
+        const myPointId = user?.pickup_point;
+        if (myPointId && formatted.some((p) => p.id === myPointId)) {
+          setSelectedPickupPointId(myPointId);
+        } else if (formatted.length > 0) {
+          setSelectedPickupPointId(formatted[0].id);
+        }
+      });
+    }
+  }, [isPickupEmployee, user?.pickup_point]);
 
+  const deleteItem = async (id: number, type: 'found' | 'lost') => {
+    try {
+      if (type === 'found') {
+        await deleteFoundItem(id);
+      } else {
+        await deleteLostItem(id);
+      }
+
+      setSelectedItem(null);
+
+      if (onItemDeleted) {
+        onItemDeleted(id, type);
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Не удалось удалить вещь', { className: 'custom-toast-error' });
+    }
+  };
+  const loadPickupData = async (pickupPointId: number) => {
+    try {
+      const itemsData = await getFoundItemsByPickupPoint(pickupPointId);
+      const items = itemsData.results || itemsData;
+      const mappedPickup = items.map((item: ApiItem) => ({
+        id: item.id,
+        user: item.user,
+        type: 'found' as const,
+        title: item.category_name || 'Без категории',
+        img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+        description: item.description,
+        location_ref: item.location_ref,
+        status: item.status,
+        author: item.author,
+        created_at: item.created_at,
+        pickup_point_name: item.pickup_point_name,
+        pickup_point: item.pickup_point,
+      }));
+      setPickupItems(mappedPickup);
+
+      // Загружаем историю выдач (выданные вещи)
+      const historyData = await getIssuanceHistory();
+      const issuances = historyData.results || historyData;
+      const mappedIssued = issuances.map((iss) => ({
+        id: iss.found_item.id,
+        user: iss.found_item.user,
+        type: 'found' as const,
+        title: iss.found_item.category_name || 'Без категории',
+        img: iss.found_item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+        description: iss.found_item.description,
+        location_ref: iss.found_item.location_ref,
+        status: 'issued',
+        author: iss.found_item.author,
+        created_at: iss.found_item.created_at,
+        pickup_point_name: iss.found_item.pickup_point_name,
+        pickup_point: iss.found_item.pickup_point,
+      }));
+      setIssuedItems(mappedIssued);
+    } catch (error) {
+      console.error(error);
+      toast.error('Ошибка загрузки данных ПВЗ');
+    }
+  };
+
+  useEffect(() => {
+    if (isPickupEmployee && selectedPickupPointId !== null) {
+      (async () => {
+        await loadPickupData(selectedPickupPointId);
+      })();
+    }
+  }, [selectedPickupPointId, isPickupEmployee]);
+
+  const handleConfirmIssuance = async (item: Item) => {
+    // В реальном приложении user_id нужно брать из выпадающего списка претендентов.
+    // Для демонстрации используем prompt (потом замените на модалку с выбором студента).
+    const userIdRaw = prompt('Введите ID студента, которому выдаётся вещь:');
+    if (!userIdRaw) return;
+    const userId = Number(userIdRaw);
+    if (isNaN(userId)) {
+      toast.error('Некорректный ID');
+      return;
+    }
+
+    try {
+      await confirmIssuance(item.id, userId);
+      toast.success('Выдача подтверждена');
+
+      setPickupItems((prev) => prev.filter((i) => i.id !== item.id));
+      const issuedCopy = { ...item, status: 'issued' };
+      setIssuedItems((prev) => [issuedCopy, ...prev]);
+      setSelectedItem(null);
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка подтверждения выдачи', { className: 'custom-toast-error' });
+    }
+  };
+  const handleClaim = async (item: Item) => {
+    try {
+      await claimFoundItem(
+        item.id,
+        `Заявка на вещь: ${item.title}`,
+        `Пользователь подтверждает, что найденная вещь (ID ${item.id}) принадлежит ему.`,
+      );
+      toast.success('Ваша заявка успешно отправлена', { className: 'custom-toast' });
+      setSelectedItem(null);
+      onItemDeleted?.(item.id, item.type);
+    } catch (err) {
+      console.error(err);
+      toast.error('Ошибка подачи заявки', { className: 'custom-toast-error' });
+    }
+  };
   return (
     <>
       <div className="container_header_homepage">
@@ -306,80 +432,14 @@ function MainPage({ items, loadMore }: MainPageProps) {
           </h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
-
-        <div className="search">
-          
-          <div className="search-wrapper">
-            {firstSuggestion && search && (
-              <div className="ghost">
-                {search}
-                <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
-              </div>
-            )}
-            <div className='search-icon-wrapper'>
-              <IoIosSearch className="icon-search" />
-            </div>
-            <input
-              type="text"
-              placeholder="Поиск"
-              value={search}
-              onFocus={() => setShowSuggestions(true)}
-              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && search.trim()) {
-                  saveSearch(search);
-                  setShowSuggestions(false);
-                }
-              }}
-            />
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  handleImageSearch(e.target.files[0]);
-                }
-              }}
-            />
-            <button
-              className="search-by-image-btn"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isSearching}
-              title="Поиск по фото">
-              {isSearching ? (
-                <FaRegHourglassHalf className="ai-icon" />
-              ) : (
-                <TbCameraAi className="ai-icon" />
-              )}
-            </button>
-          </div>
-          {showSuggestions && suggestions.length > 0 && (
-            <div className="search-suggestions">
-              {suggestions.map((suggestion, index) => (
-                <div
-                  key={index}
-                  className="search-suggestion"
-                  onClick={() => {
-                    setSearch(suggestion);
-                    saveSearch(suggestion);
-                    setShowSuggestions(false);
-                  }}>
-                  <span>{suggestion}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Searchbar search={search} setSearch={setSearch} onImageSearch={setImageIds} />
       </div>
       <div className="container_main_homepage">
         <div className="phon">
           <div className="tabs">
             <div className={`tabs ${type}`}>
               <button onClick={() => setType('lost')}>
-                {isPickupEmployee ? 'В пункте' : 'Потери'}
+                {isPickupEmployee ? 'В пункте' : 'Потеряшки'}
               </button>
 
               <button onClick={() => setType('found')}>
@@ -387,11 +447,26 @@ function MainPage({ items, loadMore }: MainPageProps) {
               </button>
             </div>
           </div>
-          <div className="filters" ref={filtersRef}>
-            <div className="filter-block">
-              <button
-                className={`filter ${categoryFilter ? 'filter-active' : ''}`}
-                onClick={() => setCategoryOpen(!categoryOpen)}>
+          {isPickupEmployee && pickupPoints.length > 0 && (
+            <div className="pickup-point-selector" style={{ margin: '10px 20px' }}>
+              <label>Пункт выдачи: </label>
+              <select
+                value={selectedPickupPointId ?? ''}
+                onChange={(e) => setSelectedPickupPointId(Number(e.target.value))}>
+                {pickupPoints.map((point) => (
+                  <option key={point.id} value={point.id}>
+                    {point.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          { user?.role != 'pickup_point' && (
+            <div className="filters" ref={filtersRef}>
+              <div className="filter-block">
+                <button
+                  className={`filter ${categoryFilter ? 'filter-active' : ''}`}
+                  onClick={() => setCategoryOpen(!categoryOpen)}>
                 Категория
                 <MdKeyboardArrowLeft className={`filter-icon ${categoryOpen ? 'rotated' : ''}`} />
               </button>
@@ -488,7 +563,7 @@ function MainPage({ items, loadMore }: MainPageProps) {
               )}
             </div>
           </div>
-
+            )}
           <div className="grid">
             {finalItems.map((item) => (
               <div
@@ -567,8 +642,15 @@ function MainPage({ items, loadMore }: MainPageProps) {
                   navigate('/appeal', { state: { itemId: selectedItem.id, type: type } });
                 }}
               />
+              {(user?.id === selectedItem.user || user?.role === 'admin') && (
+                <FaTrashAlt
+                  className="delete-btn"
+                  onClick={async () => {
+                    await deleteItem(selectedItem.id, selectedItem.type);
+                  }}
+                />
+              )}
             </div>
-
             <div className="discription-for-card">
               <h2>{selectedItem.title}</h2>
               <div className="location">
@@ -595,10 +677,21 @@ function MainPage({ items, loadMore }: MainPageProps) {
                 </p>
               ) : null}
             </div>
+          
             <div className="popup-footer">
-              <button className="responce-btn" onClick={() => setSelectedItem(null)}>
-                {user?.role != 'student' ? 'Подтвердить выдачу' : 'Это моя вещь'}
-              </button>
+              {user?.role === 'student' && selectedItem?.type === 'found' && (
+                <button className="responce-btn" onClick={() => handleClaim(selectedItem)}>
+                  Это моя вещь
+                </button>
+              )}
+              {user?.role === 'pickup_point' &&
+                selectedItem?.pickup_point === user.pickup_point && (
+                  <button
+                    className="responce-btn"
+                    onClick={() => handleConfirmIssuance(selectedItem)}>
+                    Подтвердить выдачу
+                  </button>
+                )}
             </div>
           </div>
         </div>

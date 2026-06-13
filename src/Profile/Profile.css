@@ -104,7 +104,7 @@
   font-size: 14px;
 }
 
-.switch {
+.switch, .theme-switch {
   width: 60px;
   height: 32px;
   background: var(--based-color13);
@@ -114,6 +114,7 @@
   display: flex;
   align-items: center;
   transition: 0.3s;
+  position: relative;
 }
 
 .switch-circle {
@@ -176,4 +177,44 @@
   font-size: 16px;
   background: transparent;
   width: 100%;
+}
+
+
+/* .theme-switch {
+  width: 60px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+} */
+
+
+.theme-icon {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  transition: transform 0.3s ease;
+  color: var(--based-color2);
+}
+
+.theme-switch.active .theme-icon {
+  left: auto;
+  right: 3px;
+}
+
+.theme-icon.rotate {
+  transform: rotate(180deg);
+  color: var(--based-color1);
+}
+
+.theme-switch.active {
+  background-color: #4811FF;
 }

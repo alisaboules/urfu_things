@@ -29,7 +29,8 @@ export type Item = {
   author?: string;
   created_at?: string;
   pickup_point_name?: string;
-  pickup_point?: number;
+  pickup_point?: number | null;
+
 };
 
 export type ApiItem = {
@@ -47,6 +48,27 @@ export type ApiItem = {
   created_at: string;
   author?: string;
 };
+
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+export interface PickupPointType {
+  id: number;
+  name: string;
+}
+
+// В Api.ts
+export interface PickupPointResponse {
+  id: number;
+  name: string;
+  building: number;
+  building_name: string;
+  location?: string;
+}
 
 const fallbackItems: Item[] = [
   {
@@ -146,6 +168,7 @@ function App() {
             description: item.description,
             location_ref: item.location_ref || 'Без локации',
             pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
+            pickup_point: item.pickup_point ?? null,
             status: item.status,
             author: item.author,
             created_at: item.created_at,
@@ -269,7 +292,9 @@ function App() {
 
   //   fetchItems();
   // }, []);
-
+  const handleItemDeleted = (id: number, type: 'found' | 'lost') => {
+  setItems(prev => prev.filter(item => !(item.id === id && item.type === type)));
+};
   return (
     <>
       <ToastContainer progressClassName="toast-progress" />
@@ -277,7 +302,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Registration />} />
-          <Route path="/main" element={<OutletWrapper items={items} loadMore={loadMore} />}>
+          <Route path="/main" element={<OutletWrapper items={items} loadMore={loadMore} onItemDeleted={handleItemDeleted} />}>
             {/* <Route index element={<Sidebar />} /> */}
           </Route>
           <Route path="/ad" element={<Advertisement addItem={addItem} />} />
@@ -296,13 +321,15 @@ function App() {
 function OutletWrapper({
   items,
   loadMore,
+  onItemDeleted,
 }: {
   items: Item[];
   loadMore: (type: 'found' | 'lost') => Promise<void>;
+  onItemDeleted: (id: number, type: 'found' | 'lost') => void;
 }) {
   return (
     <div>
-      <MainPage items={items} loadMore={loadMore} />
+      <MainPage items={items} loadMore={loadMore} onItemDeleted={onItemDeleted} />
       <Outlet />
     </div>
   );

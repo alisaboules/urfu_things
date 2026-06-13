@@ -1,5 +1,4 @@
 import { uploadAvatar, updateProfile } from '../Api/Api.ts';
-import { FaPlus } from 'react-icons/fa';
 import './Profile.css';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { MdAddAPhoto } from 'react-icons/md';
@@ -7,9 +6,34 @@ import { MdEdit } from 'react-icons/md';
 import { useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaPlus, FaSun } from 'react-icons/fa';
+
 
 function Profile() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  useLayoutEffect(() => {
+  const initTheme = () => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const defaultTheme = prefersDark ? 'dark' : 'light';
+      setTheme(defaultTheme);
+      document.documentElement.setAttribute('data-theme', defaultTheme);
+    }
+  };
+  initTheme();
+}, []);
+
+const toggleTheme = () => {
+  const newTheme = theme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
+  localStorage.setItem('theme', newTheme);
+  document.documentElement.setAttribute('data-theme', newTheme);
+};
+
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
   const toggleNotifications = async () => {
     const newValue = !enabled;
@@ -143,7 +167,7 @@ function Profile() {
                 className="profile-input"
               />
             ) : (
-              <p className="user-info-label1">{user?.student_id}</p>
+              <p className="user-info-label1">№ {user?.student_id}</p>
             )}
 
             <p className="user-info-label2">Номер студенческого</p>
@@ -166,6 +190,21 @@ function Profile() {
           </div>
         </div>
       </div>
+      <div>
+      <div className="notifications-container">
+  <p>Тема</p>
+  <div
+    className={`theme-switch ${theme === 'dark' ? 'active' : ''}`}
+    onClick={toggleTheme}
+  >
+    {theme === 'light' ? (
+      <FaSun className={`theme-icon`} />
+    ) : (
+      <FaSun className={`theme-icon rotate`} />
+    )}
+  </div>
+</div>
+</div>
       <input
         type="file"
         accept="image/*"

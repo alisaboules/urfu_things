@@ -1,17 +1,18 @@
 import '../MainPage/MainPage.css';
 import { FaPlus, FaUser } from 'react-icons/fa6';
-import { IoIosSearch } from 'react-icons/io';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin';
 import { RxCross1 } from 'react-icons/rx';
 import { TbMessageQuestion } from 'react-icons/tb';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdOutlinePlace } from 'react-icons/md';
 import type { Item } from '../App';
 import './MyCards.css';
+import { Searchbar } from '../Searchbar';
+import Fuse from 'fuse.js';
 
 // type Item = {
 //   id: number;
@@ -30,6 +31,8 @@ type MyCardsProps = {
 };
 
 function MyCards({ items }: MyCardsProps) {
+  const [search, setSearch] = useState('');
+  const [imageIds, setImageIds] = useState<string[]>([]);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const navigate = useNavigate();
   const [type, setType] = useState<'found' | 'lost'>('found');
@@ -60,7 +63,26 @@ function MyCards({ items }: MyCardsProps) {
   }, []);
 
   // const isPickupEmployee = user?.role === 'pickup_point';
-  
+  const fuse = useMemo(() => {
+    return new Fuse(myItems, {
+      keys: ['title', 'description', 'location_ref'],
+      threshold: 0.2,
+      ignoreLocation: true,
+    });
+  }, [myItems]);
+
+  const searchResults = useMemo(() => {
+    if (!search.trim()) return myItems;
+
+    return fuse.search(search).map((r) => r.item);
+  }, [search, fuse, myItems]);
+
+  const finalItems = useMemo(() => {
+    if (imageIds.length === 0) return searchResults;
+
+    return searchResults.filter((item) => imageIds.includes(String(item.id)));
+  }, [searchResults, imageIds]);
+
   return (
     <>
       <div className="container_header_homepage">
@@ -70,11 +92,7 @@ function MyCards({ items }: MyCardsProps) {
           </h1>
           <FaUser className="profile-icon" onClick={() => setSidebarOpen(true)} />
         </div>
-
-        <div className="search">
-          <IoIosSearch className="icon-search" />
-          <input type="text" placeholder="Поиск" />
-        </div>
+        <Searchbar search={search} setSearch={setSearch} onImageSearch={setImageIds} />
       </div>
       <div className="container_main_homepage">
         <div className="phon">
@@ -86,10 +104,10 @@ function MyCards({ items }: MyCardsProps) {
             </div>
           </div>
           {/* <button className="filter">Фильтры</button> */}
-          <div className='block'></div>
-          {myItems.length > 0 ? (
+          <div className="block"></div>
+          {finalItems.length > 0 ? (
             <div className="grid">
-              {myItems.map((item) => (
+              {finalItems.map((item) => (
                 <div key={item.id} className="card" onClick={() => setSelectedItem(item)}>
                   <div className="card-image-main">
                     <img src={item.img} alt={item.title} />

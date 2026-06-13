@@ -62,53 +62,51 @@
   box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: #16171d;
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --urfu-font-family: "Baloo", sans-serif;
-    --urfu-font-family-1: "Inter", sans-serif;
-    --input-bg: #0077ff2e;
-    --eye-icon-bg: #fff;
-    --registration-btn-bg: #0077ff2e;
-    --enter-btn-color: #fff;
-    --based-color1: #fff;
-    --based-color2: #000;
-    --based-color3: #4811FF;
-    --based-color4: #DCD1FF;
-    --based-color5: #0077ff2e;
-    --based-color6: #DCD1FF;
-    --based-color7: #0077ff2e;
-    --based-color8: #DCD1FF;
-    --based-color9: #181c2c;
-    --based-color10: #000;
-    --based-color11: #0077ff2e;
-    --based-color12: #dcdcdc;
-    --based-color13: #5D5D5D;
-    --based-color14: #dcdcdc;
-    --border-color: #7a7777;
-    --border-color-1: #0077ff2e;
-    --border-color-2: #0077ff2e;
-    --border-color-3: #4811FF;
-    --border-color-4: #fff;
-    --border-color-5: #ffffff3e;
-    --border-color-6: #DCD1FF;
-    --border-color-7: #4811FF;
-    --search-icon-color: #dcdcdc;
-    --shadow: none;
-  }
+[data-theme="dark"] {
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --code-bg: #1f2028;
+  --accent: #c084fc;
+  --accent-bg: #16171d;
+  --accent-border: rgba(192, 132, 252, 0.5);
+  --social-bg: rgba(47, 48, 58, 0.5);
+  --urfu-font-family: "Baloo", sans-serif;
+  --urfu-font-family-1: "Inter", sans-serif;
+  --input-bg: #0077ff2e;
+  --eye-icon-bg: #fff;
+  --registration-btn-bg: #0077ff2e;
+  --enter-btn-color: #fff;
+  --based-color1: #fff;
+  --based-color2: #000;
+  --based-color3: #4811FF;
+  --based-color4: #DCD1FF;
+  --based-color5: #0077ff2e;
+  --based-color6: #DCD1FF;
+  --based-color7: #0077ff2e;
+  --based-color8: #DCD1FF;
+  --based-color9: #181c2c;
+  --based-color10: #000;
+  --based-color11: #0077ff2e;
+  --based-color12: #dcdcdc;
+  --based-color13: #5D5D5D;
+  --based-color14: #dcdcdc;
+  --border-color: #7a7777;
+  --border-color-1: #0077ff2e;
+  --border-color-2: #0077ff2e;
+  --border-color-3: #4811FF;
+  --border-color-4: #fff;
+  --border-color-5: #ffffff3e;
+  --border-color-6: #DCD1FF;
+  --border-color-7: #4811FF;
+  --search-icon-color: #dcdcdc;
+  --shadow: none;
+}
 
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
-}
 
 /* #root {
   width: 1126px;

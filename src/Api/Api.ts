@@ -1,6 +1,7 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 import axios from 'axios';
 import type { AppealPayload } from '../Appeal/Appeal';
+import type { ApiItem, PaginatedResponse } from '../App';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
@@ -386,8 +387,6 @@ export const getSearchHistory = async () => {
       },
     });
 
-    console.log("Status:", res.status);
-
     if (!res.ok) {
       console.log(await res.text());
       return [];
@@ -488,7 +487,6 @@ export const upsertImage = async (id: number, imageFile: File) => {
   formData.append('file', imageFile);
   formData.append('datapoint_id', String(id));
 
-  // Если ваш векторный сервер запущен локально
   const VECTOR_SEARCH_URL = `https://urfu-things-ai-2.onrender.com/upsert?datapoint_id=${id}`;
 
   try {
@@ -502,4 +500,102 @@ export const upsertImage = async (id: number, imageFile: File) => {
   } catch (error) {
     console.error('Не удалось добавить изображение в поиск:', error);
   }
+};
+
+export const deleteFoundItem = async (id: number): Promise<void> => {
+  const url = `${BASE_URL}/found/${id}/`;
+  const token = localStorage.getItem("access_token");
+
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("DELETE failed:", res.status, text);
+    throw new Error(text || "Не удалось удалить найденную вещь");
+  }
+};
+
+export const deleteLostItem = async (id: number): Promise<void> => {
+  const url = `${BASE_URL}/lost/${id}/`;
+  const token = localStorage.getItem("access_token");
+
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("DELETE failed:", res.status, text);
+    throw new Error(text || "Не удалось удалить потерянную вещь");
+  }
+};
+
+export const claimFoundItem = async (foundItemId: number, subject?: string, message?: string) => {
+  const token = localStorage.getItem("access_token");
+  const res = await fetch(`${BASE_URL}/appeals/create/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      found_item: foundItemId,
+      subject: subject || "Заявка на вещь",
+      message: message || "Пользователь утверждает, что это его/её вещь",
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Ошибка создания обращения");
+  }
+  return res.json();
+};
+
+export const getPickupPointItems = async () => {
+  const res = await fetch(`${BASE_URL}/pickup-points/`);
+  if (!res.ok) throw new Error("Ошибка загрузки пунктов выдачи");
+  return res.json();
+};
+
+export const getIssuanceHistory = async (): Promise<PaginatedResponse<{ found_item: ApiItem }>> => {
+  const token = localStorage.getItem("access_token");
+  const res = await fetch(`${BASE_URL}/pickup-point/history/`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Ошибка загрузки истории");
+  return res.json();
+};
+
+export const confirmIssuance = async (foundItemId: number, userId: number) => {
+  const token = localStorage.getItem("access_token");
+  const res = await fetch(`${BASE_URL}/issuance/confirm/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      found_item_id: foundItemId,
+      user_id: userId,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Ошибка подтверждения выдачи");
+  }
+  return res.json();
+};
+
+export const getFoundItemsByPickupPoint = async (pickupPointId: number) => {
+  const res = await fetch(`${BASE_URL}/found/?pickup_point=${pickupPointId}`);
+  if (!res.ok) throw new Error("Ошибка загрузки находок пункта");
+  return res.json();
 };
