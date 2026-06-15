@@ -16,13 +16,14 @@ import { getAppeals, getItems, getItemsPage } from './Api/Api';
 import { MyStatistic } from './Statistic/Statistic';
 import type { AppealImage } from './Appeals/Appeals';
 import { ToastContainer } from 'react-toastify';
+import { ThemeProvider } from './ThemeContext';
 
 export type Item = {
   id: number;
   title: string;
   img: string;
   description: string;
-  location_ref: string;
+  location_ref: string | undefined;
   status: string;
   user: number;
   type: 'found' | 'lost';
@@ -56,12 +57,28 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
+export interface IssuanceHistoryItem {
+  id: number;
+  found_item: number;
+
+  found_item_title: string;
+  found_item_description?: string;
+  found_item_image?: string | null;
+  found_item_location?: string;
+  found_item_author?: string;
+  found_item_created_at?: string;
+
+  pickup_point: number;
+  pickup_point_name: string;
+
+  user: number;
+}
+
 export interface PickupPointType {
   id: number;
   name: string;
 }
 
-// В Api.ts
 export interface PickupPointResponse {
   id: number;
   name: string;
@@ -69,6 +86,32 @@ export interface PickupPointResponse {
   building_name: string;
   location?: string;
 }
+
+export interface NotificationPayload {
+  action_type: 'claim' | 'confirm';
+  item_id: number;
+  item_title: string;
+  item_category: string;
+  item_description: string;
+  creator_name: string;
+  creator_id: number;
+  pickup_point_name: string;
+}
+
+export interface Notificationing extends NotificationPayload {
+  id: number;
+  action_time: string;
+  is_read: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+export type NotificationsResponse = PaginatedResponse<Notificationing>;
 
 const fallbackItems: Item[] = [
   {
@@ -297,23 +340,33 @@ function App() {
 };
   return (
     <>
-      <ToastContainer progressClassName="toast-progress" />
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/main" element={<OutletWrapper items={items} loadMore={loadMore} onItemDeleted={handleItemDeleted} />}>
-            {/* <Route index element={<Sidebar />} /> */}
-          </Route>
-          <Route path="/ad" element={<Advertisement addItem={addItem} />} />
-          <Route path="/appeal" element={<Appeal />} />
-          <Route path="/appeals" element={<Appeals />} />
-          <Route path="/magazine" element={<Magazine />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/my-cards" element={<MyCards items={items} />} />
-          <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />} />
-        </Routes>
-      </HashRouter>
+      <ThemeProvider>
+        <ToastContainer progressClassName="toast-progress" />
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Registration />} />
+            <Route
+              path="/main"
+              element={
+                <OutletWrapper
+                  items={items}
+                  loadMore={loadMore}
+                  onItemDeleted={handleItemDeleted}
+                />
+              }>
+              {/* <Route index element={<Sidebar />} /> */}
+            </Route>
+            <Route path="/ad" element={<Advertisement addItem={addItem} />} />
+            <Route path="/appeal" element={<Appeal />} />
+            <Route path="/appeals" element={<Appeals />} />
+            <Route path="/magazine" element={<Magazine />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/my-cards" element={<MyCards items={items} />} />
+            <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />} />
+          </Routes>
+        </HashRouter>
+      </ThemeProvider>
     </>
   );
 }

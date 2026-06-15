@@ -1,48 +1,50 @@
 import { FaUser } from 'react-icons/fa6';
 import { PiInfoLight } from 'react-icons/pi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Magazine.css';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdOutlinePlace } from 'react-icons/md';
 import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
+import { getNotifications } from '../Api/Api';
+import type { Notificationing } from '../App';
 
 function Magazine() {
-  const notifications = [
-    {
-      id: 1,
-      title: 'Выдача вещи',
-      place: 'ИРИТ-РТФ',
-      subtitle: 'Ключи',
-    },
-    {
-      id: 2,
-      title: 'Новое объявление о находке',
-    },
-    {
-      id: 3,
-      title: 'Новое объявление о пропаже',
-    },
-    {
-      id: 4,
-      title: 'Новое объявление о пропаже',
-    },
-    {
-      id: 5,
-      title: 'Новое объявление о находке',
-    },
-    {
-      id: 6,
-      title: 'Выдача вещи',
-      place: 'ГУК',
-      subtitle: 'Зарядка от ноутбука',
-    },
-    {
-      id: 7,
-      title: 'Новая учётная запись',
-    },
-  ];
+  // const notifications = [
+  //   {
+  //     id: 1,
+  //     title: 'Выдача вещи',
+  //     place: 'ИРИТ-РТФ',
+  //     subtitle: 'Ключи',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Новое объявление о находке',
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Новое объявление о пропаже',
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Новое объявление о пропаже',
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Новое объявление о находке',
+  //   },
+  //   {
+  //     id: 6,
+  //     title: 'Выдача вещи',
+  //     place: 'ГУК',
+  //     subtitle: 'Зарядка от ноутбука',
+  //   },
+  //   {
+  //     id: 7,
+  //     title: 'Новая учётная запись',
+  //   },
+  // ];
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const navigate = useNavigate();
@@ -56,6 +58,40 @@ function Magazine() {
     }
     return 'Гость';
   });
+  const [notifications, setNotifications] = useState<Notificationing[]>([]);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await getNotifications();
+
+      setNotifications(data.results);
+    } catch (error) {
+      console.error('Ошибка загрузки уведомлений', error);
+    }
+  };
+
+  useEffect(() => {
+  const loadNotifications = async () => {
+    try {
+      const data = await getNotifications();
+      setNotifications(data.results);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  loadNotifications();
+}, []);
+
+  useEffect(() => {
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      fetchNotifications();
+    }
+  };
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+}, []);
   return (
     <>
       <div className="container-magazine">
@@ -106,16 +142,16 @@ function Magazine() {
                 <div className="notification-card" key={item.id}>
                   <div className="notification-content">
                     <div className="notification-header">
-                      <span className="notification-title">{item.title}</span>
+                      <span className="notification-title">{item.item_title}</span>
 
-                      {item.place && (
+                      {item.pickup_point_name && (
                         <span className="notification-place">
-                          <MdOutlinePlace /> {item.place}
+                          <MdOutlinePlace /> {item.pickup_point_name}
                         </span>
                       )}
                     </div>
 
-                    {item.subtitle && <div className="notification-subtitle">{item.subtitle}</div>}
+                    {item.item_description && <div className="notification-subtitle">{item.item_description}</div>}
                   </div>
                   <PiInfoLight className="notification-info-icon" />
                 </div>

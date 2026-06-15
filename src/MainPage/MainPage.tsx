@@ -18,6 +18,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import {
   claimFoundItem,
   confirmIssuance,
+  createNotification,
   deleteFoundItem,
   deleteLostItem,
   getFoundItemsByPickupPoint,
@@ -336,13 +337,14 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
     try {
       const itemsData = await getFoundItemsByPickupPoint(pickupPointId);
       const items = itemsData.results || itemsData;
-      const mappedPickup = items.map((item: ApiItem) => ({
+      const availableItems = items.filter((item: ApiItem) => item.status !== 'issued');
+      const mappedPickup = availableItems.map((item: ApiItem) => ({
         id: item.id,
         user: item.user,
         type: 'found' as const,
         title: item.category_name || 'Без категории',
         img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-        description: item.description,
+        description: item.description || "Без описания",
         location_ref: item.location_ref,
         status: item.status,
         author: item.author,
@@ -354,21 +356,22 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
 
       // Загружаем историю выдач (выданные вещи)
       const historyData = await getIssuanceHistory();
+      console.log(historyData);
       const issuances = historyData.results || historyData;
       const mappedIssued = issuances.map((iss) => ({
-        id: iss.found_item.id,
-        user: iss.found_item.user,
-        type: 'found' as const,
-        title: iss.found_item.category_name || 'Без категории',
-        img: iss.found_item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-        description: iss.found_item.description,
-        location_ref: iss.found_item.location_ref,
-        status: 'issued',
-        author: iss.found_item.author,
-        created_at: iss.found_item.created_at,
-        pickup_point_name: iss.found_item.pickup_point_name,
-        pickup_point: iss.found_item.pickup_point,
-      }));
+  id: iss.found_item,
+  user: iss.user,
+  type: "found" as const,
+  title: iss.found_item_title,
+  img: iss.found_item_image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+  description: iss.found_item_description || "Без описания",
+  location_ref: iss.found_item_location,
+  status: "issued",
+  author: iss.found_item_author,
+  created_at: iss.found_item_created_at,
+  pickup_point_name: iss.pickup_point_name,
+  pickup_point: iss.pickup_point,
+}));
       setIssuedItems(mappedIssued);
     } catch (error) {
       console.error(error);
@@ -385,28 +388,24 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   }, [selectedPickupPointId, isPickupEmployee]);
 
   const handleConfirmIssuance = async (item: Item) => {
-    // В реальном приложении user_id нужно брать из выпадающего списка претендентов.
-    // Для демонстрации используем prompt (потом замените на модалку с выбором студента).
-    const userIdRaw = prompt('Введите ID студента, которому выдаётся вещь:');
-    if (!userIdRaw) return;
-    const userId = Number(userIdRaw);
-    if (isNaN(userId)) {
-      toast.error('Некорректный ID');
-      return;
-    }
-
-    try {
-      await confirmIssuance(item.id, userId);
-      toast.success('Выдача подтверждена');
-
-      setPickupItems((prev) => prev.filter((i) => i.id !== item.id));
-      const issuedCopy = { ...item, status: 'issued' };
-      setIssuedItems((prev) => [issuedCopy, ...prev]);
-      setSelectedItem(null);
-    } catch (err) {
-      console.error(err);
-      toast.error('Ошибка подтверждения выдачи', { className: 'custom-toast-error' });
-    }
+    await confirmIssuance(item.id, user.id); 
+    
+    await createNotification({
+      action_type: 'confirm',
+      item_id: item.id,
+      item_title: item.title,
+      item_category: item.title,
+      item_description: item.description || "Без описания",
+      creator_name: item.author || 'Не указано',
+      creator_id: item.user,
+      pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
+    });
+    toast.success('Выдача подтверждена');
+    await loadPickupData(selectedPickupPointId!); 
+    // setPickupItems((prev) => prev.filter((i) => i.id !== item.id));
+    // const issuedCopy = { ...item, status: 'issued' };
+    // setIssuedItems((prev) => [issuedCopy, ...prev]);
+    setSelectedItem(null);
   };
   const handleClaim = async (item: Item) => {
     try {
@@ -415,6 +414,16 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
         `Заявка на вещь: ${item.title}`,
         `Пользователь подтверждает, что найденная вещь (ID ${item.id}) принадлежит ему.`,
       );
+      await createNotification({
+      action_type: 'claim',
+      item_id: item.id,
+      item_title: item.title,
+      item_category: item.title,   
+      item_description: item.description || "Без описания",
+      creator_name: item.author || 'Не указано',
+      creator_id: item.user,
+      pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
+    });
       toast.success('Ваша заявка успешно отправлена', { className: 'custom-toast' });
       setSelectedItem(null);
       onItemDeleted?.(item.id, item.type);
@@ -423,6 +432,8 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
       toast.error('Ошибка подачи заявки', { className: 'custom-toast-error' });
     }
   };
+  const [pickupDropdownOpen, setPickupDropdownOpen] = useState(false);
+  const [selectedPickupPointName, setSelectedPickupPointName] = useState('');
   return (
     <>
       <div className="container_header_homepage">
@@ -448,122 +459,151 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
             </div>
           </div>
           {isPickupEmployee && pickupPoints.length > 0 && (
-            <div className="pickup-point-selector" style={{ margin: '10px 20px' }}>
-              <label>Пункт выдачи: </label>
-              <select
-                value={selectedPickupPointId ?? ''}
-                onChange={(e) => setSelectedPickupPointId(Number(e.target.value))}>
-                {pickupPoints.map((point) => (
-                  <option key={point.id} value={point.id}>
-                    {point.name}
-                  </option>
-                ))}
-              </select>
+            <div className="pickup-point-selector">
+              <div className="pickup-point-block">
+                <div className="filter-block">
+                  <button
+                    className={`filter ${selectedPickupPointName ? 'filter-active' : ''}`}
+                    onClick={() => setPickupDropdownOpen(!pickupDropdownOpen)}>
+                    {selectedPickupPointName || 'Пункт выдачи'}
+                    <MdKeyboardArrowLeft
+                      className={`filter-icon ${pickupDropdownOpen ? 'rotated' : ''}`}
+                    />
+                  </button>
+                  {pickupDropdownOpen && (
+                    <div className="filter-popup">
+                      {pickupPoints.map((point) => (
+                        <button
+                          key={point.id}
+                          onClick={() => {
+                            setSelectedPickupPointId(point.id);
+                            setSelectedPickupPointName(point.name);
+                            setPickupDropdownOpen(false);
+                            loadPickupData(point.id);
+                          }}>
+                          {point.name}
+                          {selectedPickupPointId === point.id && (
+                            <FaCheck className="filter-check" />
+                          )}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setSelectedPickupPointId(null);
+                          setSelectedPickupPointName('');
+                          setPickupDropdownOpen(false);
+                        }}>
+                        Сбросить
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
-          { user?.role != 'pickup_point' && (
+          {user?.role != 'pickup_point' && (
             <div className="filters" ref={filtersRef}>
               <div className="filter-block">
                 <button
                   className={`filter ${categoryFilter ? 'filter-active' : ''}`}
                   onClick={() => setCategoryOpen(!categoryOpen)}>
-                Категория
-                <MdKeyboardArrowLeft className={`filter-icon ${categoryOpen ? 'rotated' : ''}`} />
-              </button>
-              {categoryOpen && (
-                <div className="filter-popup">
-                  {categories.map((category) => (
+                  Категория
+                  <MdKeyboardArrowLeft className={`filter-icon ${categoryOpen ? 'rotated' : ''}`} />
+                </button>
+                {categoryOpen && (
+                  <div className="filter-popup">
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => {
+                          setCategoryFilter(category);
+                          setCategoryOpen(false);
+                        }}>
+                        {category}
+                        {categoryFilter === category && <FaCheck className="filter-check" />}
+                      </button>
+                    ))}
+
                     <button
-                      key={category}
                       onClick={() => {
-                        setCategoryFilter(category);
+                        setCategoryFilter(null);
                         setCategoryOpen(false);
                       }}>
-                      {category}
-                      {categoryFilter === category && <FaCheck className="filter-check" />}
+                      Сбросить
                     </button>
-                  ))}
-
-                  <button
-                    onClick={() => {
-                      setCategoryFilter(null);
-                      setCategoryOpen(false);
-                    }}>
-                    Сбросить
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="filter-block" ref={filtersRef}>
-              <button
-                className={`filter ${dateFilter ? 'filter-active' : ''}`}
-                onClick={() => setDateOpen(!dateOpen)}>
-                По дате
-                <MdKeyboardArrowLeft className={`filter-icon ${dateOpen ? 'rotated' : ''}`} />
-              </button>
-              {dateOpen && (
-                <div className="filter-popup">
-                  <button
-                    onClick={() => {
-                      setDateFilter('new');
-                      setDateOpen(false);
-                    }}>
-                    Сначала новые
-                    {dateFilter === 'new' && <FaCheck className="filter-check" />}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setDateFilter('old');
-                      setDateOpen(false);
-                    }}>
-                    Сначала старые
-                    {dateFilter === 'old' && <FaCheck className="filter-check" />}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setDateFilter(null);
-                      setDateOpen(false);
-                    }}>
-                    Сбросить
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="filter-block" ref={filtersRef}>
-              <button
-                className={`filter ${locationFilter ? 'filter-active' : ''}`}
-                onClick={() => setPickupOpen(!pickupOpen)}>
-                По месту
-                <MdKeyboardArrowLeft className={`filter-icon ${pickupOpen ? 'rotated' : ''}`} />
-              </button>
-              {pickupOpen && (
-                <div className="filter-popup">
-                  {locations.map((location) => (
+                  </div>
+                )}
+              </div>
+              <div className="filter-block" ref={filtersRef}>
+                <button
+                  className={`filter ${dateFilter ? 'filter-active' : ''}`}
+                  onClick={() => setDateOpen(!dateOpen)}>
+                  По дате
+                  <MdKeyboardArrowLeft className={`filter-icon ${dateOpen ? 'rotated' : ''}`} />
+                </button>
+                {dateOpen && (
+                  <div className="filter-popup">
                     <button
-                      key={location}
                       onClick={() => {
-                        setLocationFilter(location);
+                        setDateFilter('new');
+                        setDateOpen(false);
+                      }}>
+                      Сначала новые
+                      {dateFilter === 'new' && <FaCheck className="filter-check" />}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDateFilter('old');
+                        setDateOpen(false);
+                      }}>
+                      Сначала старые
+                      {dateFilter === 'old' && <FaCheck className="filter-check" />}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDateFilter(null);
+                        setDateOpen(false);
+                      }}>
+                      Сбросить
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="filter-block" ref={filtersRef}>
+                <button
+                  className={`filter ${locationFilter ? 'filter-active' : ''}`}
+                  onClick={() => setPickupOpen(!pickupOpen)}>
+                  По месту
+                  <MdKeyboardArrowLeft className={`filter-icon ${pickupOpen ? 'rotated' : ''}`} />
+                </button>
+                {pickupOpen && (
+                  <div className="filter-popup">
+                    {locations.map((location) => (
+                      <button
+                        key={location}
+                        onClick={() => {
+                          setLocationFilter(location);
+                          setPickupOpen(false);
+                        }}>
+                        {location}
+                        {locationFilter === location && <FaCheck className="filter-check" />}
+                      </button>
+                    ))}
+
+                    <button
+                      onClick={() => {
+                        setLocationFilter('');
                         setPickupOpen(false);
                       }}>
-                      {location}
-                      {locationFilter === location && <FaCheck className="filter-check" />}
+                      Сбросить
                     </button>
-                  ))}
-
-                  <button
-                    onClick={() => {
-                      setLocationFilter('');
-                      setPickupOpen(false);
-                    }}>
-                    Сбросить
-                  </button>
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-            )}
+          )}
           <div className="grid">
             {finalItems.map((item) => (
               <div
@@ -670,14 +710,14 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
                   })}
                 </p>
               )}
-              <p>Описание: {selectedItem.description}</p>
+              <p>Описание: {selectedItem.description || "Без описания"}</p>
               {user?.role != 'student' ? (
                 <p className="card-author">
                   Опубликовал/а: <span className="author">{selectedItem.author}</span>
                 </p>
               ) : null}
             </div>
-          
+
             <div className="popup-footer">
               {user?.role === 'student' && selectedItem?.type === 'found' && (
                 <button className="responce-btn" onClick={() => handleClaim(selectedItem)}>

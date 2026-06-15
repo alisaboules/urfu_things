@@ -1,7 +1,7 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 import axios from 'axios';
 import type { AppealPayload } from '../Appeal/Appeal';
-import type { ApiItem, PaginatedResponse } from '../App';
+import type { IssuanceHistoryItem, NotificationPayload, NotificationsResponse, PaginatedResponse } from '../App';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
@@ -565,7 +565,7 @@ export const getPickupPointItems = async () => {
   return res.json();
 };
 
-export const getIssuanceHistory = async (): Promise<PaginatedResponse<{ found_item: ApiItem }>> => {
+export const getIssuanceHistory = async (): Promise<PaginatedResponse<IssuanceHistoryItem>> => {
   const token = localStorage.getItem("access_token");
   const res = await fetch(`${BASE_URL}/pickup-point/history/`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -598,4 +598,35 @@ export const getFoundItemsByPickupPoint = async (pickupPointId: number) => {
   const res = await fetch(`${BASE_URL}/found/?pickup_point=${pickupPointId}`);
   if (!res.ok) throw new Error("Ошибка загрузки находок пункта");
   return res.json();
+};
+
+export const getNotifications = async (): Promise<NotificationsResponse> => {
+  const response = await fetch(`${BASE_URL}/notifications/`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      'Content-Type': 'application/json',
+    },
+  });
+  
+  if (!response.ok) throw new Error('Failed to fetch notifications');
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+
+export const createNotification = async (data: NotificationPayload) : Promise<Notification> => {
+  const response = await fetch(`${BASE_URL}/notifications/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Server error:", errorText);
+    throw new Error(errorText);
+  }
+  return response.json();
 };

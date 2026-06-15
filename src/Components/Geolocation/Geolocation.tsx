@@ -4,11 +4,18 @@ import './Geolocation.css';
 import { toast } from 'react-toastify';
 
 interface PickupPointResponse {
-  nearest: {
-    id: number;
-    name: string;
-  };
+  id: number;
+  name: string;
+  address: string;
+  distance_km: number
+}
+
+interface PickupPointResponses {
+  nearest: PickupPointResponse;
+  nearest_point_id: number;
   distance_km: number;
+  all_points: PickupPointResponse[];
+  user_location: { latitude: number; longitude: number };
 }
 
 interface PickupFinderProps {
@@ -16,14 +23,15 @@ interface PickupFinderProps {
 }
 
 function PickupFinder({ onSelectPickup }: PickupFinderProps) {
-  const [pickupPoint, setPickupPoint] = useState<PickupPointResponse | null>(null);
+  const [searched, setSearched] = useState(false);
+  const [availablePickups, setAvailablePickups] = useState<PickupPointResponse[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const [error, setError] = useState('');
-  const handleFindPickup = async () => {
+   const handleFindPickup = async () => {
     try {
       setLoading(true);
-      setError('');
+      setConfirmed(false); 
 
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -32,48 +40,65 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      const data = await getNearestPickupPoint(latitude, longitude);
+      const data: PickupPointResponses = await getNearestPickupPoint(latitude, longitude);
 
-      setPickupPoint(data);
+      if (data.all_points && data.all_points.length > 0) {
+        setAvailablePickups(data.all_points);
+        setCurrentIndex(0);
+        setSearched(true);
+      } else {
+        toast.error('Не найдено ни одного пункта выдачи', { className: 'custom-toast-error' });
+      }
     } catch (err) {
       console.error(err);
-
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Неизвестная ошибка');
-      }
+      toast.error('Не удалось определить ваше местоположение или найти пункты', { className: 'custom-toast-error' });
     } finally {
       setLoading(false);
+    }
+  };
+  const currentPickup = availablePickups[currentIndex];
+
+  const handleAccept = () => {
+    if (currentPickup) {
+      onSelectPickup(currentPickup.id, currentPickup.name);
+      setConfirmed(true);
+      toast.success(`Пункт выбран`, { className: 'custom-toast' });
+    }
+  };
+
+  const handleReject = () => {
+    if (currentIndex + 1 < availablePickups.length) {
+      setCurrentIndex(prev => prev + 1);
+      toast.warning(`Предлагаем следующий пункт`, { className: 'custom-toast-warning' });
+    } else {
+      setAvailablePickups([]);
+      setCurrentIndex(0);
+      toast.warning('Больше нет доступных пунктов выдачи', { className: 'custom-toast-warning' });
     }
   };
 
   return (
     <div>
-      <button className="pickup-finder-btn" onClick={handleFindPickup}>
-        {loading ? 'Загрузка...' : 'Найти пункт'}
-      </button>
+         {!searched && (
+        <button className="pickup-finder-btn" onClick={handleFindPickup}>
+          {loading ? 'Загрузка...' : 'Найти пункт'}
+        </button>
+      )}
 
-      {error && toast.error(error, { className: 'custom-toast-error' })}
-
-      {pickupPoint && !confirmed && (
+      {currentPickup && !confirmed && (
         <div className="pickup-confirm">
           <h3>
-            Ближайший пункт: <span>{pickupPoint.nearest.name}</span>
+            Ближайший пункт: <span>{currentPickup.name}</span>
           </h3>
 
-          <p>{pickupPoint.distance_km} км</p>
+          <p>{currentPickup.address}</p>
 
           <p className="ready">Готовы отнести вещь в этот пункт?</p>
           <div className="pickup-confirm-buttons">
             <button
               className="pickup-confirms"
               onClick={() => {
-                onSelectPickup(pickupPoint.nearest.id, pickupPoint.nearest.name);
-
-                setConfirmed(true);
-
-                toast.success('Пункт выбран', { className: 'custom-toast' });
+                handleAccept();
               }}>
               Да
             </button>
@@ -81,7 +106,7 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
             <button
               className="pickup-confirms"
               onClick={() => {
-                setPickupPoint(null);
+                handleReject();
               }}>
               Нет
             </button>

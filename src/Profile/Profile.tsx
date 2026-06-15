@@ -7,32 +7,14 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
 import { FaCheck, FaPlus, FaSun } from 'react-icons/fa';
+import { useTheme } from '../ThemeContext.tsx';
 
 
 function Profile() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  useLayoutEffect(() => {
-  const initTheme = () => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const defaultTheme = prefersDark ? 'dark' : 'light';
-      setTheme(defaultTheme);
-      document.documentElement.setAttribute('data-theme', defaultTheme);
-    }
+  const { theme, toggleTheme: globalToggleTheme } = useTheme(); 
+  const handleToggleTheme = () => {
+    globalToggleTheme();
   };
-  initTheme();
-}, []);
-
-const toggleTheme = () => {
-  const newTheme = theme === 'light' ? 'dark' : 'light';
-  setTheme(newTheme);
-  localStorage.setItem('theme', newTheme);
-  document.documentElement.setAttribute('data-theme', newTheme);
-};
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
   const toggleNotifications = async () => {
@@ -49,7 +31,7 @@ const toggleTheme = () => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   } catch (err) {
     console.error(err);
-    setEnabled(!newValue); // откат если ошибка
+    setEnabled(!newValue); 
   };
   };
   const inputRef = useRef<HTMLInputElement>(null);
@@ -175,7 +157,10 @@ const toggleTheme = () => {
         )}
 
         {/* PICKUP POINT EMPLOYEE */}
-        {user?.role === 'pickup_point' && null}
+        {user?.role === 'pickup_point' && (<>
+          <p className="user-info-label1">{user?.pickup_point_name}</p>
+          <p className="user-info-label2">Пункт выдачи</p>
+        </>)}
       </div>
       <div>
         <div className="notifications-container">
@@ -195,7 +180,7 @@ const toggleTheme = () => {
   <p>Тема</p>
   <div
     className={`theme-switch ${theme === 'dark' ? 'active' : ''}`}
-    onClick={toggleTheme}
+    onClick={handleToggleTheme}
   >
     {theme === 'light' ? (
       <FaSun className={`theme-icon`} />
