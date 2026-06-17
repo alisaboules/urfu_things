@@ -135,7 +135,7 @@ function Magazine() {
         <div className="card-magazine">
           <div className="title-magazine">Журнал действий</div>
           <hr className='hrs'/>
-          <button className="filter-magazine">Фильтры</button>
+          {/* <button className="filter-magazine">Фильтры</button> */}
           <div className="wrapper-magazine">
             <div className="notifications">
               {notifications.map((item) => (

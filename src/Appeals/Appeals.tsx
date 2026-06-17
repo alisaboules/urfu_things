@@ -115,7 +115,7 @@ function Appeals() {
         <div className="card-appeals">
           <div className="title-appeals">Обращения пользователей</div>
           <hr className="hrs" />
-          <button className="filter-appeals">Фильтры</button>
+          {/* <button className="filter-appeals">Фильтры</button> */}
           <div className="wrapper-appeals">
             <div className="cards-appeals">
               {cards.map((item) => (
