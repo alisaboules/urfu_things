@@ -17,7 +17,7 @@ import { MyStatistic } from './Statistic/Statistic';
 import type { AppealImage } from './Appeals/Appeals';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from './ThemeContext';
-import { HistoryActions } from './HistoryActions/historyActions';
+import { HistoryActions } from './HistoryActions/HistoryActions';
 
 
 export type Item = {
@@ -264,7 +264,7 @@ function App() {
       user: item.user,
       type,
       title: item.category_name?.trim() || 'Без категории',
-      img: item.image?.trim() || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+      img: item.image?.trim() || `${import.meta.env.BASE_URL}images/дефолт_фото2.webp`,
       description: item.description,
       location_ref: item.location_ref || 'Без локации',
       pickup_point_name: item.pickup_point_name || 'Без пункта выдачи',
