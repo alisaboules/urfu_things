@@ -20,7 +20,7 @@
   background: #8b5cf6 !important;
 }
 
-.custom-toast-warning, .custom-toast-error, .custom-toast {
+.custom-toast-warning, .custom-toast-error, .custom-toast, .custom-toast-info {
   background-color: var(--based-color2) !important;
   color: var(--based-color8) !important;
 }

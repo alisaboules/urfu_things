@@ -69,11 +69,11 @@ function PickupFinder({ onSelectPickup }: PickupFinderProps) {
   const handleReject = () => {
     if (currentIndex + 1 < availablePickups.length) {
       setCurrentIndex(prev => prev + 1);
-      toast.warning(`Предлагаем следующий пункт`, { className: 'custom-toast-warning' });
+      toast.info(`Предлагаем следующий пункт`, { className: 'custom-toast-info' });
     } else {
       setAvailablePickups([]);
       setCurrentIndex(0);
-      toast.warning('Больше нет доступных пунктов выдачи', { className: 'custom-toast-warning' });
+      toast.info('Больше нет доступных пунктов выдачи', { className: 'custom-toast-info' });
     }
   };
 

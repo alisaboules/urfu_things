@@ -36,13 +36,13 @@ function SidebarUser( { userName, onClose }: { userName: string; onClose: () => 
           }}>
           Мои объявления
         </button>
-        <button
+        {/* <button
           className="user-data"
           onClick={() => {
             navigate('');
           }}>
           Мои статусы
-        </button>
+        </button> */}
       </div>
     </aside>
   );

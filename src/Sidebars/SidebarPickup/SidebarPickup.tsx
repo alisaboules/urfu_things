@@ -35,7 +35,7 @@ function SidebarPickup({
           }}>
           Профиль
         </button>
-        <button className="user-data">История действий</button>
+        <button className="user-data" onClick={() => navigate('/historyact')}>История действий</button>
       </div>
     </aside>
   );

@@ -538,24 +538,50 @@ export const deleteLostItem = async (id: number): Promise<void> => {
   }
 };
 
-export const claimFoundItem = async (foundItemId: number, subject?: string, message?: string) => {
+// export const claimFoundItem = async (foundItemId: number, subject?: string, message?: string) => {
+//   const token = localStorage.getItem("access_token");
+//   const res = await fetch(`${BASE_URL}/appeals/create/`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//     body: JSON.stringify({
+//       found_item: foundItemId,
+//       subject: subject || "Заявка на вещь",
+//       message: message || "Пользователь утверждает, что это его/её вещь",
+//     }),
+//   });
+//   if (!res.ok) {
+//     const text = await res.text();
+//     throw new Error(text || "Ошибка создания обращения");
+//   }
+//   return res.json();
+// };
+
+export const claimFoundItem = async (foundItemId: number) => {
   const token = localStorage.getItem("access_token");
-  const res = await fetch(`${BASE_URL}/appeals/create/`, {
+
+  const res = await fetch(`${BASE_URL}/history/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      found_item: foundItemId,
-      subject: subject || "Заявка на вещь",
-      message: message || "Пользователь утверждает, что это его/её вещь",
+      item_id: foundItemId,
+      action_type: "claim",
+      meta: {
+        source: "button_my_item",
+      },
     }),
   });
+
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || "Ошибка создания обращения");
+    throw new Error(text || "History error");
   }
+
   return res.json();
 };
 
@@ -570,7 +596,10 @@ export const getIssuanceHistory = async (): Promise<PaginatedResponse<IssuanceHi
   const res = await fetch(`${BASE_URL}/pickup-point/history/`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error("Ошибка загрузки истории");
+  if (!res.ok) {
+    throw new Error("Ошибка загрузки истории");
+    console.log('Тело:', await res.text());
+  }
   return res.json();
 };
 
@@ -629,4 +658,27 @@ export const createNotification = async (data: NotificationPayload) : Promise<No
     throw new Error(errorText);
   }
   return response.json();
+};
+
+export const createHistory = async (itemId: number, action: string) => {
+  const token = localStorage.getItem("access_token");
+
+  const res = await fetch(`${BASE_URL}/history/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      item_id: itemId,
+      action_type: action,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text);
+  }
+
+  return res.json();
 };

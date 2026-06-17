@@ -17,6 +17,7 @@ import { MyStatistic } from './Statistic/Statistic';
 import type { AppealImage } from './Appeals/Appeals';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from './ThemeContext';
+import { HistoryActions } from './HistoryActions/historyActions';
 
 export type Item = {
   id: number;
@@ -364,6 +365,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/my-cards" element={<MyCards items={items} />} />
             <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />} />
+            <Route path="/historyact" element={<HistoryActions />}/>
           </Routes>
         </HashRouter>
       </ThemeProvider>

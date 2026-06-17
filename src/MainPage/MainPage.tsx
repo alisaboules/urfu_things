@@ -18,6 +18,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import {
   claimFoundItem,
   confirmIssuance,
+  createHistory,
   createNotification,
   deleteFoundItem,
   deleteLostItem,
@@ -36,6 +37,7 @@ type MainPageProps = {
 const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'УГИ'];
 
 function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
+  const filterRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
   const [imageIds, setImageIds] = useState<string[]>([]);
@@ -153,6 +155,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   }, []);
 
   const loaderRef = useRef<HTMLDivElement>(null);
+  // const [isFilterOpen, setIsFilterOpen] = useState(true);
   useEffect(() => {
     const observer = new IntersectionObserver(
       async ([entry]) => {
@@ -375,7 +378,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
       setIssuedItems(mappedIssued);
     } catch (error) {
       console.error(error);
-      toast.error('Ошибка загрузки данных ПВЗ');
+      toast.error('Ошибка загрузки данных ПВЗ', { className: 'custom-toast-error' });
     }
   };
 
@@ -389,18 +392,18 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
 
   const handleConfirmIssuance = async (item: Item) => {
     await confirmIssuance(item.id, user.id); 
-    
-    await createNotification({
-      action_type: 'confirm',
-      item_id: item.id,
-      item_title: item.title,
-      item_category: item.title,
-      item_description: item.description || "Без описания",
-      creator_name: item.author || 'Не указано',
-      creator_id: item.user,
-      pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
-    });
-    toast.success('Выдача подтверждена');
+    await createHistory(item.id, "confirm");
+    // await createNotification({
+    //   action_type: 'confirm',
+    //   item_id: item.id,
+    //   item_title: item.title,
+    //   item_category: item.title,
+    //   item_description: item.description || "Без описания",
+    //   creator_name: item.author || 'Не указано',
+    //   creator_id: item.user,
+    //   pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
+    // });;
+    toast.success('Выдача подтверждена', { className: 'custom-toast' });
     await loadPickupData(selectedPickupPointId!); 
     // setPickupItems((prev) => prev.filter((i) => i.id !== item.id));
     // const issuedCopy = { ...item, status: 'issued' };
@@ -411,9 +414,8 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
     try {
       await claimFoundItem(
         item.id,
-        `Заявка на вещь: ${item.title}`,
-        `Пользователь подтверждает, что найденная вещь (ID ${item.id}) принадлежит ему.`,
       );
+      await createHistory(item.id, "claim");
       await createNotification({
       action_type: 'claim',
       item_id: item.id,
@@ -433,7 +435,21 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
     }
   };
   const [pickupDropdownOpen, setPickupDropdownOpen] = useState(false);
-  const [selectedPickupPointName, setSelectedPickupPointName] = useState('');
+   useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+      setPickupDropdownOpen(false); // закрываем только выпадашку, а не весь блок
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+  const [selectedPickupPointName, setSelectedPickupPointName] = useState<string | null>(
+  user?.pickup_point ?? null
+);
   return (
     <>
       <div className="container_header_homepage">
@@ -461,11 +477,12 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
           {isPickupEmployee && pickupPoints.length > 0 && (
             <div className="pickup-point-selector">
               <div className="pickup-point-block">
-                <div className="filter-block">
+                <div className="filter-block" ref={filterRef}>
                   <button
+                    
                     className={`filter ${selectedPickupPointName ? 'filter-active' : ''}`}
                     onClick={() => setPickupDropdownOpen(!pickupDropdownOpen)}>
-                    {selectedPickupPointName || 'Пункт выдачи'}
+                    Пункт выдачи
                     <MdKeyboardArrowLeft
                       className={`filter-icon ${pickupDropdownOpen ? 'rotated' : ''}`}
                     />
@@ -725,13 +742,14 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
                 </button>
               )}
               {user?.role === 'pickup_point' &&
-                selectedItem?.pickup_point === user.pickup_point && (
-                  <button
-                    className="responce-btn"
-                    onClick={() => handleConfirmIssuance(selectedItem)}>
-                    Подтвердить выдачу
-                  </button>
-                )}
+ selectedItem?.pickup_point === user.pickup_point &&
+ type === 'lost' && (  
+  <button
+    className="responce-btn"
+    onClick={() => handleConfirmIssuance(selectedItem)}>
+    Подтвердить выдачу
+  </button>
+)}
             </div>
           </div>
         </div>
