@@ -197,6 +197,7 @@ function App() {
         const foundData = await getItems('found');
         const lostData = await getItems('lost');
         console.log('FOUND DATA:', foundData);
+        console.log('LOST DATA:', lostData);
         setNextFound(foundData.next);
         setNextLost(lostData.next);
         const found = Array.isArray(foundData) ? foundData : foundData.results || [];
