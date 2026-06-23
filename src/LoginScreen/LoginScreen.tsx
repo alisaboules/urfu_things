@@ -133,6 +133,7 @@ useEffect(() => {
             placeholder="Почта"
             className={`input ${errors.email ? 'input-error' : ''}`}
             value={form.email}
+            style={{ backgroundColor: 'var(--input-bg)' }}
             onChange={handleChange}
           />
 
@@ -146,6 +147,8 @@ useEffect(() => {
             placeholder="Пароль"
             className={`input ${errors.password ? 'input-error' : ''}`}
             value={form.password}
+            style={{ backgroundColor: 'var(--input-bg)' }}
+            autoComplete="off"
             onChange={handleChange}
           />
 

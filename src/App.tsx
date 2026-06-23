@@ -115,6 +115,12 @@ export interface PaginatedResponse<T> {
 
 export type NotificationsResponse = PaginatedResponse<Notificationing>;
 
+export type SearchResult = {
+  vector_id: string;
+  item_id: string;
+  distance: number;
+};
+
 const fallbackItems: Item[] = [
   {
     id: 1,

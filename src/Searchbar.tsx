@@ -76,7 +76,8 @@ function Searchbar({
         console.log('Результаты поиска по фото:', results);
         // results: [{ id: "img1", distance: 0.2 }, ...]
         const filtered = results.filter((r: { distance: number }) => r.distance > 0.8);
-        const ids = filtered.map((r: { id: string }) => String(r.id));
+        const ids: string[] = filtered.map(r => r.item_id);
+
         if (ids.length === 0) {
           toast.warning('Похожих фото не найдено.', { className: 'custom-toast-warning' });
           onImageSearch?.([]);

@@ -38,6 +38,7 @@ const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'У�
 
 function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   const filterRef = useRef<HTMLDivElement | null>(null);
+  
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
   const [imageIds, setImageIds] = useState<string[]>([]);
@@ -143,6 +144,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
 
     return displayedItems.filter((item) => imageIds.includes(String(item.id)));
   }, [displayedItems, imageIds]);
+  
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -450,6 +452,11 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   const [selectedPickupPointName, setSelectedPickupPointName] = useState<string | null>(
   user?.pickup_point ?? null
 );
+  useEffect(() => {
+  console.log('BASE ITEMS IDS:', baseFiltered.map(i => i.id));
+  console.log('DISPLAYED IDS:', displayedItems.map(i => i.id));
+  console.log('IMAGEIDS', imageIds);
+}, [baseFiltered, displayedItems, imageIds]);
   return (
     <>
       <div className="container_header_homepage">

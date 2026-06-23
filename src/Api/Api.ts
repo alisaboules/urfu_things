@@ -1,7 +1,7 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 import axios from 'axios';
 import type { AppealPayload } from '../Appeal/Appeal';
-import type { IssuanceHistoryItem, NotificationPayload, NotificationsResponse, PaginatedResponse } from '../App';
+import type { IssuanceHistoryItem, NotificationPayload, NotificationsResponse, PaginatedResponse, SearchResult } from '../App';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
@@ -455,7 +455,7 @@ export const getItemsPage = async (url: string) => {
 };
 
 
-export const searchByImage = async (imageFile: File) => {
+export const searchByImage = async (imageFile: File): Promise<SearchResult[]>  => {
   // Пока локально — твой FastAPI сервер на 8000 порту
   const VECTOR_SEARCH_URL = "https://urfu-things-ai-2.onrender.com/search";
 
