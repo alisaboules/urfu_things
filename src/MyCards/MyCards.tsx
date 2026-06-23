@@ -9,10 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdOutlinePlace } from 'react-icons/md';
-import type { Item } from '../App';
+import type { IssuanceHistoryItem, Item } from '../App';
 import './MyCards.css';
 import { Searchbar } from '../Searchbar';
 import Fuse from 'fuse.js';
+import { getIssuanceHistory } from '../Api/Api';
 
 // type Item = {
 //   id: number;
@@ -36,7 +37,11 @@ function MyCards({ items }: MyCardsProps) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const navigate = useNavigate();
   const [type, setType] = useState<'found' | 'lost'>('found');
-  const myItems = items.filter((item) => item.user === user?.id && item.type === type);
+  const [issuedItems, setIssuedItems] = useState<Item[]>([]);
+  const myItems =
+  type === 'lost'
+    ? items.filter((item) => item.user === user?.id)
+    : issuedItems;
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
 
@@ -61,7 +66,37 @@ function MyCards({ items }: MyCardsProps) {
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
+  useEffect(() => {
+  const loadIssuedItems = async () => {
+    try {
+      const data = await getIssuanceHistory();
+      const issuances = data.results || data;
 
+      const myIssued = issuances
+        .filter((iss: IssuanceHistoryItem) => iss.user === user?.id)
+        .map((iss: IssuanceHistoryItem) => ({
+          id: iss.found_item,
+          user: iss.user,
+          type: 'found' as const,
+          title: iss.found_item_title,
+          img: iss.found_item_image ?? '',
+          description: iss.found_item_description ?? '',
+          location_ref: iss.found_item_location ??  '',
+          status: 'issued',
+          author: iss.found_item_author,
+          created_at: iss.found_item_created_at,
+        }));
+
+      setIssuedItems(myIssued);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (user?.role === 'student') {
+    loadIssuedItems();
+  }
+}, [user?.id, user?.role]);
   // const isPickupEmployee = user?.role === 'pickup_point';
   const fuse = useMemo(() => {
     return new Fuse(myItems, {

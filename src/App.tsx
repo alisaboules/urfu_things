@@ -62,7 +62,6 @@ export interface PaginatedResponse<T> {
 export interface IssuanceHistoryItem {
   id: number;
   found_item: number;
-
   found_item_title: string;
   found_item_description?: string;
   found_item_image?: string | null;
