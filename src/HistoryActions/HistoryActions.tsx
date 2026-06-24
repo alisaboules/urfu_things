@@ -143,7 +143,7 @@ import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { getNotifications } from '../Api/Api';
 import type { Notificationing } from '../App';
 
-// Временные фейковые данные для демонстрации
+// Временные данные
 interface FakeNotification {
   id: number;
   item_title: string;
@@ -227,7 +227,6 @@ function HistoryActions() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
-  // Решаем, что показывать: реальные уведомления, если есть, иначе фейковые
   const displayData =
     notifications.length > 0 ? notifications : fakeNotifications;
 

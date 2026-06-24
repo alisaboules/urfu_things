@@ -1,7 +1,6 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 import axios from 'axios';
-import type { AppealPayload } from '../Appeal/Appeal';
-import type { IssuanceHistoryItem, NotificationPayload, NotificationsResponse, PaginatedResponse, SearchResult } from '../App';
+import type { AppealPayload, IssuanceHistoryItem, ItemsResponse, NotificationPayload, NotificationsResponse, PaginatedResponse } from '../App';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
@@ -125,23 +124,6 @@ export const authFetch = async (url: string, options: RequestInit = {}) => {
   }
 
   return res;
-};
-
-export type ItemResponse = {
-  id: number;
-  title: string;
-  description: string;
-  location_ref: string;
-  user: number;
-  image: string;
-  status: string;
-};
-
-export type ItemsResponse = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: ItemResponse[];
 };
 
 export const createFoundItem = async (formData: FormData, type: string) => {
@@ -357,24 +339,6 @@ export const searchItems = async (
   }
 };
 
-
-// export const getSearchHistory = async () => {
-//   const token = localStorage.getItem('access_token');
-
-//   const res = await fetch(`${BASE_URL}/search/history/`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-
-//   if (!res.ok) {
-//     console.warn("history API failed:", res.status);
-//     return [];
-//   }
-
-//   return await res.json();
-// };
-
 export const getSearchHistory = async () => {
   const token = localStorage.getItem("access_token");
 
@@ -455,8 +419,7 @@ export const getItemsPage = async (url: string) => {
 };
 
 
-export const searchByImage = async (imageFile: File): Promise<SearchResult[]>  => {
-  // Пока локально — твой FastAPI сервер на 8000 порту
+export const searchByImage = async (imageFile: File) => {
   const VECTOR_SEARCH_URL = "https://urfu-things-ai-2.onrender.com/search";
 
   const formData = new FormData();
@@ -537,27 +500,6 @@ export const deleteLostItem = async (id: number): Promise<void> => {
     throw new Error(text || "Не удалось удалить потерянную вещь");
   }
 };
-
-// export const claimFoundItem = async (foundItemId: number, subject?: string, message?: string) => {
-//   const token = localStorage.getItem("access_token");
-//   const res = await fetch(`${BASE_URL}/appeals/create/`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify({
-//       found_item: foundItemId,
-//       subject: subject || "Заявка на вещь",
-//       message: message || "Пользователь утверждает, что это его/её вещь",
-//     }),
-//   });
-//   if (!res.ok) {
-//     const text = await res.text();
-//     throw new Error(text || "Ошибка создания обращения");
-//   }
-//   return res.json();
-// };
 
 export const claimFoundItem = async (foundItemId: number) => {
   const token = localStorage.getItem("access_token");

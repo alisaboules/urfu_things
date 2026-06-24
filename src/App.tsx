@@ -19,6 +19,22 @@ import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from './ThemeContext';
 import { HistoryActions } from './HistoryActions/HistoryActions';
 
+export type ItemResponse = {
+  id: number;
+  title: string;
+  description: string;
+  location_ref: string;
+  user: number;
+  image: string;
+  status: string;
+};
+
+export type ItemsResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ItemResponse[];
+};
 
 export type Item = {
   id: number;
@@ -118,6 +134,13 @@ export type SearchResult = {
   vector_id: string;
   item_id: string;
   distance: number;
+};
+
+export type AppealPayload = {
+  subject: string;
+  message: string;
+  found_item?: number;
+  lost_item?: number;
 };
 
 const fallbackItems: Item[] = [

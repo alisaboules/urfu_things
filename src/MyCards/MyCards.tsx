@@ -15,18 +15,6 @@ import { Searchbar } from '../Searchbar';
 import Fuse from 'fuse.js';
 import { getIssuanceHistory } from '../Api/Api';
 
-// type Item = {
-//   id: number;
-//   title: string;
-//   img: string;
-//   description: string;
-//   location_ref: string;
-//   status: string;
-//   user: number;
-//   type: 'found' | 'lost';
-//   author: string;
-// };
-
 type MyCardsProps = {
   items: Item[];
 };
@@ -79,7 +67,7 @@ function MyCards({ items }: MyCardsProps) {
           user: iss.user,
           type: 'found' as const,
           title: iss.found_item_title,
-          img: iss.found_item_image ?? '',
+          img: iss.found_item_image ?? './images/дефолт_фото2.webp',
           description: iss.found_item_description ?? '',
           location_ref: iss.found_item_location ??  '',
           status: 'issued',

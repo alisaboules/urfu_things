@@ -8,13 +8,7 @@ import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { createAppeal } from '../Api/Api';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-export type AppealPayload = {
-  subject: string;
-  message: string;
-  found_item?: number;
-  lost_item?: number;
-};
+import type { AppealPayload } from '../App';
 
 function Appeal() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,31 +29,33 @@ function Appeal() {
     return 'Гость';
   });
   const handleSubmit = async () => {
-  try {
-    const payload: AppealPayload = {
-  subject,
-  message,
-};
+    try {
+      const payload: AppealPayload = {
+        subject,
+        message,
+      };
 
-    if (type === 'found') {
-      payload.found_item = itemId;
+      if (type === 'found') {
+        payload.found_item = itemId;
+      }
+
+      if (type === 'lost') {
+        payload.lost_item = itemId;
+      }
+
+      await createAppeal(payload);
+
+      toast.success('Обращение успешно отправлено.', { className: 'custom-toast' });
+
+      navigate('/main');
+    } catch (error) {
+      console.error(error);
+
+      toast.error('Ошибка отправки обращения. Попробуйте снова.', {
+        className: 'custom-toast-error',
+      });
     }
-
-    if (type === 'lost') {
-      payload.lost_item = itemId;
-    }
-    
-    await createAppeal(payload);
-
-    toast.success('Обращение успешно отправлено.', { className: 'custom-toast' });
-
-    navigate('/main');
-  } catch (error) {
-    console.error(error);
-
-    toast.error('Ошибка отправки обращения. Попробуйте снова.', { className: 'custom-toast-error' });
-  }
-};
+  };
 
   return (
     <>
@@ -69,42 +65,42 @@ function Appeal() {
           <FaUser className="profile-appeal-icon" onClick={() => setSidebarOpen(true)} />
         </div>
         <div
-        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
-        onClick={() => setSidebarOpen(false)}>
-        <div
-          className={`sidebar ${sidebarOpen ? 'open' : ''}`}
-          onClick={(e) => e.stopPropagation()}>
-          {user?.role === 'student' && (
-            <>
-              <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
-            </>
-          )}
-          {user?.role === 'admin' && (
-            <>
-              <SidebarAdmin
-                userName={userName}
-                role={'Администратор'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
-          {user?.role === 'pickup_point' && (
-            <>
-              <SidebarPickup
-                userName={userName}
-                role={'Сотрудник пункта выдачи'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
+          className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+          onClick={() => setSidebarOpen(false)}>
+          <div
+            className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+            onClick={(e) => e.stopPropagation()}>
+            {user?.role === 'student' && (
+              <>
+                <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
+              </>
+            )}
+            {user?.role === 'admin' && (
+              <>
+                <SidebarAdmin
+                  userName={userName}
+                  role={'Администратор'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+            {user?.role === 'pickup_point' && (
+              <>
+                <SidebarPickup
+                  userName={userName}
+                  role={'Сотрудник пункта выдачи'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
         <div className="card-appeal">
           <div className="title-appeal">Обращение в администрацию</div>
 
           <div className="textarea-appeal">
             <label>Тема обращения</label>
-             <textarea
+            <textarea
               placeholder="Введите тему обращения"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}

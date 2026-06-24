@@ -29,18 +29,7 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
       category: category,
     }));
   };
-  //   const categoriess = [
-  //   { id: 1, name: "Наушники" },
-  //   { id: 2, name: "Кошельки" },
-  //   { id: 3, name: "Ключи" },
-  // ];
-
-  // const pickupPoints = [
-  //   { id: 1, name: "Стойка 1" },
-  //   { id: 2, name: "Главный пункт" },
-  // ];
-
-  // const categories = ['Наушники', 'Кошельки', 'Ключи', 'Одежда', 'Подзарядки', 'Канцелярия'];
+  
   const toggleCategory = () => {
     setCategoryOpen(!categoryOpen);
     if (!categoryOpen) {
@@ -82,6 +71,7 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
       inputRef.current.value = '';
     }
   };
+
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -90,6 +80,7 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
     category: '',
     pickup_point: '',
   });
+
   const categories = [
     { id: 1, name: 'Наушники' },
     { id: 2, name: 'Кошельки' },
@@ -99,33 +90,10 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
     { id: 6, name: 'Канцелярия' },
     { id: 7, name: 'Другое' },
   ];
-  // const places = [''];
+ 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  // const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  // const [selectedPickupPointId, setSelectedPickupPointId] = useState<number | null>(null);
-
-  //   const [selectedCategoryS, setSelectedCategoryS] = useState("");
-  //   const [selectedPickupPoint, setSelectedPickupPoint] = useState("");
-  //   const selectCategoryS = (category: {id: number, name: string}) => {
-  //   setSelectedCategoryId(category.id);
-
-  //   setForm(prev => ({
-  //     ...prev,
-  //     category: String(category.id),
-  //   }));
-  // };
-
-  // const selectPickup = (point: {id: number, name: string}) => {
-  //   setSelectedPickupPointId(point.id);
-
-  //   setForm(prev => ({
-  //     ...prev,
-  //     pickup_point: String(point.id),
-  //   }));
-  // };
   const [selectedPickupId, setSelectedPickupId] = useState<number | null>(null);
   const [selectedPickupName, setSelectedPickupName] = useState('');
-
   const handleSubmit = async () => {
     if (!selectedCategoryId) {
       toast.warning('Выберите категорию.', { className: 'custom-toast-warning' });
@@ -133,13 +101,6 @@ function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
     }
     try {
       const data = new FormData();
-
-      // data.append("title", form.title);
-      // data.append("description", form.description);
-      // data.append("location", form.location);
-      // data.append("description", form.description);
-      // data.append("location_type", "free");
-      // data.append("location_ref", form.location);
       if (type === 'found') {
         data.append('description', form.description);
         data.append('location_type', 'free');
