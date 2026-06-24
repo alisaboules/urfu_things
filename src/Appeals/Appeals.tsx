@@ -7,19 +7,7 @@ import { PiInfoLight } from 'react-icons/pi';
 import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { getAppeals } from '../Api/Api';
-
-type AppealImage = {
-  id: number;
-  user: number;
-  username: string;
-  found_item: number | null;
-  lost_item: number | null;
-  subject: string;
-  message: string;
-  status: string;
-  created_at: string;
-  admin_comment?: string | null;
-};
+import type { AppealImage } from '../types';
 
 function Appeals() {
   const navigate = useNavigate();
@@ -167,4 +155,4 @@ function Appeals() {
   );
 }
 
-export { Appeals, type AppealImage };
+export { Appeals };

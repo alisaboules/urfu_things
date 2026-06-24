@@ -5,13 +5,7 @@ import { SidebarUser } from "../Sidebars/SidebarUser";
 import { SidebarAdmin } from "../Sidebars/SidebarAdmin";
 import { SidebarPickup } from "../Sidebars/SidebarPickup";
 import './Statistic.css';
-import type { Item } from "../App";
-import type { AppealImage } from "../Appeals/Appeals";
-
-type MyStatisticProps = {
-  items: Item[];
-  appeals: AppealImage[];
-};
+import type { MyStatisticProps } from "../types";
 
 function MyStatistic({ items, appeals }: MyStatisticProps) {
   const lostCount = items.filter((item) => item.type === 'lost').length;

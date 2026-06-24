@@ -13,11 +13,10 @@ import { MyCards } from './MyCards/MyCards';
 import { useLayoutEffect, useState } from 'react';
 import { getAppeals, getItems, getItemsPage } from './Api/Api';
 import { MyStatistic } from './Statistic/Statistic';
-import type { AppealImage } from './Appeals/Appeals';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from './Components/ThemeContext';
 import { HistoryActions } from './HistoryActions/HistoryActions';
-import type { ApiItem, Item } from './types';
+import type { ApiItem, AppealImage, Item } from './types';
 
 const fallbackItems: Item[] = [
   {

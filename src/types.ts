@@ -124,3 +124,21 @@ export type AppealPayload = {
 export type MyCardsProps = {
   items: Item[];
 };
+
+export type MyStatisticProps = {
+  items: Item[];
+  appeals: AppealImage[];
+};
+
+export type AppealImage = {
+  id: number;
+  user: number;
+  username: string;
+  found_item: number | null;
+  lost_item: number | null;
+  subject: string;
+  message: string;
+  status: string;
+  created_at: string;
+  admin_comment?: string | null;
+};
