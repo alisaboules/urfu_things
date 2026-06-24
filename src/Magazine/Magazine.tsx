@@ -11,40 +11,6 @@ import { getNotifications } from '../Api/Api';
 import type { Notificationing } from '../App';
 
 function Magazine() {
-  // const notifications = [
-  //   {
-  //     id: 1,
-  //     title: 'Выдача вещи',
-  //     place: 'ИРИТ-РТФ',
-  //     subtitle: 'Ключи',
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Новое объявление о находке',
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Новое объявление о пропаже',
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'Новое объявление о пропаже',
-  //   },
-  //   {
-  //     id: 5,
-  //     title: 'Новое объявление о находке',
-  //   },
-  //   {
-  //     id: 6,
-  //     title: 'Выдача вещи',
-  //     place: 'ГУК',
-  //     subtitle: 'Зарядка от ноутбука',
-  //   },
-  //   {
-  //     id: 7,
-  //     title: 'Новая учётная запись',
-  //   },
-  // ];
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const navigate = useNavigate();
@@ -71,27 +37,27 @@ function Magazine() {
   };
 
   useEffect(() => {
-  const loadNotifications = async () => {
-    try {
-      const data = await getNotifications();
-      setNotifications(data.results);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const loadNotifications = async () => {
+      try {
+        const data = await getNotifications();
+        setNotifications(data.results);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  loadNotifications();
-}, []);
+    loadNotifications();
+  }, []);
 
   useEffect(() => {
-  const handleVisibilityChange = () => {
-    if (document.visibilityState === 'visible') {
-      fetchNotifications();
-    }
-  };
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-  return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-}, []);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchNotifications();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
   return (
     <>
       <div className="container-magazine">
@@ -101,40 +67,40 @@ function Magazine() {
           </h1>
           <FaUser className="profile-magazine-icon" onClick={() => setSidebarOpen(true)} />
         </div>
-       <div
-        className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
-        onClick={() => setSidebarOpen(false)}>
         <div
-          className={`sidebar ${sidebarOpen ? 'open' : ''}`}
-          onClick={(e) => e.stopPropagation()}>
-          {user?.role === 'student' && (
-            <>
-              <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
-            </>
-          )}
-          {user?.role === 'admin' && (
-            <>
-              <SidebarAdmin
-                userName={userName}
-                role={'Администратор'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
-          {user?.role === 'pickup_point' && (
-            <>
-              <SidebarPickup
-                userName={userName}
-                role={'Сотрудник пункта выдачи'}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </>
-          )}
+          className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+          onClick={() => setSidebarOpen(false)}>
+          <div
+            className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+            onClick={(e) => e.stopPropagation()}>
+            {user?.role === 'student' && (
+              <>
+                <SidebarUser userName={userName} onClose={() => setSidebarOpen(false)} />
+              </>
+            )}
+            {user?.role === 'admin' && (
+              <>
+                <SidebarAdmin
+                  userName={userName}
+                  role={'Администратор'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+            {user?.role === 'pickup_point' && (
+              <>
+                <SidebarPickup
+                  userName={userName}
+                  role={'Сотрудник пункта выдачи'}
+                  onClose={() => setSidebarOpen(false)}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
         <div className="card-magazine">
           <div className="title-magazine">Журнал действий</div>
-          <hr className='hrs'/>
+          <hr className="hrs" />
           {/* <button className="filter-magazine">Фильтры</button> */}
           <div className="wrapper-magazine">
             <div className="notifications">
@@ -151,7 +117,9 @@ function Magazine() {
                       )}
                     </div>
 
-                    {item.item_description && <div className="notification-subtitle">{item.item_description}</div>}
+                    {item.item_description && (
+                      <div className="notification-subtitle">{item.item_description}</div>
+                    )}
                   </div>
                   <PiInfoLight className="notification-info-icon" />
                 </div>

@@ -25,12 +25,8 @@
   color: var(--based-color8) !important;
 }
 
-/* input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
-} */
-
 input:-webkit-autofill {
-    -webkit-text-fill-color: currentColor; /* цвет берётся из color */
+    -webkit-text-fill-color: currentColor;
     transition: 
         background-color 50000s ease-in-out 0s,
         color 50000s ease-in-out 0s;

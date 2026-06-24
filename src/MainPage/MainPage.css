@@ -1,5 +1,4 @@
 .container_header_homepage {
-  /* background: #DCD1FF; */
   padding: 20px 16px 0;
   color: white;
   display: flex;
@@ -42,17 +41,12 @@
 
 .search input {
   width: 100%;
-  /* border-radius: 35px; */
   border: none;
   outline: none;
-  /* padding: 14px 14px 14px 45px; */
   font-size: 24px;
   background: transparent;
   padding-left: 5px;
-  /* padding: 0 30px; */
 }
-
-
 
 .search-by-image-btn {
   background: none;
@@ -77,7 +71,6 @@
   color: #777;
 }
 
-
 .icon-search {
   position: absolute;
   color: var(--search-icon-color);
@@ -87,7 +80,6 @@
   width: 27px;
   height: 27px;
   margin-right: 10px;
-
 }
 
 .search-icon-wrapper {
@@ -139,7 +131,6 @@
   color: var(--based-color4);
 }
 
-
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -164,8 +155,6 @@
 }
 
 .card-image-main {
-  /* width: 100%; */
-  /* height: -webkit-fit-content; */
   overflow: hidden;
   height: 200px;
   aspect-ratio: 1 / 1;
@@ -183,7 +172,6 @@
 
 .card img:hover {
   transform: scale(1.05);
-  /* overflow: hidden; */
 }
 
 .card-title {
@@ -197,7 +185,6 @@
   bottom: 0;
   left: 0;
 }
-
 
 .fab {
   position: fixed;
@@ -235,46 +222,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* height: 100vh; */
 }
-
-/* .experiment {
-  overflow: hidden;
-  position: absolute;
-  top: 40px;
-  left: 0;
-  background: #4811FF;
-  z-index: -1;
-  width: 100%;
-} */
-
-
-
-/* .sidebar-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: flex-end;
-  z-index: 1002;
-}
-
-.sidebar {
-  width: 90vw;
-  height: 100%;
-  background: white;
-  animation: slideIn 0.2s ease;
-  /* z-index: 1001; */
-/* } */
-
-/* @keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-} */ 
 
 .sidebar-overlay {
   background: rgba(0, 0, 0, 0.3);
@@ -308,15 +256,9 @@
   transition: transform 0.2s ease;
 }
 
-/* открытое состояние */
 .sidebar.open {
   transform: translateX(0);
 }
-
-/* #root {
-  position: relative;
-  z-index: 0;
-} */
 
 .popup-overlay {
   position: fixed;
@@ -345,12 +287,10 @@
 }
 
 .popup {
-  /* position: relative; */
   background: var(--based-color2);
   border-radius: 20px;
   max-height: 85vh;    
   width: 100%;   
-  /* max-width: 400px; */
   animation: popupFade 0.2s ease;
 }
 
@@ -359,13 +299,13 @@
   flex-direction: column;
   padding: 12px;
   gap: 5px;
-  /* margin-bottom: 20px; */
 }
 
 .discription-for-card p {
   color: var(--eye-icon-bg);
   font-size: 18px;
 }
+
 .popup h2 {
   font-size: 24px;
   font-weight: 500;
@@ -554,11 +494,6 @@
   position: relative;
 }
 
-
-/* .filter-block:hover {
-  transform: scale(1.03);
-} */
-
 .filter-icon {
   font-size: 30px;
 }
@@ -584,7 +519,6 @@
   color: #4811FF;
   font-size: 24px;
   font-weight: 700;
-  /* margin: 10px 10px 20px 16px; */
   font-family: var(--urfu-font-family);
   display: flex;
   align-items: center;
@@ -596,7 +530,6 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  /* min-width: 100px; */
   width: 100%;
   background: var(--based-color2);
   border-radius: 16px;
@@ -606,7 +539,6 @@
   overflow: hidden;
   z-index: 10000;
 }
-
 
 .filter-popup button {
   border: none;
@@ -655,11 +587,6 @@
 .pickup-point-block {
  margin: 10px 20px;
 }
-
-/* .filter-option:hover {
-  background: var(--based-color7);
-  color: #4811FF;
-} */
 
 .filter-option {
   font-weight: 500;

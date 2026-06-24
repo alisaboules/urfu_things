@@ -23,7 +23,6 @@
   font-family: var(--urfu-font-family);
 }
 
-
 .profile-magazine-icon {
   width: 25px;
   height: 25px;
@@ -36,7 +35,6 @@
 .logo-uni {
   cursor: pointer;
 }
-
 
 .actions-magazine {
   display: flex;
@@ -97,8 +95,6 @@
   margin: 10px 0 0px 16px;
   font-family: var(--urfu-font-family);
 }
-
-
 
 .wrapper-magazine {
   padding: 20px;

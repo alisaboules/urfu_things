@@ -3,8 +3,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { TbCameraAi } from 'react-icons/tb';
 import { FaRegHourglassHalf } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
-import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage,  } from './Api/Api';
-
+import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage } from './Api/Api';
 
 type SearchbarProps = {
   search: string;
@@ -12,11 +11,7 @@ type SearchbarProps = {
   onImageSearch?: (ids: string[]) => void;
 };
 
-function Searchbar({
-  search,
-  setSearch,
-  onImageSearch,
-}: SearchbarProps) {
+function Searchbar({ search, setSearch, onImageSearch }: SearchbarProps) {
   const [history, setHistory] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -55,9 +50,7 @@ function Searchbar({
     loadSuggestions();
   }, [search, history]);
 
-  const firstSuggestion = suggestions.find((s) =>
-    s.toLowerCase().startsWith(search.toLowerCase())
-  );
+  const firstSuggestion = suggestions.find((s) => s.toLowerCase().startsWith(search.toLowerCase()));
 
   const saveSearch = async (query: string) => {
     try {
@@ -69,39 +62,36 @@ function Searchbar({
     }
   };
   const handleImageSearch = async (file: File) => {
-      if (!file) return;
-      setIsSearching(true);
-      try {
-        const results = await searchByImage(file);
-        console.log('Результаты поиска по фото:', results);
-        // results: [{ id: "img1", distance: 0.2 }, ...]
-        const filtered = results.filter((r: { distance: number }) => r.distance > 0.8);
-        const ids = filtered.map((r: { id: string }) => String(r.id));
+    if (!file) return;
+    setIsSearching(true);
+    try {
+      const results = await searchByImage(file);
+      console.log('Результаты поиска по фото:', results);
+      // results: [{ id: "img1", distance: 0.2 }, ...]
+      const filtered = results.filter((r: { distance: number }) => r.distance > 0.8);
+      const ids = filtered.map((r: { id: string }) => String(r.id));
 
-        if (ids.length === 0) {
-          toast.warning('Похожих фото не найдено.', { className: 'custom-toast-warning' });
-          onImageSearch?.([]);
-        } else {
-          onImageSearch?.(ids);
-        }
-      } catch (err) {
-        console.error('Ошибка поиска по фото', err);
-        toast.error('Не удалось выполнить поиск по фото.', { className: 'custom-toast-error' });
-      } finally {
-        setIsSearching(false);
+      if (ids.length === 0) {
+        toast.warning('Похожих фото не найдено.', { className: 'custom-toast-warning' });
+        onImageSearch?.([]);
+      } else {
+        onImageSearch?.(ids);
       }
-    };
+    } catch (err) {
+      console.error('Ошибка поиска по фото', err);
+      toast.error('Не удалось выполнить поиск по фото.', { className: 'custom-toast-error' });
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   return (
     <div className="search">
       <div className="search-wrapper">
-
         {firstSuggestion && search && (
           <div className="ghost">
             {search}
-            <span className="ghost-rest">
-              {firstSuggestion.slice(search.length)}
-            </span>
+            <span className="ghost-rest">{firstSuggestion.slice(search.length)}</span>
           </div>
         )}
 
@@ -114,9 +104,7 @@ function Searchbar({
           placeholder="Поиск"
           value={search}
           onFocus={() => setShowSuggestions(true)}
-          onBlur={() =>
-            setTimeout(() => setShowSuggestions(false), 150)
-          }
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && search.trim()) {
@@ -141,15 +129,13 @@ function Searchbar({
         <button
           className="search-by-image-btn"
           onClick={() => fileInputRef.current?.click()}
-          disabled={isSearching}
-        >
+          disabled={isSearching}>
           {isSearching ? (
             <FaRegHourglassHalf className="ai-icon" />
           ) : (
             <TbCameraAi className="ai-icon" />
           )}
         </button>
-
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
@@ -162,8 +148,7 @@ function Searchbar({
                 setSearch(suggestion);
                 saveSearch(suggestion);
                 setShowSuggestions(false);
-              }}
-            >
+              }}>
               {suggestion}
             </div>
           ))}

@@ -1,6 +1,6 @@
-import { FaUser } from "react-icons/fa6";
+import { FaUser } from 'react-icons/fa6';
 import '../Sidebar.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function SidebarAdmin({
   userName,
@@ -14,15 +14,10 @@ function SidebarAdmin({
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   return (
-     <aside className="sidebar-container">
+    <aside className="sidebar-container">
       <div className="userProfile">
         {user?.avatar ? (
-          <img
-            src={user.avatar}
-            alt="avatar"
-            className="header-avatar"
-            onClick={() => onClose()}
-          />
+          <img src={user.avatar} alt="avatar" className="header-avatar" onClick={() => onClose()} />
         ) : (
           <FaUser className="profile-icon" onClick={() => onClose()} />
         )}
@@ -32,14 +27,36 @@ function SidebarAdmin({
         </div>
       </div>
       <div className="navigation">
-        <button className="user-data" onClick={() => { navigate("/profile")}}>Профиль</button>
-        <button className="user-data" onClick={() => { navigate("/appeals"); onClose(); }}>
+        <button
+          className="user-data"
+          onClick={() => {
+            navigate('/profile');
+          }}>
+          Профиль
+        </button>
+        <button
+          className="user-data"
+          onClick={() => {
+            navigate('/appeals');
+            onClose();
+          }}>
           Обращения
         </button>
-        <button className="user-data" onClick={() => { navigate("/magazine"); onClose(); }}>
+        <button
+          className="user-data"
+          onClick={() => {
+            navigate('/magazine');
+            onClose();
+          }}>
           Журнал действий
         </button>
-        <button className="user-data" onClick={() => { navigate("/statistic")}}>Статистика</button>
+        <button
+          className="user-data"
+          onClick={() => {
+            navigate('/statistic');
+          }}>
+          Статистика
+        </button>
       </div>
     </aside>
   );

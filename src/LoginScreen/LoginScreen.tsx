@@ -33,12 +33,6 @@ function Login() {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  //   useEffect(() => {
-  //   checkAuth().then((isAuth) => {
-  //     setIsAuth(isAuth);
-  //   });
-  // }, []);
-
   const validate = () => {
     const newErrors: Errors = {};
 
@@ -74,15 +68,15 @@ function Login() {
   };
   const swRef = useRef<ServiceWorkerRegistration | undefined>(undefined);
 
-useEffect(() => {
-  const registerSW = async () => {
-    swRef.current = await navigator.serviceWorker.register(
-    `${import.meta.env.BASE_URL}firebase-messaging-sw.js`
-    );
-  };
+  useEffect(() => {
+    const registerSW = async () => {
+      swRef.current = await navigator.serviceWorker.register(
+        `${import.meta.env.BASE_URL}firebase-messaging-sw.js`,
+      );
+    };
 
-  registerSW();
-}, []);
+    registerSW();
+  }, []);
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -98,7 +92,7 @@ useEffect(() => {
       localStorage.setItem('user_email', user.email);
       const registration = swRef.current;
       const permission = await Notification.requestPermission();
-      
+
       if (permission === 'granted') {
         const fcmToken = await getToken(messaging, {
           vapidKey:

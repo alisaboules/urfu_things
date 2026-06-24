@@ -7,7 +7,6 @@ import { Advertisement } from './Advertisement';
 import './index.css';
 import { Appeal } from './Appeal';
 import { Appeals } from './Appeals';
-
 import { Magazine } from './Magazine';
 import { Profile } from './Profile/Profile';
 import { MyCards } from './MyCards/MyCards';
@@ -49,7 +48,6 @@ export type Item = {
   created_at?: string;
   pickup_point_name?: string;
   pickup_point?: number | null;
-
 };
 
 export type ApiItem = {
@@ -216,8 +214,8 @@ function App() {
   const [nextFound, setNextFound] = useState<string | null>(null);
   const [nextLost, setNextLost] = useState<string | null>(null);
   const addItem = (item: Item) => {
-  setItems(prev => [item, ...prev]);
-};
+    setItems((prev) => [item, ...prev]);
+  };
   const [appeals, setAppeals] = useState<AppealImage[]>([]);
   useLayoutEffect(() => {
     const fetchData = async () => {
@@ -322,53 +320,9 @@ function App() {
       setNextLost(data.next);
     }
   };
-  // useLayoutEffect(() => {
-  //   const fetchItems = async () => {
-  //     try {
-  //       const foundData = await getItems('found');
-  //       console.log(foundData);
-  //       const lostData = await getItems('lost');
-  //       const found = Array.isArray(foundData) ? foundData : foundData.results || [];
-
-  //       const lost = Array.isArray(lostData) ? lostData : lostData.results || [];
-  //       const allItems: Item[] = [
-  //         ...found.map((item) => ({
-  //           id: item.id,
-  //           user: item.user,
-  //           type: 'found' as const,
-  //           title: item.description || 'Без названия',
-  //           img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-  //           description: item.description,
-  //           location_ref: item.location_ref,
-  //           status: item.status,
-  //           author: item.author,
-  //         })),
-
-  //         ...lost.map((item) => ({
-  //           id: item.id,
-  //           user: item.user,
-  //           type: 'lost' as const,
-  //           title: item.description || 'Без названия',
-  //           img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-  //           description: item.description,
-  //           location_ref: item.location_ref,
-  //           status: item.status,
-  //           author: item.author,
-  //         })),
-  //       ];
-
-  //       setItems(allItems);
-  //     } catch (e) {
-  //       console.error(e);
-  //       setItems(fallbackItems);
-  //     }
-  //   };
-
-  //   fetchItems();
-  // }, []);
   const handleItemDeleted = (id: number, type: 'found' | 'lost') => {
-  setItems(prev => prev.filter(item => !(item.id === id && item.type === type)));
-};
+    setItems((prev) => prev.filter((item) => !(item.id === id && item.type === type)));
+  };
   return (
     <>
       <ThemeProvider>
@@ -385,9 +339,7 @@ function App() {
                   loadMore={loadMore}
                   onItemDeleted={handleItemDeleted}
                 />
-              }>
-              {/* <Route index element={<Sidebar />} /> */}
-            </Route>
+              }></Route>
             <Route path="/ad" element={<Advertisement addItem={addItem} />} />
             <Route path="/appeal" element={<Appeal />} />
             <Route path="/appeals" element={<Appeals />} />
@@ -395,7 +347,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/my-cards" element={<MyCards items={items} />} />
             <Route path="/statistic" element={<MyStatistic items={items} appeals={appeals} />} />
-            <Route path="/historyact" element={<HistoryActions />}/>
+            <Route path="/historyact" element={<HistoryActions />} />
           </Routes>
         </HashRouter>
       </ThemeProvider>

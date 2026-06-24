@@ -9,33 +9,30 @@ import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
 import { FaCheck, FaPlus, FaSun } from 'react-icons/fa';
 import { useTheme } from '../ThemeContext.tsx';
 
-
 function Profile() {
-  const { theme, toggleTheme: globalToggleTheme } = useTheme(); 
+  const { theme, toggleTheme: globalToggleTheme } = useTheme();
   const handleToggleTheme = () => {
     globalToggleTheme();
   };
-
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
   const toggleNotifications = async () => {
     const newValue = !enabled;
     setEnabled(newValue);
 
-     try {
-    const updatedUser = await updateProfile({
-      notifications_enabled: newValue,
-    });
+    try {
+      const updatedUser = await updateProfile({
+        notifications_enabled: newValue,
+      });
 
-    setUser(updatedUser);
+      setUser(updatedUser);
 
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-  } catch (err) {
-    console.error(err);
-    setEnabled(!newValue); 
-  };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error(err);
+      setEnabled(!newValue);
+    }
   };
   const inputRef = useRef<HTMLInputElement>(null);
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -51,16 +48,13 @@ function Profile() {
       console.error(err);
     }
   };
-
   const shortName = (user?.first_name || '').trim().split(/\s+/).slice(0, 2).join(' ');
-
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   useLayoutEffect(() => {
-  setEnabled(user?.notifications_enabled ?? false);
-}, [user]);
+    setEnabled(user?.notifications_enabled ?? false);
+  }, [user]);
   const [isEditing, setIsEditing] = useState(false);
-
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
     email: user?.email || '',
@@ -73,21 +67,19 @@ function Profile() {
     });
   };
   const handleSave = async () => {
-  try {
-    const updatedUser = await updateProfile(formData);
+    try {
+      const updatedUser = await updateProfile(formData);
 
-    setUser(updatedUser);
+      setUser(updatedUser);
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify(updatedUser)
-    );
+      localStorage.setItem('user', JSON.stringify(updatedUser));
 
-    setIsEditing(false);
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setIsEditing(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="main-profile-icon">
       <div className="container-return-icon">
@@ -157,10 +149,12 @@ function Profile() {
         )}
 
         {/* PICKUP POINT EMPLOYEE */}
-        {user?.role === 'pickup_point' && (<>
-          <p className="user-info-label1">{user?.pickup_point_name}</p>
-          <p className="user-info-label2">Пункт выдачи</p>
-        </>)}
+        {user?.role === 'pickup_point' && (
+          <>
+            <p className="user-info-label1">{user?.pickup_point_name}</p>
+            <p className="user-info-label2">Пункт выдачи</p>
+          </>
+        )}
       </div>
       <div>
         <div className="notifications-container">
@@ -176,20 +170,19 @@ function Profile() {
         </div>
       </div>
       <div>
-      <div className="notifications-container">
-  <p>Тема</p>
-  <div
-    className={`theme-switch ${theme === 'dark' ? 'active' : ''}`}
-    onClick={handleToggleTheme}
-  >
-    {theme === 'light' ? (
-      <FaSun className={`theme-icon`} />
-    ) : (
-      <FaSun className={`theme-icon rotate`} />
-    )}
-  </div>
-</div>
-</div>
+        <div className="notifications-container">
+          <p>Тема</p>
+          <div
+            className={`theme-switch ${theme === 'dark' ? 'active' : ''}`}
+            onClick={handleToggleTheme}>
+            {theme === 'light' ? (
+              <FaSun className={`theme-icon`} />
+            ) : (
+              <FaSun className={`theme-icon rotate`} />
+            )}
+          </div>
+        </div>
+      </div>
       <input
         type="file"
         accept="image/*"
