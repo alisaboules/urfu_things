@@ -8,7 +8,7 @@ import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { createAppeal } from '../Api/Api';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import type { AppealPayload } from '../App';
+import type { AppealPayload } from '../types';
 
 function Appeal() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

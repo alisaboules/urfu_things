@@ -3,7 +3,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { TbCameraAi } from 'react-icons/tb';
 import { FaRegHourglassHalf } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
-import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage } from './Api/Api';
+import { getSearchHistory, getSearchSuggestions, saveSearchQuery, searchByImage } from '../Api/Api';
 
 type SearchbarProps = {
   search: string;

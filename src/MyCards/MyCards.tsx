@@ -9,15 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { SidebarUser } from '../Sidebars/SidebarUser';
 import { MdOutlinePlace } from 'react-icons/md';
-import type { IssuanceHistoryItem, Item } from '../App';
 import './MyCards.css';
-import { Searchbar } from '../Searchbar';
+import { Searchbar } from '../Components/Searchbar';
 import Fuse from 'fuse.js';
 import { getIssuanceHistory } from '../Api/Api';
-
-type MyCardsProps = {
-  items: Item[];
-};
+import type { IssuanceHistoryItem, Item, MyCardsProps } from '../types';
 
 function MyCards({ items }: MyCardsProps) {
   const [search, setSearch] = useState('');
@@ -29,18 +25,15 @@ function MyCards({ items }: MyCardsProps) {
   const myItems = type === 'lost' ? items.filter((item) => item.user === user?.id) : issuedItems;
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
-
   const fullName = user?.first_name || '';
-
   const [name, surname] = fullName.split(' ');
-
   const shortName = `${name || ''} ${surname || ''}`.trim();
-
   const closeAllPopups = () => {
     setIsImageOpen(false);
     setSelectedItem(null);
   };
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -51,6 +44,7 @@ function MyCards({ items }: MyCardsProps) {
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
+
   useEffect(() => {
     const loadIssuedItems = async () => {
       try {

@@ -141,7 +141,7 @@ import { MdOutlinePlace } from 'react-icons/md';
 import { SidebarPickup } from '../Sidebars/SidebarPickup/SidebarPickup';
 import { SidebarAdmin } from '../Sidebars/SidebarAdmin/SidebarAdmin';
 import { getNotifications } from '../Api/Api';
-import type { Notificationing } from '../App';
+import type { Notificationing } from '../types';
 
 // Временные данные
 interface FakeNotification {

@@ -11,9 +11,8 @@ import { SidebarUser } from '../Sidebars/SidebarUser';
 import { SidebarPickup } from '../Sidebars/SidebarPickup';
 import { TbMessageQuestion } from 'react-icons/tb';
 import { useMemo } from 'react';
-import type { ApiItem, Item, PickupPointResponse, PickupPointType } from '../App';
 import Fuse from 'fuse.js';
-import { Searchbar } from '../Searchbar';
+import { Searchbar } from '../Components/Searchbar';
 import { FaTrashAlt } from 'react-icons/fa';
 import {
   claimFoundItem,
@@ -27,6 +26,7 @@ import {
   getPickupPointItems,
 } from '../Api/Api';
 import { toast } from 'react-toastify';
+import type { ApiItem, Item, PickupPointResponse, PickupPointType } from '../types';
 
 type MainPageProps = {
   items: Item[];
@@ -38,7 +38,7 @@ const allPickupPoints = ['ГУК', 'ФТИ', 'ИНМТ', 'ИРИТ-РТФ', 'У�
 
 function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   const filterRef = useRef<HTMLDivElement | null>(null);
-  
+
   const navigate = useNavigate();
   const [type, setType] = useState('lost');
   const [imageIds, setImageIds] = useState<string[]>([]);
@@ -144,7 +144,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
 
     return displayedItems.filter((item) => imageIds.includes(String(item.id)));
   }, [displayedItems, imageIds]);
-  
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -349,7 +349,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
         type: 'found' as const,
         title: item.category_name || 'Без категории',
         img: item.image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-        description: item.description || "Без описания",
+        description: item.description || 'Без описания',
         location_ref: item.location_ref,
         status: item.status,
         author: item.author,
@@ -364,19 +364,19 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
       console.log(historyData);
       const issuances = historyData.results || historyData;
       const mappedIssued = issuances.map((iss) => ({
-  id: iss.found_item,
-  user: iss.user,
-  type: "found" as const,
-  title: iss.found_item_title,
-  img: iss.found_item_image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
-  description: iss.found_item_description || "Без описания",
-  location_ref: iss.found_item_location,
-  status: "issued",
-  author: iss.found_item_author,
-  created_at: iss.found_item_created_at,
-  pickup_point_name: iss.pickup_point_name,
-  pickup_point: iss.pickup_point,
-}));
+        id: iss.found_item,
+        user: iss.user,
+        type: 'found' as const,
+        title: iss.found_item_title,
+        img: iss.found_item_image || `${import.meta.env.BASE_URL}images/аэрподс.jpg`,
+        description: iss.found_item_description || 'Без описания',
+        location_ref: iss.found_item_location,
+        status: 'issued',
+        author: iss.found_item_author,
+        created_at: iss.found_item_created_at,
+        pickup_point_name: iss.pickup_point_name,
+        pickup_point: iss.pickup_point,
+      }));
       setIssuedItems(mappedIssued);
     } catch (error) {
       console.error(error);
@@ -393,8 +393,8 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   }, [selectedPickupPointId, isPickupEmployee]);
 
   const handleConfirmIssuance = async (item: Item) => {
-    await confirmIssuance(item.id, user.id); 
-    await createHistory(item.id, "confirm");
+    await confirmIssuance(item.id, user.id);
+    await createHistory(item.id, 'confirm');
     // await createNotification({
     //   action_type: 'confirm',
     //   item_id: item.id,
@@ -406,7 +406,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
     //   pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
     // });;
     toast.success('Выдача подтверждена', { className: 'custom-toast' });
-    await loadPickupData(selectedPickupPointId!); 
+    await loadPickupData(selectedPickupPointId!);
     // setPickupItems((prev) => prev.filter((i) => i.id !== item.id));
     // const issuedCopy = { ...item, status: 'issued' };
     // setIssuedItems((prev) => [issuedCopy, ...prev]);
@@ -414,20 +414,18 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
   };
   const handleClaim = async (item: Item) => {
     try {
-      await claimFoundItem(
-        item.id,
-      );
-      await createHistory(item.id, "claim");
+      await claimFoundItem(item.id);
+      await createHistory(item.id, 'claim');
       await createNotification({
-      action_type: 'claim',
-      item_id: item.id,
-      item_title: item.title,
-      item_category: item.title,   
-      item_description: item.description || "Без описания",
-      creator_name: item.author || 'Не указано',
-      creator_id: item.user,
-      pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
-    });
+        action_type: 'claim',
+        item_id: item.id,
+        item_title: item.title,
+        item_category: item.title,
+        item_description: item.description || 'Без описания',
+        creator_name: item.author || 'Не указано',
+        creator_id: item.user,
+        pickup_point_name: item.pickup_point_name || item.location_ref || 'Не указан',
+      });
       toast.success('Ваша заявка успешно отправлена', { className: 'custom-toast' });
       setSelectedItem(null);
       onItemDeleted?.(item.id, item.type);
@@ -437,26 +435,32 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
     }
   };
   const [pickupDropdownOpen, setPickupDropdownOpen] = useState(false);
-   useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-      setPickupDropdownOpen(false); // закрываем только выпадашку, а не весь блок
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-  const [selectedPickupPointName, setSelectedPickupPointName] = useState<string | null>(
-  user?.pickup_point ?? null
-);
   useEffect(() => {
-  console.log('BASE ITEMS IDS:', baseFiltered.map(i => i.id));
-  console.log('DISPLAYED IDS:', displayedItems.map(i => i.id));
-  console.log('IMAGEIDS', imageIds);
-}, [baseFiltered, displayedItems, imageIds]);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setPickupDropdownOpen(false); // закрываем только выпадашку, а не весь блок
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  const [selectedPickupPointName, setSelectedPickupPointName] = useState<string | null>(
+    user?.pickup_point ?? null,
+  );
+  useEffect(() => {
+    console.log(
+      'BASE ITEMS IDS:',
+      baseFiltered.map((i) => i.id),
+    );
+    console.log(
+      'DISPLAYED IDS:',
+      displayedItems.map((i) => i.id),
+    );
+    console.log('IMAGEIDS', imageIds);
+  }, [baseFiltered, displayedItems, imageIds]);
   return (
     <>
       <div className="container_header_homepage">
@@ -486,7 +490,6 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
               <div className="pickup-point-block">
                 <div className="filter-block" ref={filterRef}>
                   <button
-                    
                     className={`filter ${selectedPickupPointName ? 'filter-active' : ''}`}
                     onClick={() => setPickupDropdownOpen(!pickupDropdownOpen)}>
                     Пункт выдачи
@@ -734,7 +737,7 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
                   })}
                 </p>
               )}
-              <p>Описание: {selectedItem.description || "Без описания"}</p>
+              <p>Описание: {selectedItem.description || 'Без описания'}</p>
               {user?.role != 'student' ? (
                 <p className="card-author">
                   Опубликовал/а: <span className="author">{selectedItem.author}</span>
@@ -749,14 +752,14 @@ function MainPage({ items, loadMore, onItemDeleted }: MainPageProps) {
                 </button>
               )}
               {user?.role === 'pickup_point' &&
- selectedItem?.pickup_point === user.pickup_point &&
- type === 'lost' && (  
-  <button
-    className="responce-btn"
-    onClick={() => handleConfirmIssuance(selectedItem)}>
-    Подтвердить выдачу
-  </button>
-)}
+                selectedItem?.pickup_point === user.pickup_point &&
+                type === 'lost' && (
+                  <button
+                    className="responce-btn"
+                    onClick={() => handleConfirmIssuance(selectedItem)}>
+                    Подтвердить выдачу
+                  </button>
+                )}
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ import { MdDelete } from 'react-icons/md';
 import { createFoundItem, upsertImage } from '../Api/Api';
 import { PickupFinder } from '../Components/Geolocation/Geolocation';
 import { toast } from 'react-toastify';
-import type { Item } from '../App';
+import type { Item } from '../types';
 
 function Advertisement({ addItem }: { addItem: (item: Item) => void }) {
   const [type, setType] = useState('lost');

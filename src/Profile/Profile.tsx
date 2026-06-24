@@ -7,7 +7,7 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdNotifications, IoMdNotificationsOff } from 'react-icons/io';
 import { FaCheck, FaPlus, FaSun } from 'react-icons/fa';
-import { useTheme } from '../ThemeContext.tsx';
+import { useTheme } from '../Components/ThemeContext.tsx';
 
 function Profile() {
   const { theme, toggleTheme: globalToggleTheme } = useTheme();

@@ -1,6 +1,6 @@
 const BASE_URL = "https://urfu-things-bakend-1.onrender.com/api";
 import axios from 'axios';
-import type { AppealPayload, IssuanceHistoryItem, ItemsResponse, NotificationPayload, NotificationsResponse, PaginatedResponse } from '../App';
+import type { AppealPayload, IssuanceHistoryItem, ItemsResponse, NotificationPayload, NotificationsResponse, PaginatedResponse } from '../types';
 
 export const loginUser = async (email: string, password: string) => {
   const res = await fetch(`${BASE_URL}/token/`, {
